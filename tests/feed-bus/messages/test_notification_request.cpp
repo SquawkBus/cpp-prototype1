@@ -10,7 +10,7 @@ using namespace squawkbus::serialization;
 using namespace squawkbus::feed_bus::messages;
 
 TEST_CASE("smoke test") {
-    Frame frame;
+    FrameBuffer frame;
 
     std::shared_ptr<Message> m0 = std::make_shared<NotificationRequest>(
         "PUB-1",
