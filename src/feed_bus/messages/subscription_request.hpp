@@ -1,8 +1,8 @@
 #ifndef SQUAWKBUS_FEED_BUS_MESSAGES_SUBSCRIPTION_REQUEST_HPP
 #define SQUAWKBUS_FEED_BUS_MESSAGES_SUBSCRIPTION_REQUEST_HPP
 
+#include <format>
 #include <memory>
-#include <sstream>
 #include <string>
 
 #include "serialization/frame_buffer.hpp"
@@ -13,6 +13,8 @@
 
 namespace squawkbus::feed_bus::messages
 {
+    using serialization::FrameBuffer;
+
     struct SubscriptionRequest : public Message
     {
         std::string feed;
@@ -35,7 +37,7 @@ namespace squawkbus::feed_bus::messages
         {
         }
 
-        void write_body(serialization::FrameBuffer &frame) const override
+        void write_body(FrameBuffer &frame) const override
         {
             frame
                 << feed
@@ -43,7 +45,7 @@ namespace squawkbus::feed_bus::messages
                 << is_add;
         }
 
-        void read_body(serialization::FrameBuffer &frame) override
+        void read_body(FrameBuffer &frame) override
         {
             frame
                 >> feed
@@ -67,15 +69,13 @@ namespace squawkbus::feed_bus::messages
 
         std::string to_string() const override
         {
-            std::stringstream ss;
-            ss
-                << "SubscriptionRequest("
-                << "message_type=" << message_type
-                << ", feed=\"" << feed << "\""
-                << ", topic=\"" << topic << "\""
-                << ", is_add=" << (is_add ? "<true>" : "<false>")
-                << ")";
-            return ss.str();
+            return std::format(
+                "SubscriptionRequest(message_type={},feed=\"{}\",topic=\"{}\",is_add={})",
+                messages::to_string(message_type),
+                feed,
+                topic,
+                (is_add ? "<true>" : "<false")
+            );
         }
     };
 }

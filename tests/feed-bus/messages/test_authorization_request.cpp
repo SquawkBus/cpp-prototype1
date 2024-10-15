@@ -1,3 +1,5 @@
+#include <cstdint>
+#include <set>
 #include <memory>
 
 #include "serialization/frame_buffer.hpp"
@@ -6,10 +8,13 @@
 #define CATCH_CONFIG_MAIN
 #include "catch2/catch.hpp"
 
-TEST_CASE("smoke test") {
-    squawkbus::serialization::FrameBuffer frame;
+using namespace squawkbus::serialization;
+using namespace squawkbus::feed_bus::messages;
 
-    std::shared_ptr<squawkbus::feed_bus::messages::Message> m0 = std::make_shared<squawkbus::feed_bus::messages::AuthorizationRequest>(
+TEST_CASE("smoke test") {
+    FrameBuffer frame;
+
+    std::shared_ptr<Message> m0 = std::make_shared<AuthorizationRequest>(
         "client-1",
         "host-1.example.com",
         "tom.jones",
@@ -18,7 +23,7 @@ TEST_CASE("smoke test") {
     );
     m0->write(frame);
 
-    auto m1 = squawkbus::feed_bus::messages::Message::read(frame);
+    auto m1 = Message::read(frame);
 
     REQUIRE(m0 == m1);
 }

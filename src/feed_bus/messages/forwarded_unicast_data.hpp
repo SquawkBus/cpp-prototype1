@@ -1,8 +1,8 @@
 #ifndef SQUAWKBUS_FEED_BUS_MESSAGES_FORWARDED_UNICAST_DATA_HPP
 #define SQUAWKBUS_FEED_BUS_MESSAGES_FORWARDED_UNICAST_DATA_HPP
 
+#include <format>
 #include <memory>
-#include <sstream>
 #include <string>
 #include <vector>
 
@@ -15,6 +15,9 @@
 
 namespace squawkbus::feed_bus::messages
 {
+    using serialization::FrameBuffer;
+    using serialization::DataPacket;
+
     struct ForwardedUnicastData : public Message
     {
         std::string user;
@@ -23,7 +26,7 @@ namespace squawkbus::feed_bus::messages
         std::string feed;
         std::string topic;
         std::string content_type;
-        std::vector<serialization::DataPacket> data_packets;
+        std::vector<DataPacket> data_packets;
 
         ForwardedUnicastData()
             : Message(MessageType::ForwardedUnicastData)
@@ -37,7 +40,7 @@ namespace squawkbus::feed_bus::messages
             const std::string &feed,
             const std::string &topic,
             const std::string &content_type,
-            const std::vector<serialization::DataPacket> &data_packets)
+            const std::vector<DataPacket> &data_packets)
             :   Message(MessageType::ForwardedUnicastData),
                 user(user),
                 host(host),
@@ -49,7 +52,7 @@ namespace squawkbus::feed_bus::messages
         {
         }
 
-        void write_body(serialization::FrameBuffer &frame) const override
+        void write_body(FrameBuffer &frame) const override
         {
             frame
                 << user
@@ -61,7 +64,7 @@ namespace squawkbus::feed_bus::messages
                 << data_packets;
         }
 
-        void read_body(serialization::FrameBuffer &frame) override
+        void read_body(FrameBuffer &frame) override
         {
             frame
                 >> user
@@ -93,19 +96,17 @@ namespace squawkbus::feed_bus::messages
 
         std::string to_string() const override
         {
-            std::stringstream ss;
-            ss
-                    << "ForwardedUnicastData("
-                    << "message_type=" << message_type
-                    << ", user=\"" << user << "\""
-                    << ", host=\"" << host << "\""
-                    << ", client_id=\"" << client_id << "\""
-                    << ", feed=\"" << feed << "\""
-                    << ", topic=\"" << topic << "\""
-                    << ", content_type=\"" << content_type << "\""
-                    << ", data_packets=" << ::to_string(data_packets)
-                    << ")";
-            return ss.str();
+            return std::format(
+                "ForwardedUnicastData(message_type={},user=\"{}\",host=\"{}\",client_id=\"{}\",feed=\"{}\",topic=\"{}\",content_type=\"{}\",data_packets={})",
+                messages::to_string(message_type),
+                user,
+                host,
+                client_id,
+                feed,
+                topic,
+                content_type,
+                ::to_string(data_packets)
+            );
         }
     };
 }

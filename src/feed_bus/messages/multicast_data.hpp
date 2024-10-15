@@ -1,8 +1,8 @@
 #ifndef SQUAWKBUS_FEED_BUS_MESSAGES_MULTICAST_DATA_HPP
 #define SQUAWKBUS_FEED_BUS_MESSAGES_MULTICAST_DATA_HPP
 
+#include <format>
 #include <memory>
-#include <sstream>
 #include <string>
 #include <vector>
 
@@ -15,12 +15,15 @@
 
 namespace squawkbus::feed_bus::messages
 {
+    using serialization::FrameBuffer;
+    using serialization::DataPacket;
+
     struct MulticastData : public Message
     {
         std::string feed;
         std::string topic;
         std::string content_type;
-        std::vector<serialization::DataPacket> data_packets;
+        std::vector<DataPacket> data_packets;
 
         MulticastData()
             : Message(MessageType::MulticastData)
@@ -31,7 +34,7 @@ namespace squawkbus::feed_bus::messages
             const std::string &feed,
             const std::string &topic,
             const std::string &content_type,
-            const std::vector<serialization::DataPacket> &data_packets)
+            const std::vector<DataPacket> &data_packets)
             : Message(MessageType::MulticastData),
                 feed(feed),
                 topic(topic),
@@ -40,7 +43,7 @@ namespace squawkbus::feed_bus::messages
         {
         }
 
-        void write_body(serialization::FrameBuffer &frame) const override
+        void write_body(FrameBuffer &frame) const override
         {
             frame
                 << feed
@@ -49,7 +52,7 @@ namespace squawkbus::feed_bus::messages
                 << data_packets;
         }
 
-        void read_body(serialization::FrameBuffer &frame) override
+        void read_body(FrameBuffer &frame) override
         {
             frame
                 >> feed
@@ -75,16 +78,14 @@ namespace squawkbus::feed_bus::messages
 
         std::string to_string() const override
         {
-            std::stringstream ss;
-            ss
-                    << "MulticastData("
-                    << "message_type=" << message_type
-                    << ", feed=\"" << feed << "\""
-                    << ", topic=\"" << topic << "\""
-                    << ", content_type=\"" << content_type << "\""
-                    << ", data_packets=" << ::to_string(data_packets)
-                    << ")";
-            return ss.str();
+            return std::format(
+                "MulticastData(message_type={},feed=\"{}\",topic=\"{}\",content_type=\"{}\",data_packets={})",
+                messages::to_string(message_type),
+                feed,
+                topic,
+                content_type,
+                ::to_string(data_packets)
+            );
         }
     };
 }

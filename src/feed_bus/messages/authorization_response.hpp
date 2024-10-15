@@ -2,9 +2,9 @@
 #define SQUAWKBUS_FEED_BUS_MESSAGES_AUTHORIZATION_RESPONSE_HPP
 
 #include <cstdint>
+#include <format>
 #include <memory>
 #include <set>
-#include <sstream>
 #include <string>
 
 #include "utils/utils.hpp"
@@ -16,6 +16,8 @@
 
 namespace squawkbus::feed_bus::messages
 {
+    using serialization::FrameBuffer;
+
     struct AuthorizationResponse : public Message
     {
         std::string client_id;
@@ -44,7 +46,7 @@ namespace squawkbus::feed_bus::messages
         {
         }
 
-        void write_body(serialization::FrameBuffer &frame) const override
+        void write_body(FrameBuffer &frame) const override
         {
             frame
                 << client_id
@@ -54,7 +56,7 @@ namespace squawkbus::feed_bus::messages
                 << entitlements;
         }
 
-        void read_body(serialization::FrameBuffer &frame) override
+        void read_body(FrameBuffer &frame) override
         {
             frame
                 >> client_id
@@ -82,17 +84,15 @@ namespace squawkbus::feed_bus::messages
 
         std::string to_string() const override
         {
-            std::stringstream ss;
-            ss
-                    << "AuthorizationResponse("
-                    << "message_type=" << message_type
-                    << ", client_id=\"" << client_id << "\""
-                    << ", feed=\"" << feed << "\""
-                    << ", topic=\"" << topic << "\""
-                    << ", is_authorization_required=" << (is_authorization_required ? "<true>" : "<false>")
-                    << ", entitlements=" << ::to_string(entitlements)
-                    << ")";
-            return ss.str();
+            return std::format(
+                "AuthorizationResponse(message_type={},client_id=\"{}\",feed=\"{}\",topic=\"{}\",is_authorization_required={},entitlements={})",
+                messages::to_string(message_type),
+                client_id,
+                feed,
+                topic,
+                (is_authorization_required ? "<true>" : "<false>"),
+                ::to_string(entitlements)
+            );
         }
     };
 }

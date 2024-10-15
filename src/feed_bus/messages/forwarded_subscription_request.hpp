@@ -1,8 +1,8 @@
 #ifndef SQUAWKBUS_FEED_BUS_MESSAGES_FORWARDED_SUBSCRIPTION_REQUEST_HPP
 #define SQUAWKBUS_FEED_BUS_MESSAGES_FORWARDED_SUBSCRIPTION_REQUEST_HPP
 
+#include <format>
 #include <memory>
-#include <sstream>
 #include <string>
 
 #include "serialization/frame_buffer.hpp"
@@ -13,6 +13,8 @@
 
 namespace squawkbus::feed_bus::messages
 {
+    using serialization::FrameBuffer;
+
     struct ForwardedSubscriptionRequest : public Message
     {
         std::string user;
@@ -44,7 +46,7 @@ namespace squawkbus::feed_bus::messages
         {
         }
 
-        void write_body(serialization::FrameBuffer &frame) const override
+        void write_body(FrameBuffer &frame) const override
         {
             frame
                 << user
@@ -55,7 +57,7 @@ namespace squawkbus::feed_bus::messages
                 << is_add;
         }
 
-        void read_body(serialization::FrameBuffer &frame) override
+        void read_body(FrameBuffer &frame) override
         {
             frame
                 >> user
@@ -85,18 +87,16 @@ namespace squawkbus::feed_bus::messages
 
         std::string to_string() const override
         {
-            std::stringstream ss;
-            ss
-                << "ForwardedSubscriptionRequest("
-                << "message_type=" << message_type
-                << ", user=\"" << user << "\""
-                << ", host=\"" << host << "\""
-                << ", client_id=\"" << client_id << "\""
-                << ", feed=\"" << feed << "\""
-                << ", topic=\"" << topic << "\""
-                << ", is_add=" << (is_add ? "<true>" : "<false>")
-                << ")";
-            return ss.str();
+            return std::format(
+                "ForwardedSubscriptionRequest(message_type={},user=\"{}\",host=\"{}\",client_id=\"{}\",feed=\"{}\",topic=\"{}\",is_add={})",
+                messages::to_string(message_type),
+                user,
+                host,
+                client_id,
+                feed,
+                topic,
+                (is_add ? "<true>" : "<false>")
+            );
         }
     };
 }
