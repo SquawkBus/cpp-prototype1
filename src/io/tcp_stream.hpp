@@ -32,8 +32,6 @@
 
 namespace jetblack::io
 {
-  using jetblack::utils::match;
-
   class TcpStream
   {
   public:
@@ -107,7 +105,7 @@ namespace jetblack::io
       }
 
       bool is_done = std::visit(
-        match {
+        jetblack::utils::match {
           
           [](blocked&&)
           {
@@ -290,7 +288,7 @@ namespace jetblack::io
       }
 
       bool is_done = std::visit(
-        match {
+        jetblack::utils::match {
 
           [](blocked&&)
           {

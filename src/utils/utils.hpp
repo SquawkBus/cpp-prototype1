@@ -5,6 +5,7 @@
 #include <iostream>
 #include <set>
 #include <span>
+#include <sstream>
 #include <vector>
 
 

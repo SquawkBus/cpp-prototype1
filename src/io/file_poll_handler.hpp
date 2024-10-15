@@ -20,8 +20,6 @@
 
 namespace jetblack::io
 {
-  using jetblack::utils::match;
-
   class FilePollHandler : public PollHandler
   {
   private:
@@ -59,7 +57,7 @@ namespace jetblack::io
       {
         bool can_read = true;
         while (can_read && stream_.file->is_open()) {
-          can_read = std::visit(match {
+          can_read = std::visit(jetblack::utils::match {
             
             [](blocked&&)
             {

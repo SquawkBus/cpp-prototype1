@@ -8,7 +8,8 @@
             "compilerArgs": ["-DNULL=0"],
             "cStandard": "c23",
             "includePath": [
-                "src"
+                "src",
+                "externals"
             ]
         }
     ],

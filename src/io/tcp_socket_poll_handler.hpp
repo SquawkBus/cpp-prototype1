@@ -21,8 +21,6 @@
 
 namespace jetblack::io
 {
-  using jetblack::utils::match;
-
   class TcpSocketPollHandler : public PollHandler
   {
   private:
@@ -81,7 +79,7 @@ namespace jetblack::io
         bool can_read = true;
         while (can_read && stream_.socket->is_open())
         {
-          can_read = std::visit(match {
+          can_read = std::visit(jetblack::utils::match {
             
             [](blocked&&)
             {
@@ -124,7 +122,7 @@ namespace jetblack::io
           std::size_t count = std::min(orig_buf.size() - offset, write_bufsiz);
           const auto& buf = std::span<char>(orig_buf).subspan(offset, count);
 
-          can_write = std::visit(match {
+          can_write = std::visit(jetblack::utils::match {
             
             [](eof&&)
             {
