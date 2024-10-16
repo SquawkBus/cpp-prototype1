@@ -29,9 +29,9 @@ std::shared_ptr<SslContext> make_ssl_context(const std::string& certfile, const 
 
 class EchoServer : public PollClient
 {
-  void on_open(Poller& poller, int fd) override
+  void on_open(Poller& poller, int fd, const std::string& host, std::uint16_t port) override
   {
-    logging::info(std::format("on_open: {}", fd));
+    logging::info(std::format("on_open: {} ({}:{})", fd, host, port));
   }
 
   void on_close(Poller& poller, int fd) override
@@ -65,11 +65,14 @@ class EchoServer : public PollClient
   }
 };
 
-void echo_server(uint16_t port, std::optional<std::shared_ptr<SslContext>> ssl_ctx)
+void echo_server(const std::string& host, std::uint16_t port, std::optional<std::shared_ptr<SslContext>> ssl_ctx)
 {
   auto poll_client = std::make_shared<EchoServer>();
   auto poller = Poller(poll_client);
-  poller.add_handler(std::make_unique<TcpListenerPollHandler>(port, ssl_ctx));
+  poller.add_handler(
+    std::make_unique<TcpListenerPollHandler>(port, ssl_ctx),
+    host,
+    port);
   poller.event_loop();
 }
 
@@ -126,7 +129,7 @@ int main(int argc, char** argv)
       ssl_ctx = make_ssl_context(certfile_option->value(), keyfile_option->value());
     }
 
-    echo_server(port, std::move(ssl_ctx));
+    echo_server("localhost", port, std::move(ssl_ctx));
   }
   catch(const std::exception& error)
   {

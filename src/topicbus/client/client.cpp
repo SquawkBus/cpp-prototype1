@@ -55,17 +55,17 @@ public:
   {
   }
 
-  void on_open(Poller& poller, int fd)
+  void on_open(Poller& poller, int fd, const std::string& host, std::uint16_t port) override
   {
-    logging::info(std::format("on_open: {}", fd));
+    logging::info(std::format("on_open: {} ({}:{})", fd, host, port));
   }
 
-  void on_close(Poller& poller, int fd)
+  void on_close(Poller& poller, int fd) override
   {
     logging::info(std::format("on_close: {}", fd));
   }
 
-  void on_read(Poller& poller, int fd, std::vector<std::vector<char>>&& bufs)
+  void on_read(Poller& poller, int fd, std::vector<std::vector<char>>&& bufs) override
   {
     logging::info(std::format("on_read: {}", fd));
 
@@ -91,8 +91,9 @@ public:
     }
   }
 
-  void on_error(Poller& poller, int fd, std::exception error)
+  void on_error(Poller& poller, int fd, std::exception error) override
   {
+    logging::info(std::format("on_error: {} - {}", fd, error.what()));
   }
 };
 
@@ -150,21 +151,25 @@ int main(int argc, char** argv)
     if (!ssl_ctx)
     {
       poller.add_handler(
-        std::make_unique<TcpSocketPollHandler>(client_socket, 8096, 8096));
+        std::make_unique<TcpSocketPollHandler>(client_socket, 8096, 8096),
+        host,
+        port);
     }
     else
     {
       poller.add_handler(
-        std::make_unique<TcpSocketPollHandler>(client_socket, *ssl_ctx, host, 8096, 8096));
+        std::make_unique<TcpSocketPollHandler>(client_socket, *ssl_ctx, host, 8096, 8096),
+        host,
+        port);
     }
 
     auto console_input = std::make_shared<File>(STDIN_FILENO, O_RDONLY);
     console_input->blocking(false);
-    poller.add_handler(std::make_unique<FilePollHandler>(console_input, 1024, 1024));
+    poller.add_handler(std::make_unique<FilePollHandler>(console_input, 1024, 1024), "localhost", 0);
 
     auto console_output = std::make_shared<File>(STDOUT_FILENO, O_WRONLY);
     console_output->blocking(false);
-    poller.add_handler(std::make_unique<FilePollHandler>(console_output, 1024, 1024));
+    poller.add_handler(std::make_unique<FilePollHandler>(console_output, 1024, 1024), "localhost", 0);
 
     poller.event_loop();
   }

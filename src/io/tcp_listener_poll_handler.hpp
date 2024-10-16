@@ -15,9 +15,7 @@
 #include "io/poll_handler.hpp"
 #include "io/poller.hpp"
 
-#include "io/tcp_socket.hpp"
 #include "io/tcp_listener_socket.hpp"
-#include "io/tcp_stream.hpp"
 #include "io/tcp_socket_poll_handler.hpp"
 
 namespace squawkbus::io
@@ -60,12 +58,16 @@ namespace squawkbus::io
       if (!ssl_ctx_)
       {
         poller.add_handler(
-          std::make_unique<TcpSocketPollHandler>(std::move(client), 8096, 8096));
+          std::make_unique<TcpSocketPollHandler>(std::move(client), 8096, 8096),
+          client->address(),
+          client->port());
       }
       else
       {
         poller.add_handler(
-          std::make_unique<TcpSocketPollHandler>(std::move(client), *ssl_ctx_, 8096, 8096));
+          std::make_unique<TcpSocketPollHandler>(std::move(client), *ssl_ctx_, 8096, 8096),
+          client->address(),
+          client->port());
       }
 
       return true;

@@ -32,7 +32,7 @@ namespace squawkbus::io
   struct PollClient
   {
     virtual ~PollClient() {}
-    virtual void on_open(Poller& poller, int fd) = 0;
+    virtual void on_open(Poller& poller, int fd, const std::string& host, std::uint16_t port) = 0;
     virtual void on_close(Poller& poller, int fd) = 0;
     virtual void on_read(Poller& poller, int fd, std::vector<std::vector<char>>&& bufs) = 0;
     virtual void on_error(Poller& poller, int fd, std::exception error) = 0;
@@ -55,13 +55,13 @@ namespace squawkbus::io
     {
     }
 
-    void add_handler(handler_pointer handler) noexcept
+    void add_handler(handler_pointer handler, const std::string& host, std::uint16_t port) noexcept
     {
       int fd = handler->fd();
       bool is_listener = handler->is_listener();
       handlers_[fd] = std::move(handler);
       if (!is_listener)
-        client_->on_open(*this, fd);
+        client_->on_open(*this, fd, host, port);
     }
 
     void write(int fd, const std::vector<char>& buf) noexcept
