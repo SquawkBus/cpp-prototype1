@@ -85,7 +85,8 @@
         "feedbus",
         "roundtrip",
         "servaddr",
-        "squawkbus"
+        "squawkbus",
+        "TOPICBUS"
     ],
     "makefile.configureOnOpen": false
 }
