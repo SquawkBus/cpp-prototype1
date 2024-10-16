@@ -1,5 +1,5 @@
-#ifndef SQUAWKBUS_FEED_BUS_MESSAGES_UNICAST_DATA
-#define SQUAWKBUS_FEED_BUS_MESSAGES_UNICAST_DATA
+#ifndef SQUAWKBUS_FEEDBUS_MESSAGES_FORWARDED_MULTICAST_DATA_HPP
+#define SQUAWKBUS_FEEDBUS_MESSAGES_FORWARDED_MULTICAST_DATA_HPP
 
 #include <format>
 #include <memory>
@@ -10,35 +10,38 @@
 #include "serialization/frame_buffer_io.hpp"
 #include "serialization/data_packet.hpp"
 
-#include "feed_bus/messages/message_type.hpp"
-#include "feed_bus/messages/message.hpp"
+#include "feedbus/messages/message_type.hpp"
+#include "feedbus/messages/message.hpp"
 
-namespace squawkbus::feed_bus::messages
+namespace squawkbus::feedbus::messages
 {
     using serialization::FrameBuffer;
     using serialization::DataPacket;
 
-    struct UnicastData : public Message
+    struct ForwardedMulticastData : public Message
     {
-        std::string client_id;
+        std::string user;
+        std::string host;
         std::string feed;
         std::string topic;
         std::string content_type;
         std::vector<DataPacket> data_packets;
 
-        UnicastData()
-            : Message(MessageType::UnicastData)
+        ForwardedMulticastData()
+            : Message(MessageType::ForwardedMulticastData)
         {
         }
 
-        UnicastData(
-            const std::string &client_id,
+        ForwardedMulticastData(
+            const std::string &user,
+            const std::string &host,
             const std::string &feed,
             const std::string &topic,
             const std::string& content_type,
             const std::vector<DataPacket>& data_packets)
-            :   Message(MessageType::UnicastData),
-                client_id(client_id),
+            :   Message(MessageType::ForwardedMulticastData),
+                user(user),
+                host(host),
                 feed(feed),
                 topic(topic),
                 content_type(content_type),
@@ -49,28 +52,31 @@ namespace squawkbus::feed_bus::messages
         void write_body(FrameBuffer &frame) const override
         {
             frame
-                << client_id
+                << user
+                << host
                 << feed
                 << topic
                 << content_type
-                << data_packets;
+                << data_packets;        
         }
 
         void read_body(FrameBuffer &frame) override
         {
             frame
-                >> client_id
+                >> user
+                >> host
                 >> feed
                 >> topic
                 >> content_type
                 >> data_packets;
         }
 
-        bool equals(const std::shared_ptr<UnicastData> &other) const
+        bool equals(const std::shared_ptr<ForwardedMulticastData> &other) const
         {
             return
                 message_type == other->message_type &&
-                client_id == other->client_id &&
+                user == other->user &&
+                host == other->host &&
                 feed == other->feed &&
                 topic == other->topic &&
                 content_type == other->content_type &&
@@ -79,15 +85,16 @@ namespace squawkbus::feed_bus::messages
 
         bool equals(const std::shared_ptr<Message>& other) const override
         {
-            return equals(std::static_pointer_cast<UnicastData>(other));
+            return equals(std::static_pointer_cast<ForwardedMulticastData>(other));
         }
 
         std::string to_string() const override
         {
             return std::format(
-                "UnicastData(message_type={},client_id=\"{}\",feed=\"{}\",topic=\"{}\",content_type=\"{}\",data_packets={})",
+                "ForwardedMulticastData(message_type={},user=\"{}\",host=\"{}\",feed=\"{}\",topic=\"{}\",content_type=\"{}\",data_packets={})",
                 messages::to_string(message_type),
-                client_id,
+                user,
+                host,
                 feed,
                 topic,
                 content_type,
@@ -97,4 +104,4 @@ namespace squawkbus::feed_bus::messages
     };
 }
 
-#endif // SQUAWKBUS_FEED_BUS_MESSAGES_UNICAST_DATA
+#endif // SQUAWKBUS_FEEDBUS_MESSAGES_FORWARDED_MULTICAST_DATA_HPP

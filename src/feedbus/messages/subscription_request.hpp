@@ -1,5 +1,5 @@
-#ifndef SQUAWKBUS_FEED_BUS_MESSAGES_SUBSCRIPTION_REQUEST_HPP
-#define SQUAWKBUS_FEED_BUS_MESSAGES_SUBSCRIPTION_REQUEST_HPP
+#ifndef SQUAWKBUS_FEEDBUS_MESSAGES_SUBSCRIPTION_REQUEST_HPP
+#define SQUAWKBUS_FEEDBUS_MESSAGES_SUBSCRIPTION_REQUEST_HPP
 
 #include <format>
 #include <memory>
@@ -8,10 +8,10 @@
 #include "serialization/frame_buffer.hpp"
 #include "serialization/frame_buffer_io.hpp"
 
-#include "feed_bus/messages/message_type.hpp"
-#include "feed_bus/messages/message.hpp"
+#include "feedbus/messages/message_type.hpp"
+#include "feedbus/messages/message.hpp"
 
-namespace squawkbus::feed_bus::messages
+namespace squawkbus::feedbus::messages
 {
     using serialization::FrameBuffer;
 
@@ -80,4 +80,4 @@ namespace squawkbus::feed_bus::messages
     };
 }
 
-#endif // SQUAWKBUS_FEED_BUS_MESSAGES_SUBSCRIPTION_REQUEST_HPP
+#endif // SQUAWKBUS_FEEDBUS_MESSAGES_SUBSCRIPTION_REQUEST_HPP

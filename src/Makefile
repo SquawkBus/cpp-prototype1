@@ -1,9 +1,9 @@
 .PHONY: all clean
 
 all:
-	cd topic_bus && make all
-	cd feed_bus && make all
+	cd topicbus && make all
+	cd feedbus && make all
 
 clean:
-	cd topic_bus && make clean
-	cd feed_bus && make clean
+	cd topicbus && make clean
+	cd feedbus && make clean

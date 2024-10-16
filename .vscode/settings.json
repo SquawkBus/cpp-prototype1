@@ -82,6 +82,7 @@
         "clientaddr",
         "clientlen",
         "eputs",
+        "feedbus",
         "servaddr",
         "squawkbus"
     ]

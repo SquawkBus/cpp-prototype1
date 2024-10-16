@@ -1,12 +1,12 @@
-#ifndef SQUAWKBUS_FEED_BUS_MESSAGES_MESSAGE_TYPE_HPP
-#define SQUAWKBUS_FEED_BUS_MESSAGES_MESSAGE_TYPE_HPP
+#ifndef SQUAWKBUS_FEEDBUS_MESSAGES_MESSAGE_TYPE_HPP
+#define SQUAWKBUS_FEEDBUS_MESSAGES_MESSAGE_TYPE_HPP
 
 #include <iostream>
 
 #include "serialization/frame_buffer.hpp"
 #include "serialization/frame_buffer_io.hpp"
 
-namespace squawkbus::feed_bus::messages
+namespace squawkbus::feedbus::messages
 {
     enum class MessageType : char
     {
@@ -67,4 +67,4 @@ namespace squawkbus::feed_bus::messages
     }
 }
 
-#endif // SQUAWKBUS_FEED_BUS_MESSAGES_MESSAGE_TYPE_HPP
+#endif // SQUAWKBUS_FEEDBUS_MESSAGES_MESSAGE_TYPE_HPP

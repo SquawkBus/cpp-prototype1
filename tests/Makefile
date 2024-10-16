@@ -2,13 +2,13 @@
 
 all:
 	cd serialization && make all
-	cd feed-bus && make all
+	cd feedbus && make all
 
 clean:
 	cd serialization && make clean
-	cd feed-bus && make clean
+	cd feedbus && make clean
 
 test:
 	cd serialization && make test
-	cd feed-bus && make test
+	cd feedbus && make test
 	

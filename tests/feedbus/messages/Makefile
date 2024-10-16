@@ -31,31 +31,31 @@ test: all
 	./test_unicast_data -s
 
 test_authorization_request: test_authorization_request.cpp
-test_authorization_request.cpp: ${SRC_DIR}/feed_bus/messages/authorization_request.hpp
+test_authorization_request.cpp: ${SRC_DIR}/feedbus/messages/authorization_request.hpp
 
 test_authorization_response: test_authorization_response.cpp
-test_authorization_response.cpp: ${SRC_DIR}/feed_bus/messages/authorization_response.hpp
+test_authorization_response.cpp: ${SRC_DIR}/feedbus/messages/authorization_response.hpp
 
 test_forwarded_multicast_data: test_forwarded_multicast_data.cpp
-test_forwarded_multicast_data.cpp: ${SRC_DIR}/feed_bus/messages/forwarded_multicast_data.hpp
+test_forwarded_multicast_data.cpp: ${SRC_DIR}/feedbus/messages/forwarded_multicast_data.hpp
 
 test_forwarded_subscription_request: test_forwarded_subscription_request.cpp
-test_forwarded_subscription_request.cpp: ${SRC_DIR}/feed_bus/messages/forwarded_subscription_request.hpp
+test_forwarded_subscription_request.cpp: ${SRC_DIR}/feedbus/messages/forwarded_subscription_request.hpp
 
 test_forwarded_unicast_data: test_forwarded_unicast_data.cpp
-test_forwarded_unicast_data.cpp: ${SRC_DIR}/feed_bus/messages/forwarded_unicast_data.hpp
+test_forwarded_unicast_data.cpp: ${SRC_DIR}/feedbus/messages/forwarded_unicast_data.hpp
 
 test_multicast_data: test_multicast_data.cpp
-test_multicast_data.cpp: ${SRC_DIR}/feed_bus/messages/multicast_data.hpp
+test_multicast_data.cpp: ${SRC_DIR}/feedbus/messages/multicast_data.hpp
 
 test_notification_request: test_notification_request.cpp
-test_notification_request.cpp: ${SRC_DIR}/feed_bus/messages/notification_request.hpp
+test_notification_request.cpp: ${SRC_DIR}/feedbus/messages/notification_request.hpp
 
 test_subscription_request: test_subscription_request.cpp
-test_subscription_request.cpp: ${SRC_DIR}/feed_bus/messages/subscription_request.hpp
+test_subscription_request.cpp: ${SRC_DIR}/feedbus/messages/subscription_request.hpp
 
 test_unicast_data: test_unicast_data.cpp
-test_unicast_data.cpp: ${SRC_DIR}/feed_bus/messages/unicast_data.hpp
+test_unicast_data.cpp: ${SRC_DIR}/feedbus/messages/unicast_data.hpp
 
 clean:
 	rm -f test_authorization_request.o test_authorization_request

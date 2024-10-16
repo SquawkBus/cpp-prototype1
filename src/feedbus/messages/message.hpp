@@ -1,13 +1,13 @@
-#ifndef SQUAWKBUS_FEED_BUS_MESSAGES_MESSAGE_HPP
-#define SQUAWKBUS_FEED_BUS_MESSAGES_MESSAGE_HPP
+#ifndef SQUAWKBUS_FEEDBUS_MESSAGES_MESSAGE_HPP
+#define SQUAWKBUS_FEEDBUS_MESSAGES_MESSAGE_HPP
 
 #include <memory>
 #include <string>
 #include <utility>
 
-#include "feed_bus/messages/message_type.hpp"
+#include "feedbus/messages/message_type.hpp"
 
-namespace squawkbus::feed_bus::messages
+namespace squawkbus::feedbus::messages
 {
     struct Message
     {
@@ -40,17 +40,17 @@ namespace squawkbus::feed_bus::messages
     };
 }
 
-#include "feed_bus/messages/authorization_request.hpp"
-#include "feed_bus/messages/authorization_response.hpp"
-#include "feed_bus/messages/forwarded_multicast_data.hpp"
-#include "feed_bus/messages/forwarded_subscription_request.hpp"
-#include "feed_bus/messages/forwarded_unicast_data.hpp"
-#include "feed_bus/messages/multicast_data.hpp"
-#include "feed_bus/messages/notification_request.hpp"
-#include "feed_bus/messages/subscription_request.hpp"
-#include "feed_bus/messages/unicast_data.hpp"
+#include "feedbus/messages/authorization_request.hpp"
+#include "feedbus/messages/authorization_response.hpp"
+#include "feedbus/messages/forwarded_multicast_data.hpp"
+#include "feedbus/messages/forwarded_subscription_request.hpp"
+#include "feedbus/messages/forwarded_unicast_data.hpp"
+#include "feedbus/messages/multicast_data.hpp"
+#include "feedbus/messages/notification_request.hpp"
+#include "feedbus/messages/subscription_request.hpp"
+#include "feedbus/messages/unicast_data.hpp"
 
-namespace squawkbus::feed_bus::messages
+namespace squawkbus::feedbus::messages
 {
     std::shared_ptr<Message> Message::make_shared(MessageType message_type)
     {
@@ -99,4 +99,4 @@ namespace squawkbus::feed_bus::messages
     }
 }
 
-#endif // SQUAWKBUS_FEED_BUS_MESSAGES_MESSAGE_HPP
+#endif // SQUAWKBUS_FEEDBUS_MESSAGES_MESSAGE_HPP
