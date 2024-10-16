@@ -83,6 +83,7 @@
         "clientlen",
         "eputs",
         "feedbus",
+        "roundtrip",
         "servaddr",
         "squawkbus"
     ]
