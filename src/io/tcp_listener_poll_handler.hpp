@@ -1,5 +1,5 @@
-#ifndef JETBLACK_IO_LISTENER_POLL_HANDLER_HPP
-#define JETBLACK_IO_LISTENER_POLL_HANDLER_HPP
+#ifndef SQUAWKBUS_IO_LISTENER_POLL_HANDLER_HPP
+#define SQUAWKBUS_IO_LISTENER_POLL_HANDLER_HPP
 
 #include <poll.h>
 
@@ -20,7 +20,7 @@
 #include "io/tcp_stream.hpp"
 #include "io/tcp_socket_poll_handler.hpp"
 
-namespace jetblack::io
+namespace squawkbus::io
 {
   class TcpListenerPollHandler : public PollHandler
   {
@@ -87,4 +87,4 @@ namespace jetblack::io
 
 }
 
-#endif // JETBLACK_IO_LISTENER_POLL_HANDLER_HPP
+#endif // SQUAWKBUS_IO_LISTENER_POLL_HANDLER_HPP

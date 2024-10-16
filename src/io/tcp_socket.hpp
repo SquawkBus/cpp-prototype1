@@ -1,5 +1,5 @@
-#ifndef JETBLACK_IO_TCP_SOCKET_HPP
-#define JETBLACK_IO_TCP_SOCKET_HPP
+#ifndef SQUAWKBUS_IO_TCP_SOCKET_HPP
+#define SQUAWKBUS_IO_TCP_SOCKET_HPP
 
 #include <arpa/inet.h>
 #include <netdb.h>
@@ -13,7 +13,7 @@
 
 #include "io/file.hpp"
 
-namespace jetblack::io
+namespace squawkbus::io
 {
 
   class TcpSocket : public File
@@ -50,4 +50,4 @@ namespace jetblack::io
 
 }
 
-#endif // JETBLACK_IO_TCP_SOCKET_HPP
+#endif // SQUAWKBUS_IO_TCP_SOCKET_HPP

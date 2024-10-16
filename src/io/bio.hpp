@@ -1,5 +1,5 @@
-#ifndef JETBLACK_IO_BIO_HPP
-#define JETBLACK_IO_BIO_HPP
+#ifndef SQUAWKBUS_IO_BIO_HPP
+#define SQUAWKBUS_IO_BIO_HPP
 
 #include <optional>
 #include <span>
@@ -13,7 +13,7 @@
 #include "io/ssl_ctx.hpp"
 #include "io/ssl.hpp"
 
-namespace jetblack::io
+namespace squawkbus::io
 {
   class Bio
   {
@@ -88,4 +88,4 @@ namespace jetblack::io
 
 }
 
-#endif // JETBLACK_IO_BIO_HPP
+#endif // SQUAWKBUS_IO_BIO_HPP

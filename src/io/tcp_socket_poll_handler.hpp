@@ -1,5 +1,5 @@
-#ifndef JETBLACK_IO_SOCKET_POLL_HANDLER_HPP
-#define JETBLACK_IO_SOCKET_POLL_HANDLER_HPP
+#ifndef SQUAWKBUS_IO_SOCKET_POLL_HANDLER_HPP
+#define SQUAWKBUS_IO_SOCKET_POLL_HANDLER_HPP
 
 #include <poll.h>
 
@@ -19,8 +19,10 @@
 #include "io/poll_handler.hpp"
 #include "io/poller.hpp"
 
-namespace jetblack::io
+namespace squawkbus::io
 {
+  using squawkbus::utils::match;
+
   class TcpSocketPollHandler : public PollHandler
   {
   private:
@@ -79,7 +81,7 @@ namespace jetblack::io
         bool can_read = true;
         while (can_read && stream_.socket->is_open())
         {
-          can_read = std::visit(jetblack::utils::match {
+          can_read = std::visit(match {
             
             [](blocked&&)
             {
@@ -122,7 +124,7 @@ namespace jetblack::io
           std::size_t count = std::min(orig_buf.size() - offset, write_bufsiz);
           const auto& buf = std::span<char>(orig_buf).subspan(offset, count);
 
-          can_write = std::visit(jetblack::utils::match {
+          can_write = std::visit(match {
             
             [](eof&&)
             {
@@ -193,4 +195,4 @@ namespace jetblack::io
   };
 }
 
-#endif // JETBLACK_IO_SOCKET_POLL_HANDLER_HPP
+#endif // SQUAWKBUS_IO_SOCKET_POLL_HANDLER_HPP

@@ -1,10 +1,10 @@
-#ifndef JETBLACK_IO_FILE_TYPES_HPP
-#define JETBLACK_IO_FILE_TYPES_HPP
+#ifndef SQUAWKBUS_IO_FILE_TYPES_HPP
+#define SQUAWKBUS_IO_FILE_TYPES_HPP
 
-namespace jetblack::io
+namespace squawkbus::io
 {
   struct blocked {};
   struct eof {};
 }
 
-#endif // JETBLACK_IO_FILE_TYPES_HPP
+#endif // SQUAWKBUS_IO_FILE_TYPES_HPP

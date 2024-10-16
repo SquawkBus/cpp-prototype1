@@ -1,5 +1,5 @@
-#ifndef JETBLACK_IO_TCP_CLIENT_SOCKET_HPP
-#define JETBLACK_IO_TCP_CLIENT_SOCKET_HPP
+#ifndef SQUAWKBUS_IO_TCP_CLIENT_SOCKET_HPP
+#define SQUAWKBUS_IO_TCP_CLIENT_SOCKET_HPP
 
 #include <arpa/inet.h>
 #include <sys/types.h>
@@ -19,7 +19,7 @@
 #include "io/tcp_socket.hpp"
 #include "io/tcp_address.hpp"
 
-namespace jetblack::io
+namespace squawkbus::io
 {
   class TcpClientSocket :public TcpSocket
   {
@@ -65,4 +65,4 @@ namespace jetblack::io
   
 }
 
-#endif // JETBLACK_IO_TCP_CLIENT_SOCKET_HPP
+#endif // SQUAWKBUS_IO_TCP_CLIENT_SOCKET_HPP

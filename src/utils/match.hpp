@@ -1,9 +1,9 @@
-#ifndef JETBLACK_IO_MATCH_HPP
-#define JETBLACK_IO_MATCH_HPP
+#ifndef SQUAWKBUS_IO_MATCH_HPP
+#define SQUAWKBUS_IO_MATCH_HPP
 
 // For rust style matching with variants.
 
-namespace jetblack::utils
+namespace squawkbus::utils
 {
   
   template<class... Ts> struct match : Ts... { using Ts::operator()...; };
@@ -11,4 +11,4 @@ namespace jetblack::utils
 
 }
 
-#endif // JETBLACK_IO_MATCH_HPP
+#endif // SQUAWKBUS_IO_MATCH_HPP

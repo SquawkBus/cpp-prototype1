@@ -1,11 +1,11 @@
-#ifndef JETBLACK_IO_LOGGER_HPP
-#define JETBLACK_IO_LOGGER_HPP
+#ifndef SQUAWKBUS_IO_LOGGER_HPP
+#define SQUAWKBUS_IO_LOGGER_HPP
 
 #include "logging/log.hpp"
 
-namespace jetblack::io
+namespace squawkbus::io
 {
-  static logging::Logger log = logging::logger("JETBLACK_IO");
+  static squawkbus::logging::Logger log = logging::logger("SQUAWKBUS_IO");
 }
 
-#endif // JETBLACK_IO_LOGGER_HPP
+#endif // SQUAWKBUS_IO_LOGGER_HPP

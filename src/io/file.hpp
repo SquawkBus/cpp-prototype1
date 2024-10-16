@@ -1,5 +1,5 @@
-#ifndef JETBLACK_IO_FILE_HPP
-#define JETBLACK_IO_FILE_HPP
+#ifndef SQUAWKBUS_IO_FILE_HPP
+#define SQUAWKBUS_IO_FILE_HPP
 
 #include <fcntl.h>
 #include <unistd.h>
@@ -7,7 +7,7 @@
 #include <cerrno>
 #include <system_error>
 
-namespace jetblack::io
+namespace squawkbus::io
 {
 
   class File
@@ -109,4 +109,4 @@ namespace jetblack::io
 
 }
 
-#endif // JETBLACK_IO_FILE_HPP
+#endif // SQUAWKBUS_IO_FILE_HPP

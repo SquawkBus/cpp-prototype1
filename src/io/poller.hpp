@@ -1,5 +1,5 @@
-#ifndef JETBLACK_IO_POLLER_HPP
-#define JETBLACK_IO_POLLER_HPP
+#ifndef SQUAWKBUS_IO_POLLER_HPP
+#define SQUAWKBUS_IO_POLLER_HPP
 
 #include <poll.h>
 
@@ -15,7 +15,7 @@
 #include "io/logger.hpp"
 #include "io/poll_handler.hpp"
 
-namespace jetblack::io
+namespace squawkbus::io
 {
   inline int poll(std::vector<pollfd> &fds)
   {
@@ -236,4 +236,4 @@ namespace jetblack::io
   };
 }
 
-#endif // JETBLACK_IO_POLLER_HPP
+#endif // SQUAWKBUS_IO_POLLER_HPP

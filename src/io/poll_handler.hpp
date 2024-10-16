@@ -1,10 +1,10 @@
-#ifndef JETBLACK_IO_POLL_HANDLER_HPP
-#define JETBLACK_IO_POLL_HANDLER_HPP
+#ifndef SQUAWKBUS_IO_POLL_HANDLER_HPP
+#define SQUAWKBUS_IO_POLL_HANDLER_HPP
 
 #include <optional>
 #include <vector>
 
-namespace jetblack::io
+namespace squawkbus::io
 {
   class Poller;
 
@@ -25,4 +25,4 @@ namespace jetblack::io
   };
 }
 
-#endif // JETBLACK_IO_POLL_HANDLER_HPP
+#endif // SQUAWKBUS_IO_POLL_HANDLER_HPP

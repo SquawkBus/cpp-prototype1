@@ -1,5 +1,5 @@
-#ifndef JETBLACK_IO_TCP_LISTENER_SOCKET_HPP
-#define JETBLACK_IO_TCP_LISTENER_SOCKET_HPP
+#ifndef SQUAWKBUS_IO_TCP_LISTENER_SOCKET_HPP
+#define SQUAWKBUS_IO_TCP_LISTENER_SOCKET_HPP
 
 #include <arpa/inet.h>
 #include <netdb.h>
@@ -16,7 +16,7 @@
 #include "io/tcp_socket.hpp"
 #include "io/tcp_server_socket.hpp"
 
-namespace jetblack::io
+namespace squawkbus::io
 {
 
   class TcpListenerSocket : public TcpSocket

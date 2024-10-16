@@ -1,5 +1,5 @@
-#ifndef JETBLACK_IO_SSL_CTX_HPP
-#define JETBLACK_IO_SSL_CTX_HPP
+#ifndef SQUAWKBUS_IO_SSL_CTX_HPP
+#define SQUAWKBUS_IO_SSL_CTX_HPP
 
 #include <openssl/bio.h>
 #include <openssl/ssl.h>
@@ -11,7 +11,7 @@
 
 #include "io/openssl_error.hpp"
 
-namespace jetblack::io
+namespace squawkbus::io
 {
   class SslContext
   {
@@ -145,4 +145,4 @@ namespace jetblack::io
   };
 }
 
-#endif // JETBLACK_IO_SSL_CTX_HPP
+#endif // SQUAWKBUS_IO_SSL_CTX_HPP

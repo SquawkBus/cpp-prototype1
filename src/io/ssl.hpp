@@ -1,5 +1,5 @@
-#ifndef JETBLACK_IO_SSL_HPP
-#define JETBLACK_IO_SSL_HPP
+#ifndef SQUAWKBUS_IO_SSL_HPP
+#define SQUAWKBUS_IO_SSL_HPP
 
 #include <format>
 #include <stdexcept>
@@ -13,7 +13,7 @@
 
 #include "io/file_types.hpp"
 
-namespace jetblack::io
+namespace squawkbus::io
 {
 
   class Ssl
@@ -225,4 +225,4 @@ namespace jetblack::io
 
 }
 
-#endif // JETBLACK_IO_SSL_HPP
+#endif // SQUAWKBUS_IO_SSL_HPP

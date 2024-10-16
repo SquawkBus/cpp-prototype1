@@ -1,5 +1,5 @@
-#ifndef JETBLACK_IO_FILE_POLL_HANDLER_HPP
-#define JETBLACK_IO_FILE_POLL_HANDLER_HPP
+#ifndef SQUAWKBUS_IO_FILE_POLL_HANDLER_HPP
+#define SQUAWKBUS_IO_FILE_POLL_HANDLER_HPP
 
 #include <poll.h>
 
@@ -18,8 +18,10 @@
 #include "io/file.hpp"
 #include "io/file_stream.hpp"
 
-namespace jetblack::io
+namespace squawkbus::io
 {
+  using squawkbus::utils::match;
+
   class FilePollHandler : public PollHandler
   {
   private:
@@ -57,7 +59,7 @@ namespace jetblack::io
       {
         bool can_read = true;
         while (can_read && stream_.file->is_open()) {
-          can_read = std::visit(jetblack::utils::match {
+          can_read = std::visit(match {
             
             [](blocked&&)
             {
@@ -166,4 +168,4 @@ namespace jetblack::io
   };
 }
 
-#endif // JETBLACK_IO_FILE_POLL_HANDLER_HPP
+#endif // SQUAWKBUS_IO_FILE_POLL_HANDLER_HPP

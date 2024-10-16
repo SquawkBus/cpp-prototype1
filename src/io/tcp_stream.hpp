@@ -1,5 +1,5 @@
-#ifndef JETBLACK_IO_TCP_STREAM_HPP
-#define JETBLACK_IO_TCP_STREAM_HPP
+#ifndef SQUAWKBUS_IO_TCP_STREAM_HPP
+#define SQUAWKBUS_IO_TCP_STREAM_HPP
 
 #include <arpa/inet.h>
 #include <netdb.h>
@@ -30,8 +30,10 @@
 #include "io/ssl.hpp"
 #include "io/bio.hpp"
 
-namespace jetblack::io
+namespace squawkbus::io
 {
+  using squawkbus::utils::match;
+
   class TcpStream
   {
   public:
@@ -105,7 +107,7 @@ namespace jetblack::io
       }
 
       bool is_done = std::visit(
-        jetblack::utils::match {
+        match {
           
           [](blocked&&)
           {
@@ -288,7 +290,7 @@ namespace jetblack::io
       }
 
       bool is_done = std::visit(
-        jetblack::utils::match {
+        match {
 
           [](blocked&&)
           {
@@ -315,4 +317,4 @@ namespace jetblack::io
   };
 }
 
-#endif // JETBLACK_IO_TCP_STREAM_HPP
+#endif // SQUAWKBUS_IO_TCP_STREAM_HPP

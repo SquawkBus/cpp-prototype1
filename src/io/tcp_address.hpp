@@ -1,5 +1,5 @@
-#ifndef JETBLACK_IO_TCP_ADDRESS_HPP
-#define JETBLACK_IO_TCP_ADDRESS_HPP
+#ifndef SQUAWKBUS_IO_TCP_ADDRESS_HPP
+#define SQUAWKBUS_IO_TCP_ADDRESS_HPP
 
 #include <arpa/inet.h>
 #include <sys/types.h>
@@ -14,7 +14,7 @@
 #include <string>
 #include <vector>
 
-namespace jetblack::io {
+namespace squawkbus::io {
 
   std::string to_string(std::uint16_t value)
   {
@@ -83,4 +83,4 @@ namespace jetblack::io {
 
 }
 
-#endif // JETBLACK_IO_TCP_ADDRESS_HPP
+#endif // SQUAWKBUS_IO_TCP_ADDRESS_HPP
