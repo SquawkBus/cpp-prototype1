@@ -44,6 +44,58 @@ std::shared_ptr<SslContext> make_ssl_context(std::optional<std::string> capath)
   return ctx;
 }
 
+class Client : public PollClient
+{
+private:
+  std::shared_ptr<TcpClientSocket> client_socket_;
+
+public:
+  Client(std::shared_ptr<TcpClientSocket> client_socket)
+    : client_socket_(client_socket)
+  {
+  }
+
+  void on_open(Poller& poller, int fd)
+  {
+    logging::info(std::format("on_open: {}", fd));
+  }
+
+  void on_close(Poller& poller, int fd)
+  {
+    logging::info(std::format("on_close: {}", fd));
+  }
+
+  void on_read(Poller& poller, int fd, std::vector<std::vector<char>>&& bufs)
+  {
+    logging::info(std::format("on_read: {}", fd));
+
+    for (auto& buf : bufs)
+    {
+      std::string s {buf.begin(), buf.end()};
+      logging::info(std::format("on_read: received {}", s));
+      if (fd == STDIN_FILENO)
+      {
+        if (s == "CLOSE\n")
+        {
+          poller.close(client_socket_->fd());
+        }
+        else
+        {
+          poller.write(client_socket_->fd(), buf);
+        }
+      }
+      else if (fd == client_socket_->fd())
+      {
+        poller.write(STDOUT_FILENO, buf);
+      }
+    }
+  }
+
+  void on_error(Poller& poller, int fd, std::exception error)
+  {
+  }
+};
+
 int main(int argc, char** argv)
 {
   bool use_tls = false;
@@ -92,54 +144,8 @@ int main(int argc, char** argv)
     client_socket->connect(host, port);
     client_socket->blocking(false);
 
-    auto poller = Poller(
-
-      // on open
-      [](Poller&, int fd)
-      {
-        logging::info(std::format("on_open: {}", fd));
-      },
-
-      // on close
-      [](Poller&, int fd)
-      {
-        logging::info(std::format("on_close: {}", fd));
-      },
-
-      // on read
-      [&client_socket](Poller& poller, int fd, std::vector<std::vector<char>>&& bufs)
-      {
-        logging::info(std::format("on_read: {}", fd));
-
-        for (auto& buf : bufs)
-        {
-          std::string s {buf.begin(), buf.end()};
-          logging::info(std::format("on_read: received {}", s));
-          if (fd == STDIN_FILENO)
-          {
-            if (s == "CLOSE\n")
-            {
-              poller.close(client_socket->fd());
-            }
-            else
-            {
-              poller.write(client_socket->fd(), buf);
-            }
-          }
-          else if (fd == client_socket->fd())
-          {
-            poller.write(STDOUT_FILENO, buf);
-          }
-        }
-      },
-
-      // on error
-      [](Poller&, int fd, std::exception error)
-      {
-        logging::info(std::format("on_error: {}, {}", fd, error.what()));
-      }
-
-    );
+    auto client = std::make_shared<Client>(client_socket);
+    auto poller = Poller(client);
 
     if (!ssl_ctx)
     {

@@ -29,32 +29,29 @@ namespace squawkbus::io
     return active_fd_count;
   }
 
+  struct PollClient
+  {
+    virtual ~PollClient() {}
+    virtual void on_open(Poller& poller, int fd) = 0;
+    virtual void on_close(Poller& poller, int fd) = 0;
+    virtual void on_read(Poller& poller, int fd, std::vector<std::vector<char>>&& bufs) = 0;
+    virtual void on_error(Poller& poller, int fd, std::exception error) = 0;
+  };
+
   class Poller
   {
   public:
     typedef std::unique_ptr<PollHandler> handler_pointer;
     typedef std::map<int, handler_pointer> handler_map;
-    typedef std::function<void(Poller&, int fd)> connection_callback;
-    typedef std::function<void(Poller&, int fd, std::vector<std::vector<char>>&& bufs)> read_callback;
-    typedef std::function<void(Poller&, int fd, std::exception)> error_callback;
+    typedef std::shared_ptr<PollClient> client_pointer;
 
   private:
     handler_map handlers_;
-    connection_callback on_open_;
-    connection_callback on_close_;
-    read_callback on_read_;
-    error_callback on_error_;
+    client_pointer client_;
 
   public:
-    Poller(
-      connection_callback on_open,
-      connection_callback on_close,
-      read_callback on_read,
-      error_callback on_error)
-      : on_open_(on_open),
-        on_close_(on_close),
-        on_read_(on_read),
-        on_error_(on_error)
+    Poller(client_pointer client)
+      : client_(client)
     {
     }
 
@@ -64,7 +61,7 @@ namespace squawkbus::io
       bool is_listener = handler->is_listener();
       handlers_[fd] = std::move(handler);
       if (!is_listener)
-        on_open_(*this, fd);
+        client_->on_open(*this, fd);
     }
 
     void write(int fd, const std::vector<char>& buf) noexcept
@@ -153,14 +150,14 @@ namespace squawkbus::io
 
         if (!bufs.empty())
         {
-          on_read_(*this, handler->fd(), std::move(bufs));
+          client_->on_read(*this, handler->fd(), std::move(bufs));
         }
 
         return can_continue;
       }
       catch(const std::exception& error)
       {
-        on_error_(*this, handler->fd(), error);
+        client_->on_error(*this, handler->fd(), error);
         return false;
       }
     }
@@ -175,7 +172,7 @@ namespace squawkbus::io
       }
       catch(const std::exception& error)
       {
-        on_error_(*this, handler->fd(), error);
+        client_->on_error(*this, handler->fd(), error);
         return false;
       }
     }
@@ -230,7 +227,7 @@ namespace squawkbus::io
         auto handler = std::move(handlers_[fd]);
         handlers_.erase(fd);
         if (!handler->is_listener())
-          on_close_(*this, handler->fd());
+          client_->on_close(*this, handler->fd());
       }
     }
   };

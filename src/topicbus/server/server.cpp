@@ -27,52 +27,50 @@ std::shared_ptr<SslContext> make_ssl_context(const std::string& certfile, const 
   return ctx;
 }
 
+class EchoServer : public PollClient
+{
+  void on_open(Poller& poller, int fd) override
+  {
+    logging::info(std::format("on_open: {}", fd));
+  }
+
+  void on_close(Poller& poller, int fd) override
+  {
+    logging::info(std::format("on_close: {}", fd));
+  }
+
+  void on_read(Poller& poller, int fd, std::vector<std::vector<char>>&& bufs) override
+  {
+    logging::info(std::format("on_read: {}", fd));
+
+    for (auto& buf : bufs)
+    {
+      std::string s {buf.begin(), buf.end()};
+      logging::info(std::format("on_read: received {}", s));
+      if (s == "KILLME")
+      {
+        logging::info(std::format("closing {}", fd));
+        poller.close(fd);
+      }
+      else
+      {
+        poller.write(fd, buf);
+      }
+    }
+  }
+
+  void on_error(Poller& poller, int fd, std::exception error) override
+  {
+    logging::info(std::format("on_error: {}, {}", fd, error.what()));
+  }
+};
+
 void echo_server(uint16_t port, std::optional<std::shared_ptr<SslContext>> ssl_ctx)
 {
-    auto poller = Poller(
-
-      // on open
-      [](Poller&, int fd)
-      {
-        logging::info(std::format("on_open: {}", fd));
-      },
-
-      // on close
-      [](Poller&, int fd)
-      {
-        logging::info(std::format("on_close: {}", fd));
-      },
-
-      // on read
-      [](Poller& poller, int fd, std::vector<std::vector<char>>&& bufs)
-      {
-        logging::info(std::format("on_read: {}", fd));
-
-        for (auto& buf : bufs)
-        {
-          std::string s {buf.begin(), buf.end()};
-          logging::info(std::format("on_read: received {}", s));
-          if (s == "KILLME")
-          {
-            logging::info(std::format("closing {}", fd));
-            poller.close(fd);
-          }
-          else
-          {
-            poller.write(fd, buf);
-          }
-        }
-      },
-
-      // on error
-      [](Poller&, int fd, std::exception error)
-      {
-        logging::info(std::format("on_error: {}, {}", fd, error.what()));
-      }
-
-    );
-    poller.add_handler(std::make_unique<TcpListenerPollHandler>(port, ssl_ctx));
-    poller.event_loop();
+  auto poll_client = std::make_shared<EchoServer>();
+  auto poller = Poller(poll_client);
+  poller.add_handler(std::make_unique<TcpListenerPollHandler>(port, ssl_ctx));
+  poller.event_loop();
 }
 
 int main(int argc, char** argv)
