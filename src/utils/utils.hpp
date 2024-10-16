@@ -1,5 +1,5 @@
-#ifndef JETBLACK_IO_UTILS_HPP
-#define JETBLACK_IO_UTILS_HPP
+#ifndef SQUAWKBUS_UTILS_UTILS_HPP
+#define SQUAWKBUS_UTILS_UTILS_HPP
 
 #include <deque>
 #include <iostream>
@@ -98,4 +98,4 @@ inline void print_line(const std::string& message)
   print_line(stdout, message);
 }
 
-#endif // JETBLACK_IO_UTILS_HPP
+#endif // SQUAWKBUS_UTILS_UTILS_HPP

@@ -82,9 +82,7 @@
         "clientaddr",
         "clientlen",
         "eputs",
-        "jetblack",
         "servaddr",
-        "spdlog",
-        "SQUAWKBUS"
+        "squawkbus"
     ]
 }
