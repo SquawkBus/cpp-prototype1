@@ -1,11 +1,9 @@
-#define CATCH_CONFIG_MAIN
-
-#include <iostream>
-#include <sstream>
+#include <vector>
 
 #include "serialization/frame_buffer.hpp"
 #include "serialization/frame_buffer_io.hpp"
 
+#define CATCH_CONFIG_MAIN
 #include "catch2/catch.hpp"
 
 using namespace squawkbus::serialization;
@@ -13,10 +11,12 @@ using namespace squawkbus::serialization;
 TEST_CASE("Test read/write") {
     FrameBuffer frame;
 
-    char c_in = 'g', c_out;
-    frame << c_in;
-    frame >> c_out;
-    REQUIRE(c_in == c_out);
+    auto input = std::vector<char> { 'a', 'a', 'c' };
+    
+    frame.write(input);
+    auto output = frame.read(input.size());
+    
+    REQUIRE(input == output);
 }
 
 TEST_CASE("Test char") {
