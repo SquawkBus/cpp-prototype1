@@ -6,7 +6,7 @@ namespace squawkbus::topicbus
   {
       logging::info(std::format("on_open: {} ({}:{})", fd, host, port));
 
-      interactors_.insert(std::make_pair(fd, Interactor(fd)));
+      interactors_.insert(std::make_pair(fd, Interactor(fd, poller)));
   }
 
   void Distributor::on_close(Poller& poller, int fd)

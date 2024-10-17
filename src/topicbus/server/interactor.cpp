@@ -1,11 +1,17 @@
 #include "interactor.hpp"
 
+#include "serialization/frame_buffer.hpp"
+#include "serialization/frame_buffer_io.hpp"
+
 namespace squawkbus::topicbus
 {
+  using squawkbus::io::Poller;
+  using squawkbus::serialization::FrameBuffer;
   using squawkbus::topicbus::messages::Message;
 
-  Interactor::Interactor(int fd)
-    : fd_(fd)
+  Interactor::Interactor(int fd, Poller& poller)
+    : fd_(fd),
+      poller_(poller)
   {
   }
 
@@ -27,4 +33,11 @@ namespace squawkbus::topicbus
 
   }
 
+  void Interactor::send(std::shared_ptr<Message> message)
+  {
+    FrameBuffer frame;
+    message->write(frame);
+    auto buf = frame.make_frame();
+    poller_.write(fd_, buf);
+  }
 }
