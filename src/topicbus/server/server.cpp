@@ -12,11 +12,11 @@
 
 #include "popl.hpp"
 
-#include "server.hpp"
+#include "distributor.hpp"
 
 using namespace squawkbus::io;
 namespace logging = squawkbus::logging;
-using squawkbus::topicbus::EchoServer;
+using squawkbus::topicbus::Distributor;
 
 std::shared_ptr<SslContext> make_ssl_context(const std::string& certfile, const std::string& keyfile)
 {
@@ -32,7 +32,7 @@ std::shared_ptr<SslContext> make_ssl_context(const std::string& certfile, const 
 
 void echo_server(const std::string& host, std::uint16_t port, std::optional<std::shared_ptr<SslContext>> ssl_ctx)
 {
-  auto poll_client = std::make_shared<EchoServer>();
+  auto poll_client = std::make_shared<Distributor>();
   auto poller = Poller(poll_client);
   poller.add_handler(
     std::make_unique<TcpListenerPollHandler>(port, ssl_ctx),

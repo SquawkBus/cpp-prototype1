@@ -32,11 +32,12 @@ default: all
 .PHONEY: all
 all: server
 
-server: server.o
-	$(LINK.cc) $^ $(LOADLIBES) $(LDLIBS) -o $@
+server: server.o distributor.o
+	$(LINK.cc) server.o distributor.o $(LOADLIBES) $(LDLIBS) -o $@
 
-server.o: server.cpp $(HEADERS)
+server.o: distributor.hpp $(HEADERS)
+distributor.o: distributor.hpp $(HEADERS)
 
 .PHONY: clean
 clean:
-	rm -f server.o server
+	rm -f server.o distributor.o server
