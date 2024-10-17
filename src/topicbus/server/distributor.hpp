@@ -1,10 +1,13 @@
 #ifndef SQUAWKBUS_TOPICBUS_SERVER_SERVER_HPP
 #define SQUAWKBUS_TOPICBUS_SERVER_SERVER_HPP
 
+#include <map>
 #include <string>
+
 #include "io/poller.hpp"
 #include "logging/log.hpp"
 
+#include "interactor.hpp"
 namespace squawkbus::topicbus
 {
   using io::PollClient;
