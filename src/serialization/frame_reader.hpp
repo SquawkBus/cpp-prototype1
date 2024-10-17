@@ -25,11 +25,7 @@ namespace squawkbus::serialization
 
   class FrameReader
   {
-  public:
-    enum class State { START, READ_SIZE, READ_BODY, STOP };
-
   private:
-    State state_ { State::START };
     std::optional<std::size_t> len_;
     FrameBuffer fbuf_;
     std::deque<std::vector<char>> frames_;
