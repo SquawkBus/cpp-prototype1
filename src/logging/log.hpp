@@ -29,7 +29,7 @@ namespace squawkbus::logging {
   {
     static const std::string root_logger_name = "root";
 
-    std::string to_string(Level level)
+    inline std::string to_string(Level level)
     {
       switch (level)
       {
@@ -52,7 +52,7 @@ namespace squawkbus::logging {
       std::unreachable();
     }
 
-    Level parse_level_or(std::string& name, Level default_level)
+    inline Level parse_level_or(std::string& name, Level default_level)
     {
       if (name == "NAME")
         return Level::NONE;
@@ -71,7 +71,7 @@ namespace squawkbus::logging {
       return default_level;
     }
 
-    Level env_level_or(const std::string& logger_name, Level default_level)
+    inline Level env_level_or(const std::string& logger_name, Level default_level)
     {
       // Check the environment variable "LOGGER_LEVEL" and "LOGGER_LEVEL_<name>".
       auto base_env_name = std::string("LOGGER_LEVEL");
@@ -246,59 +246,52 @@ namespace squawkbus::logging {
     };
   }
 
-  Logger& logger(const std::string& name = root_logger_name)
+  inline Logger& logger(const std::string& name = root_logger_name)
   {
     return LogManager::get(name);
   }
 
-  Level level() noexcept
+  inline Level level() noexcept
   {
     return LogManager::get().level();
   }
 
-  void level(Level l) noexcept
+  inline void level(Level l) noexcept
   {
     LogManager::get().level(l);
   }
   
-  inline void
-  log(Level level, std::string message, std::source_location loc = std::source_location::current())
+  inline void log(Level level, std::string message, std::source_location loc = std::source_location::current())
   {
     LogManager::get().log(level, message, loc);
   }
   
-  inline void
-  trace(std::string message, std::source_location loc = std::source_location::current())
+  inline void trace(std::string message, std::source_location loc = std::source_location::current())
   {
     LogManager::get().trace(message, loc);
   }
   
-  inline void
-  debug(std::string message, std::source_location loc = std::source_location::current())
+  inline void debug(std::string message, std::source_location loc = std::source_location::current())
   {
     LogManager::get().debug(message, loc);
   }
   
-  inline void
-  info(std::string message, std::source_location loc = std::source_location::current())
+  inline void info(std::string message, std::source_location loc = std::source_location::current())
   {
     LogManager::get().info(message, loc);
   }
   
-  inline void
-  warning(std::string message, std::source_location loc = std::source_location::current())
+  inline void warning(std::string message, std::source_location loc = std::source_location::current())
   {
     LogManager::get().warning(message, loc);
   }
   
-  inline void
-  error(std::string message, std::source_location loc = std::source_location::current())
+  inline void error(std::string message, std::source_location loc = std::source_location::current())
   {
     LogManager::get().error(message, loc);
   }
   
-  inline void
-  critical(std::string message, std::source_location loc = std::source_location::current())
+  inline void critical(std::string message, std::source_location loc = std::source_location::current())
   {
     LogManager::get().critical(message, loc);
   }
