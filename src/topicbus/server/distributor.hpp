@@ -8,6 +8,7 @@
 #include "logging/log.hpp"
 
 #include "interactor.hpp"
+
 namespace squawkbus::topicbus
 {
   using io::PollClient;
@@ -15,6 +16,10 @@ namespace squawkbus::topicbus
   
   class Distributor : public PollClient
   {
+  private:
+    std::map<int, Interactor> interactors_;
+
+  private:
     void on_open(Poller& poller, int fd, const std::string& host, std::uint16_t port) override;
 
     void on_close(Poller& poller, int fd) override;
