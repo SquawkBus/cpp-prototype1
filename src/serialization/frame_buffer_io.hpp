@@ -14,13 +14,13 @@ namespace squawkbus::serialization
 {
   // char
 
-  FrameBuffer& operator<<(FrameBuffer& fbuf, char c)
+  inline FrameBuffer& operator<<(FrameBuffer& fbuf, char c)
   {
     fbuf.write(std::vector<char> {c});
     return fbuf;
   }
 
-  FrameBuffer& operator>>(FrameBuffer& fbuf, char& c)
+  inline FrameBuffer& operator>>(FrameBuffer& fbuf, char& c)
   {
     auto buf = fbuf.read(1);
     c = buf[0];
@@ -29,13 +29,13 @@ namespace squawkbus::serialization
 
   // bool
 
-  FrameBuffer& operator<<(FrameBuffer& fbuf, bool b)
+  inline FrameBuffer& operator<<(FrameBuffer& fbuf, bool b)
   {
     char c = (b ? 1 : 0);
     return fbuf << c;
   }
 
-  FrameBuffer& operator>>(FrameBuffer& fbuf, bool& b)
+  inline FrameBuffer& operator>>(FrameBuffer& fbuf, bool& b)
   {
     char c;
     fbuf >> c;
@@ -45,7 +45,7 @@ namespace squawkbus::serialization
 
   // uint32
 
-  FrameBuffer& operator<<(FrameBuffer& fbuf, std::uint32_t i) noexcept
+  inline FrameBuffer& operator<<(FrameBuffer& fbuf, std::uint32_t i) noexcept
   {
     auto buf = std::vector<char>(4, '\0');
     network_long_to_buf(i, buf.data());
@@ -53,7 +53,7 @@ namespace squawkbus::serialization
     return fbuf;
   }
 
-  FrameBuffer& operator>>(FrameBuffer& fbuf, std::uint32_t& u) noexcept
+  inline FrameBuffer& operator>>(FrameBuffer& fbuf, std::uint32_t& u) noexcept
   {
     auto buf = fbuf.read(4);
     u = buf_to_network_long(buf.data());
@@ -62,7 +62,7 @@ namespace squawkbus::serialization
 
   // size_t
 
-  FrameBuffer& operator<<(FrameBuffer& fbuf, std::size_t l)
+  inline FrameBuffer& operator<<(FrameBuffer& fbuf, std::size_t l)
   {
     if (l > std::numeric_limits<uint32_t>::max())
     {
@@ -71,7 +71,7 @@ namespace squawkbus::serialization
     return fbuf << static_cast<std::uint32_t>(l);
   }
 
-  FrameBuffer& operator>>(FrameBuffer& fbuf, std::size_t& l) noexcept
+  inline FrameBuffer& operator>>(FrameBuffer& fbuf, std::size_t& l) noexcept
   {
     std::uint32_t u;
     fbuf >> u;
@@ -81,12 +81,12 @@ namespace squawkbus::serialization
 
   // int32
 
-  FrameBuffer& operator<<(FrameBuffer& fbuf, std::int32_t i)
+  inline FrameBuffer& operator<<(FrameBuffer& fbuf, std::int32_t i)
   {
     return fbuf << static_cast<uint32_t>(i);
   }
 
-  FrameBuffer& operator>>(FrameBuffer& fbuf, int32_t& i)
+  inline FrameBuffer& operator>>(FrameBuffer& fbuf, int32_t& i)
   {
     std::uint32_t u;
     fbuf >> u;
@@ -96,7 +96,7 @@ namespace squawkbus::serialization
 
   // string
 
-  FrameBuffer& operator<<(FrameBuffer& fbuf, const std::string& s)
+  inline FrameBuffer& operator<<(FrameBuffer& fbuf, const std::string& s)
   {
     fbuf << s.size();
     auto buf = std::vector<char>(s.begin(), s.end());
@@ -104,7 +104,7 @@ namespace squawkbus::serialization
     return fbuf;
   }
 
-  FrameBuffer& operator>>(FrameBuffer& fbuf, std::string& s)
+  inline FrameBuffer& operator>>(FrameBuffer& fbuf, std::string& s)
   {
     std::size_t l;
     fbuf >> l;

@@ -14,55 +14,55 @@ namespace squawkbus::serialization
 {
   struct DataPacket
   {
-      std::set<std::int32_t> entitlements;
-      std::vector<char> data;
+    std::set<std::int32_t> entitlements;
+    std::vector<char> data;
 
-      DataPacket()
-      {
-      }
+    DataPacket()
+    {
+    }
 
-      DataPacket(const std::set<std::int32_t>& entitlements, const std::vector<char>& data)
-          :   entitlements(entitlements),
-              data(data)
-      {
-      }
+    DataPacket(const std::set<std::int32_t>& entitlements, const std::vector<char>& data)
+      : entitlements(entitlements),
+        data(data)
+    {
+    }
 
-      DataPacket(std::set<std::int32_t>&& entitlements, std::vector<char>&& data)
-          :   entitlements(std::move(entitlements)),
-              data(std::move(data))
-      {
-      }
+    DataPacket(std::set<std::int32_t>&& entitlements, std::vector<char>&& data)
+      : entitlements(std::move(entitlements)),
+        data(std::move(data))
+    {
+    }
 
-      bool is_authorized(const std::set<std::int32_t> &granted_entitlements) const
-      {
-          return std::includes(
-              granted_entitlements.begin(), granted_entitlements.end(),
-              entitlements.begin(), entitlements.end());
-      }
+    bool is_authorized(const std::set<std::int32_t> &granted_entitlements) const
+    {
+      return std::includes(
+        granted_entitlements.begin(), granted_entitlements.end(),
+        entitlements.begin(), entitlements.end());
+    }
   };
 
-    inline std::ostream& operator << (std::ostream& os, const DataPacket& d)
-    {
-        return os
-            << "DataPacket"
-            << "(entitlements=" << ::to_string(d.entitlements)
-            << ",data=" << ::to_string(d.data)
-            << ")" ;
-    }
+  inline std::ostream& operator << (std::ostream& os, const DataPacket& d)
+  {
+    return os
+      << "DataPacket"
+      << "(entitlements=" << ::to_string(d.entitlements)
+      << ",data=" << ::to_string(d.data)
+      << ")" ;
+  }
 
   inline bool operator == (const DataPacket& a, const DataPacket& b)
   {
-      return a.entitlements == b.entitlements && a.data == b.data;
+    return a.entitlements == b.entitlements && a.data == b.data;
   }
 
   inline FrameBuffer& operator<<(FrameBuffer& frame, const DataPacket& d)
   {
-      return frame << d.entitlements << d.data;
+    return frame << d.entitlements << d.data;
   }
 
   inline FrameBuffer& operator>>(FrameBuffer& frame, DataPacket& p)
   {
-      return frame >> p.entitlements >> p.data;
+    return frame >> p.entitlements >> p.data;
   }
   
 }
