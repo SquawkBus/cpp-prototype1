@@ -30,6 +30,8 @@ namespace squawkbus::topicbus
     if (i_interactor == interactors_.end())
       return;
 
+    for (auto& buf : bufs)
+      i_interactor->second.receive(std::move(buf));
   }
 
   void Distributor::on_error(Poller& poller, int fd, std::exception error)

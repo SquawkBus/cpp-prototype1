@@ -32,7 +32,7 @@ namespace squawkbus::topicbus
     int fd() const noexcept { return fd_; }
     const std::string& host() const noexcept { return host_; }
 
-    void receive(std::vector<std::vector<char>>&& bufs);
+    void receive(std::vector<char>&& buf);
     void send(std::shared_ptr<Message> message);
 
   private:

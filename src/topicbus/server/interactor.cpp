@@ -19,10 +19,9 @@ namespace squawkbus::topicbus
   {
   }
 
-  void Interactor::receive(std::vector<std::vector<char>>&& bufs)
+  void Interactor::receive(std::vector<char>&& buf)
   {
-    for (auto &buf : bufs)
-      reader_.write(buf);
+    reader_.write(buf);
 
     while (reader_.has_frame())
     {
