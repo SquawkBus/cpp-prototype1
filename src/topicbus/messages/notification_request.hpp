@@ -34,20 +34,6 @@ namespace squawkbus::topicbus::messages
         {
         }
 
-        void write_body(FrameBuffer &frame) const override
-        {
-            frame
-                << topic
-                << is_add;
-        }
-
-        void read_body(FrameBuffer &frame) override
-        {
-            frame
-                >> topic
-                >> is_add;
-        }
-
         bool equals(const std::shared_ptr<NotificationRequest> &other) const
         {
             return
@@ -61,7 +47,7 @@ namespace squawkbus::topicbus::messages
             return equals(std::static_pointer_cast<NotificationRequest>(other));
         }
 
-        std::string to_string() const override
+        std::string str() const override
         {
             return std::format(
                 "NotificationRequest(message_type={},topic=\"{}\",is_add={})",
@@ -69,6 +55,21 @@ namespace squawkbus::topicbus::messages
                 topic,
                 (is_add ? "<true>" : "<false>")
             );
+        }
+    protected:
+
+        void serialize_body(FrameBuffer &frame) const override
+        {
+            frame
+                << topic
+                << is_add;
+        }
+
+        void deserialize_body(FrameBuffer &frame) override
+        {
+            frame
+                >> topic
+                >> is_add;
         }
     };
 }

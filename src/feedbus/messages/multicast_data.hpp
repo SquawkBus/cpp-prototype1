@@ -43,24 +43,6 @@ namespace squawkbus::feedbus::messages
         {
         }
 
-        void write_body(FrameBuffer &frame) const override
-        {
-            frame
-                << feed
-                << topic
-                << content_type
-                << data_packets;
-        }
-
-        void read_body(FrameBuffer &frame) override
-        {
-            frame
-                >> feed
-                >> topic
-                >> content_type
-                >> data_packets;
-        }
-
         bool equals(const std::shared_ptr<MulticastData> &other) const
         {
             return
@@ -76,7 +58,7 @@ namespace squawkbus::feedbus::messages
             return equals(std::static_pointer_cast<MulticastData>(other));
         }
 
-        std::string to_string() const override
+        std::string str() const override
         {
             return std::format(
                 "MulticastData(message_type={},feed=\"{}\",topic=\"{}\",content_type=\"{}\",data_packets={})",
@@ -87,6 +69,26 @@ namespace squawkbus::feedbus::messages
                 ::to_string(data_packets)
             );
         }
+    protected:
+
+        void serialize_body(FrameBuffer &frame) const override
+        {
+            frame
+                << feed
+                << topic
+                << content_type
+                << data_packets;
+        }
+
+        void deserialize_body(FrameBuffer &frame) override
+        {
+            frame
+                >> feed
+                >> topic
+                >> content_type
+                >> data_packets;
+        }
+
     };
 }
 

@@ -11,9 +11,8 @@
 using namespace squawkbus::serialization;
 using namespace squawkbus::feedbus::messages;
 
-TEST_CASE("smoke test") {
-    FrameBuffer frame;
-
+TEST_CASE("smoke test")
+{
     std::shared_ptr<Message> m0 = std::make_shared<AuthorizationRequest>(
         "client-1",
         "host-1.example.com",
@@ -21,9 +20,9 @@ TEST_CASE("smoke test") {
         "PUB-1",
         "TOPIC-1"
     );
-    m0->write(frame);
+    auto frame = m0->serialize();
 
-    auto m1 = Message::read(frame);
+    auto m1 = Message::deserialize(frame);
 
     REQUIRE(m0 == m1);
 }

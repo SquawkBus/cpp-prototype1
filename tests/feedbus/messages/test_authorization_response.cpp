@@ -11,9 +11,8 @@
 using namespace squawkbus::serialization;
 using namespace squawkbus::feedbus::messages;
 
-TEST_CASE("roundtrip") {
-    FrameBuffer frame;
-
+TEST_CASE("roundtrip")
+{
     std::shared_ptr<Message> m0 = std::make_shared<AuthorizationResponse>(
         "client-1",
         "PUB-1",
@@ -21,9 +20,9 @@ TEST_CASE("roundtrip") {
         true,
         std::set<std::int32_t> { 1, 2, 3}
     );
-    m0->write(frame);
+    auto frame = m0->serialize();
 
-    auto m1 = Message::read(frame);
+    auto m1 = Message::deserialize(frame);
 
     REQUIRE(m0 == m1);
 }

@@ -46,28 +46,6 @@ namespace squawkbus::feedbus::messages
         {
         }
 
-        void write_body(FrameBuffer &frame) const override
-        {
-            frame
-                << user
-                << host
-                << client_id
-                << feed
-                << topic
-                << is_add;
-        }
-
-        void read_body(FrameBuffer &frame) override
-        {
-            frame
-                >> user
-                >> host
-                >> client_id
-                >> feed
-                >> topic
-                >> is_add;
-        }
-
         bool equals(const std::shared_ptr<ForwardedSubscriptionRequest> &other) const
         {
             return
@@ -85,7 +63,7 @@ namespace squawkbus::feedbus::messages
             return equals(std::static_pointer_cast<ForwardedSubscriptionRequest>(other));
         }
 
-        std::string to_string() const override
+        std::string str() const override
         {
             return std::format(
                 "ForwardedSubscriptionRequest(message_type={},user=\"{}\",host=\"{}\",client_id=\"{}\",feed=\"{}\",topic=\"{}\",is_add={})",
@@ -98,6 +76,30 @@ namespace squawkbus::feedbus::messages
                 (is_add ? "<true>" : "<false>")
             );
         }
+    protected:
+
+        void serialize_body(FrameBuffer &frame) const override
+        {
+            frame
+                << user
+                << host
+                << client_id
+                << feed
+                << topic
+                << is_add;
+        }
+
+        void deserialize_body(FrameBuffer &frame) override
+        {
+            frame
+                >> user
+                >> host
+                >> client_id
+                >> feed
+                >> topic
+                >> is_add;
+        }
+
     };
 }
 

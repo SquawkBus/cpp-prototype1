@@ -16,85 +16,88 @@
 
 namespace squawkbus::feedbus::messages
 {
-    using serialization::FrameBuffer;
+  using serialization::FrameBuffer;
 
-    struct AuthorizationResponse : public Message
+  struct AuthorizationResponse : public Message
+  {
+    std::string client_id;
+    std::string feed;
+    std::string topic;
+    bool is_authorization_required;
+    std::set<std::int32_t> entitlements;
+
+    AuthorizationResponse()
+      : Message(MessageType::AuthorizationResponse)
     {
-        std::string client_id;
-        std::string feed;
-        std::string topic;
-        bool is_authorization_required;
-        std::set<std::int32_t> entitlements;
+    }
 
-        AuthorizationResponse()
-            :   Message(MessageType::AuthorizationResponse)
-        {
-        }
+    AuthorizationResponse(
+      const std::string &client_id,
+      const std::string &feed,
+      const std::string &topic,
+      bool is_authorization_required,
+      const std::set<std::int32_t> &entitlements)
+      : Message(MessageType::AuthorizationResponse),
+        client_id(client_id),
+        feed(feed),
+        topic(topic),
+        is_authorization_required(is_authorization_required),
+        entitlements(entitlements)
+    {
+    }
 
-        AuthorizationResponse(
-            const std::string &client_id,
-            const std::string &feed,
-            const std::string &topic,
-            bool is_authorization_required,
-            const std::set<std::int32_t> &entitlements)
-            :   Message(MessageType::AuthorizationResponse),
-                client_id(client_id),
-                feed(feed),
-                topic(topic),
-                is_authorization_required(is_authorization_required),
-                entitlements(entitlements)
-        {
-        }
+    bool equals(const std::shared_ptr<AuthorizationResponse> &other) const
+    {
+      return
+        message_type == other->message_type &&
+        client_id == other->client_id &&
+        feed == other->feed && 
+        topic == other->topic &&
+        is_authorization_required == other->is_authorization_required &&
+        entitlements == other->entitlements;
+    }
 
-        void write_body(FrameBuffer &frame) const override
-        {
-            frame
-                << client_id
-                << feed
-                << topic
-                << is_authorization_required
-                << entitlements;
-        }
+    bool equals(const std::shared_ptr<Message>& other) const override
+    {
+      return equals(std::static_pointer_cast<AuthorizationResponse>(other));
+    }
 
-        void read_body(FrameBuffer &frame) override
-        {
-            frame
-                >> client_id
-                >> feed
-                >> topic
-                >> is_authorization_required
-                >> entitlements;
-        }
+    std::string str() const override
+    {
+      return std::format(
+        "AuthorizationResponse(message_type={},client_id=\"{}\",feed=\"{}\",topic=\"{}\",is_authorization_required={},entitlements={})",
+        messages::to_string(message_type),
+        client_id,
+        feed,
+        topic,
+        (is_authorization_required ? "<true>" : "<false>"),
+        ::to_string(entitlements)
+      );
+    }
 
-        bool equals(const std::shared_ptr<AuthorizationResponse> &other) const
-        {
-            return
-                message_type == other->message_type &&
-                client_id == other->client_id &&
-                feed == other->feed && 
-                topic == other->topic &&
-                is_authorization_required == other->is_authorization_required &&
-                entitlements == other->entitlements;
-        }
+  protected:
 
-        bool equals(const std::shared_ptr<Message>& other) const override
-        {
-            return equals(std::static_pointer_cast<AuthorizationResponse>(other));
-        }
+    void serialize_body(FrameBuffer &frame) const override
+    {
+      frame
+        << client_id
+        << feed
+        << topic
+        << is_authorization_required
+        << entitlements;
+    }
 
-        std::string to_string() const override
-        {
-            return std::format(
-                "AuthorizationResponse(message_type={},client_id=\"{}\",feed=\"{}\",topic=\"{}\",is_authorization_required={},entitlements={})",
-                messages::to_string(message_type),
-                client_id,
-                feed,
-                topic,
-                (is_authorization_required ? "<true>" : "<false>"),
-                ::to_string(entitlements)
-            );
-        }
-    };
+    void deserialize_body(FrameBuffer &frame) override
+    {
+      frame
+        >> client_id
+        >> feed
+        >> topic
+        >> is_authorization_required
+        >> entitlements;
+    }
+
+  };
 }
 
 #endif // SQUAWKBUS_FEEDBUS_MESSAGES_AUTHORIZATION_RESPONSE_HPP

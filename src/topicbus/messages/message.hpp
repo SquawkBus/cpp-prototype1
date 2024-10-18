@@ -21,25 +21,29 @@ namespace squawkbus::topicbus::messages
     {
     }
 
-    void write(serialization::FrameBuffer& frame) const
+    serialization::FrameBuffer serialize() const
     {
+      serialization::FrameBuffer frame;
       frame << message_type;
-      write_body(frame);
+      serialize_body(frame);
+      return frame;
     }
-    virtual void write_body(serialization::FrameBuffer& frame) const = 0;
     virtual bool equals(const std::shared_ptr<Message>& other) const = 0;
-    virtual std::string to_string() const = 0;
+    virtual std::string str() const = 0;
 
-    static std::shared_ptr<Message> read(serialization::FrameBuffer& frame)
+    static std::shared_ptr<Message> deserialize(serialization::FrameBuffer& frame)
     {
       MessageType message_type;
       frame >> message_type;
       auto message = make_shared(message_type);
-      message->read_body(frame);
+      message->deserialize_body(frame);
       return message;
     }
     static std::shared_ptr<Message> make_shared(MessageType message_type);
-    virtual void read_body(serialization::FrameBuffer& frame) = 0;
+
+  protected:
+    virtual void serialize_body(serialization::FrameBuffer& frame) const = 0;
+    virtual void deserialize_body(serialization::FrameBuffer& frame) = 0;
   };
 }
 
@@ -94,7 +98,7 @@ namespace squawkbus::topicbus::messages
 
   inline std::ostream& operator << (std::ostream& os, const std::shared_ptr<Message>& message)
   {
-    return os << message->to_string();
+    return os << message->str();
   }
 }
 

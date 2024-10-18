@@ -15,8 +15,6 @@ using namespace squawkbus::feedbus::messages;
 
 TEST_CASE("roundtrip")
 {
-    FrameBuffer frame;
-
     std::shared_ptr<Message> m0 = std::make_shared<MulticastData>(
         "PUB-1",
         "TOPIC-1",
@@ -28,9 +26,9 @@ TEST_CASE("roundtrip")
             DataPacket(
                 std::set<std::int32_t>{3, 4, 5},
                 std::vector<char>{'W', 'o', 'r', 'l', 'd'})});
-    m0->write(frame);
+    auto frame = m0->serialize();
 
-    auto m1 = Message::read(frame);
+    auto m1 = Message::deserialize(frame);
 
     REQUIRE(m0 == m1);
 }

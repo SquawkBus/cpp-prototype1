@@ -43,24 +43,6 @@ namespace squawkbus::topicbus::messages
         {
         }
 
-        void write_body(FrameBuffer &frame) const override
-        {
-            frame
-                << client_id
-                << topic
-                << content_type
-                << data_packets;
-        }
-
-        void read_body(FrameBuffer &frame) override
-        {
-            frame
-                >> client_id
-                >> topic
-                >> content_type
-                >> data_packets;
-        }
-
         bool equals(const std::shared_ptr<UnicastData> &other) const
         {
             return
@@ -76,7 +58,7 @@ namespace squawkbus::topicbus::messages
             return equals(std::static_pointer_cast<UnicastData>(other));
         }
 
-        std::string to_string() const override
+        std::string str() const override
         {
             return std::format(
                 "UnicastData(message_type={},client_id=\"{}\",topic=\"{}\",content_type=\"{}\",data_packets={})",
@@ -86,6 +68,25 @@ namespace squawkbus::topicbus::messages
                 content_type,
                 ::to_string(data_packets)
             );
+        }
+    protected:
+
+        void serialize_body(FrameBuffer &frame) const override
+        {
+            frame
+                << client_id
+                << topic
+                << content_type
+                << data_packets;
+        }
+
+        void deserialize_body(FrameBuffer &frame) override
+        {
+            frame
+                >> client_id
+                >> topic
+                >> content_type
+                >> data_packets;
         }
     };
 }
