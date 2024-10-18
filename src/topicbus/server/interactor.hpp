@@ -2,6 +2,7 @@
 #define SQUAWKBUS_TOPICBUS_SERVER_INTERACTOR_HPP
 
 #include <memory>
+#include <string>
 #include <vector>
 
 #include "io/poller.hpp"
@@ -19,13 +20,15 @@ namespace squawkbus::topicbus
   {
   private:
     int fd_;
+    std::string host_;
     Poller& poller_;
     FrameReader reader_;
 
   public:
-    Interactor(int fd, Poller& poller);
+    Interactor(int fd, Poller& poller, const std::string& host);
 
     int fd() const noexcept { return fd_; }
+    const std::string& host() const noexcept { return host_; }
 
     void receive(std::vector<std::vector<char>>&& bufs);
     void send(std::shared_ptr<Message> message);

@@ -20,13 +20,12 @@ namespace squawkbus::topicbus
     std::map<int, Interactor> interactors_;
 
   private:
+    // The implementation of PollClient
     void on_open(Poller& poller, int fd, const std::string& host, std::uint16_t port) override;
-
     void on_close(Poller& poller, int fd) override;
-
     void on_read(Poller& poller, int fd, std::vector<std::vector<char>>&& bufs) override;
-
     void on_error(Poller& poller, int fd, std::exception error) override;
+
   };
 }
 

@@ -9,8 +9,9 @@ namespace squawkbus::topicbus
   using squawkbus::serialization::FrameBuffer;
   using squawkbus::topicbus::messages::Message;
 
-  Interactor::Interactor(int fd, Poller& poller)
+  Interactor::Interactor(int fd, Poller& poller, const std::string& host)
     : fd_(fd),
+      host_(host),
       poller_(poller)
   {
   }
