@@ -32,11 +32,12 @@ default: all
 .PHONEY: all
 all: client
 
-client: client.o
-	$(LINK.cc) $^ $(LOADLIBES) $(LDLIBS) -o $@
+client: client.o topic_client.o
+	$(LINK.cc) client.o topic_client.o $(LOADLIBES) $(LDLIBS) -o $@
 
 client.o: client.cpp $(HEADERS)
+topic_client.o: topic_client.cpp topic_client.hpp $(HEADERS)
 
 .PHONY: clean
 clean:
-	rm -f client.o client
+	rm -f client.o topic_client.o client

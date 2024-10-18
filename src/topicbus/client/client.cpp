@@ -20,8 +20,11 @@
 
 #include "popl.hpp"
 
+#include "topic_client.hpp"
+
 using namespace squawkbus::io;
 namespace logging = squawkbus::logging;
+using squawkbus::topicbus::client::TopicClient;
 
 std::shared_ptr<SslContext> make_ssl_context(std::optional<std::string> capath)
 {
@@ -44,58 +47,6 @@ std::shared_ptr<SslContext> make_ssl_context(std::optional<std::string> capath)
   return ctx;
 }
 
-class Client : public PollClient
-{
-private:
-  std::shared_ptr<TcpClientSocket> client_socket_;
-
-public:
-  Client(std::shared_ptr<TcpClientSocket> client_socket)
-    : client_socket_(client_socket)
-  {
-  }
-
-  void on_open(Poller& poller, int fd, const std::string& host, std::uint16_t port) override
-  {
-    logging::info(std::format("on_open: {} ({}:{})", fd, host, port));
-  }
-
-  void on_close(Poller& poller, int fd) override
-  {
-    logging::info(std::format("on_close: {}", fd));
-  }
-
-  void on_read(Poller& poller, int fd, std::vector<std::vector<char>>&& bufs) override
-  {
-    logging::info(std::format("on_read: {}", fd));
-
-    for (auto& buf : bufs)
-    {
-      std::string s {buf.begin(), buf.end()};
-      logging::info(std::format("on_read: received {}", s));
-      if (fd == STDIN_FILENO)
-      {
-        if (s == "CLOSE\n")
-        {
-          poller.close(client_socket_->fd());
-        }
-        else
-        {
-          poller.write(client_socket_->fd(), buf);
-        }
-      }
-      else if (fd == client_socket_->fd())
-      {
-        poller.write(STDOUT_FILENO, buf);
-      }
-    }
-  }
-
-  void on_error(Poller& poller, int fd, std::exception error) override
-  {
-    logging::info(std::format("on_error: {} - {}", fd, error.what()));
-  }
-};
 
 int main(int argc, char** argv)
 {
@@ -145,7 +96,7 @@ int main(int argc, char** argv)
     client_socket->connect(host, port);
     client_socket->blocking(false);
 
-    auto client = std::make_shared<Client>(client_socket);
+    auto client = std::make_shared<TopicClient>(client_socket);
     auto poller = Poller(client);
 
     if (!ssl_ctx)
