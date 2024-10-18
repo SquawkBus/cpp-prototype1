@@ -53,22 +53,21 @@ namespace squawkbus::feedbus::messages
     {
     }
 
-    bool equals(const std::shared_ptr<ForwardedUnicastData> &other) const
+    bool operator==(const ForwardedUnicastData& other) const noexcept
     {
-      return
-        message_type == other->message_type &&
-        user == other->user &&
-        host == other->host &&
-        client_id == other->client_id &&
-        feed == other->feed &&
-        topic == other->topic &&
-        content_type == other->content_type &&
-        data_packets == other->data_packets;
+      return Message::operator==(other) &&
+        user == other.user &&
+        host == other.host &&
+        client_id == other.client_id &&
+        feed == other.feed &&
+        topic == other.topic &&
+        content_type == other.content_type &&
+        data_packets == other.data_packets;
     }
 
     bool equals(const std::shared_ptr<Message>& other) const override
     {
-      return equals(std::static_pointer_cast<ForwardedUnicastData>(other));
+      return operator==(*std::static_pointer_cast<ForwardedUnicastData>(other));
     }
 
     std::string str() const override

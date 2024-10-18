@@ -22,6 +22,11 @@ namespace squawkbus::feedbus::messages
     {
     }
 
+    bool operator==(const Message& other) const noexcept
+    {
+      return message_type == other.message_type;
+    }
+
     serialization::FrameBuffer serialize() const
     {
       serialization::FrameBuffer frame;

@@ -35,17 +35,16 @@ namespace squawkbus::feedbus::messages
     {
     }
 
-    bool equals(const std::shared_ptr<NotificationRequest> &other) const
+    bool operator==(const NotificationRequest& other) const noexcept
     {
-      return
-        message_type == other->message_type &&
-        feed == other->feed &&
-        is_add == other->is_add;
+      return Message::operator==(other) &&
+        feed == other.feed &&
+        is_add == other.is_add;
     }
 
     bool equals(const std::shared_ptr<Message> &other) const override
     {
-      return equals(std::static_pointer_cast<NotificationRequest>(other));
+      return operator==(*std::static_pointer_cast<NotificationRequest>(other));
     }
 
     std::string str() const override

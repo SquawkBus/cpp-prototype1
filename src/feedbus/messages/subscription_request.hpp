@@ -38,18 +38,17 @@ namespace squawkbus::feedbus::messages
     {
     }
 
-    bool equals(const std::shared_ptr<SubscriptionRequest> &other) const
+    bool operator==(const SubscriptionRequest& other) const noexcept
     {
-      return
-        message_type == other->message_type &&
-        feed == other->feed &&
-        topic == other->topic &&
-        is_add == other->is_add;
+      return Message::operator==(other) &&
+        feed == other.feed &&
+        topic == other.topic &&
+        is_add == other.is_add;
     }
 
     bool equals(const std::shared_ptr<Message> &other) const override
     {
-      return equals(std::static_pointer_cast<SubscriptionRequest>(other));
+      return operator==(*std::static_pointer_cast<SubscriptionRequest>(other));
     }
 
     std::string str() const override

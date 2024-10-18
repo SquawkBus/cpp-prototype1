@@ -44,20 +44,19 @@ namespace squawkbus::feedbus::messages
     {
     }
 
-    bool equals(const std::shared_ptr<AuthorizationRequest> &other) const
+    bool operator==(const AuthorizationRequest& other) const noexcept
     {
-      return
-        message_type == other->message_type &&
-        client_id == other->client_id &&
-        host == other->host &&
-        user == other->user &&
-        feed == other->feed &&
-        topic == other->topic;
+      return Message::operator==(other) &&
+        client_id == other.client_id &&
+        host == other.host &&
+        user == other.user &&
+        feed == other.feed &&
+        topic == other.topic;
     }
 
     bool equals(const std::shared_ptr<Message>& other) const override
     {
-      return equals(std::static_pointer_cast<AuthorizationRequest>(other));
+      return operator==(*std::static_pointer_cast<AuthorizationRequest>(other));
     }
 
     std::string str() const override
