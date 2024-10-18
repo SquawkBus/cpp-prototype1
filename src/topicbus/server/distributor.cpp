@@ -8,7 +8,7 @@ namespace squawkbus::topicbus
 
       interactors_.insert(std::make_pair(
         fd,
-        Interactor(fd, poller, host)));
+        Interactor(fd, poller, host, port)));
   }
 
   void Distributor::on_close(Poller& poller, int fd)

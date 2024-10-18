@@ -1,6 +1,7 @@
 #ifndef SQUAWKBUS_TOPICBUS_SERVER_INTERACTOR_HPP
 #define SQUAWKBUS_TOPICBUS_SERVER_INTERACTOR_HPP
 
+#include <cstddef>
 #include <memory>
 #include <string>
 #include <vector>
@@ -21,11 +22,12 @@ namespace squawkbus::topicbus
   private:
     int fd_;
     std::string host_;
+    std::string id_;
     Poller& poller_;
     FrameReader reader_;
 
   public:
-    Interactor(int fd, Poller& poller, const std::string& host);
+    Interactor(int fd, Poller& poller, const std::string& host, std::uint16_t port);
 
     int fd() const noexcept { return fd_; }
     const std::string& host() const noexcept { return host_; }

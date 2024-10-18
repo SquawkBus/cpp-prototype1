@@ -1,5 +1,7 @@
 #include "interactor.hpp"
 
+#include <format>
+
 #include "serialization/frame_buffer.hpp"
 #include "serialization/frame_buffer_io.hpp"
 
@@ -9,9 +11,10 @@ namespace squawkbus::topicbus
   using squawkbus::serialization::FrameBuffer;
   using squawkbus::topicbus::messages::Message;
 
-  Interactor::Interactor(int fd, Poller& poller, const std::string& host)
+  Interactor::Interactor(int fd, Poller& poller, const std::string& host, std::uint16_t port)
     : fd_(fd),
       host_(host),
+      id_(std::format("{}:{}", host, port)),
       poller_(poller)
   {
   }
