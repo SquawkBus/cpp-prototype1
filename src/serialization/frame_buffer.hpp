@@ -63,17 +63,17 @@ namespace squawkbus::serialization
       return buf;
     }
 
-    std::vector<char> make_frame()
+    explicit operator std::vector<char>() const
     {
-      auto frame = std::vector<char>(4 + size());
-      network_long_to_buf(size(), frame.data());
-      auto offset = frame.begin() + 4;
-      for (const auto& buf : data_)
-      {
-        std::copy(buf.begin(), buf.end(), offset);
-        offset += buf.size();
-      }
-      return frame;
+        auto buf = std::vector<char>(4 + size());
+        network_long_to_buf(size(), buf.data());
+        auto offset = buf.begin() + 4;
+        for (const auto& fragment : data_)
+        {
+          std::copy(fragment.begin(), fragment.end(), offset);
+          offset += fragment.size();
+        }
+        return buf;
     }
   };
 

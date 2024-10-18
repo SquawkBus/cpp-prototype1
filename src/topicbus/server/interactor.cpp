@@ -19,6 +19,14 @@ namespace squawkbus::topicbus
   {
   }
 
+  void Interactor::send(std::shared_ptr<Message> message)
+  {
+    FrameBuffer frame;
+    message->write(frame);
+    auto buf = std::vector<char>(frame);
+    poller_.write(fd_, buf);
+  }
+
   void Interactor::receive(std::vector<char>&& buf)
   {
     reader_.write(buf);
@@ -34,13 +42,5 @@ namespace squawkbus::topicbus
   void Interactor::process_message(std::shared_ptr<Message> message)
   {
 
-  }
-
-  void Interactor::send(std::shared_ptr<Message> message)
-  {
-    FrameBuffer frame;
-    message->write(frame);
-    auto buf = frame.make_frame();
-    poller_.write(fd_, buf);
   }
 }
