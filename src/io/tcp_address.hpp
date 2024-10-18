@@ -16,7 +16,7 @@
 
 namespace squawkbus::io {
 
-  std::string to_string(std::uint16_t value)
+  inline std::string to_string(std::uint16_t value)
   {
       char buf[6];
       std::memset(buf, 0, sizeof(buf));
@@ -28,7 +28,7 @@ namespace squawkbus::io {
       return std::string(static_cast<const char*>(buf));
   }
 
-  std::string to_string(const in_addr& addr)
+  inline std::string to_string(const in_addr& addr)
   {
       char ip_address[INET_ADDRSTRLEN];
       if (inet_ntop(AF_INET, &addr, ip_address, sizeof(ip_address)) == nullptr)
@@ -38,17 +38,17 @@ namespace squawkbus::io {
       return (std::string(static_cast<const char*>(ip_address)));
   }
 
-  std::string to_string(const sockaddr_in& addr)
+  inline std::string to_string(const sockaddr_in& addr)
   {
       return to_string(addr.sin_addr) + ":" + to_string(ntohs(addr.sin_port));
   }
 
-  std::ostream& operator << (std::ostream& os, const sockaddr_in& addr)
+  inline std::ostream& operator << (std::ostream& os, const sockaddr_in& addr)
   {
       return os << to_string(addr);
   }
 
-  std::vector<sockaddr_in> getaddrinfo_inet4(const std::string& host, std::uint16_t port)
+  inline std::vector<sockaddr_in> getaddrinfo_inet4(const std::string& host, std::uint16_t port)
   {
       std::vector<sockaddr_in> results;
 
