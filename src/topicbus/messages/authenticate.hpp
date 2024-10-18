@@ -17,8 +17,9 @@ namespace squawkbus::topicbus::messages
 {
   using serialization::FrameBuffer;
 
-  struct Authenticate : public Message
+  class Authenticate : public Message
   {
+  public:
     std::string method;
     std::vector<char> data;
 

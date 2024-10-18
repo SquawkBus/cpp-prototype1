@@ -15,8 +15,9 @@ namespace squawkbus::topicbus::messages
 {
   using serialization::FrameBuffer;
 
-  struct SubscriptionRequest : public Message
+  class SubscriptionRequest : public Message
   {
+  public:
     std::string topic;
     bool is_add;
 

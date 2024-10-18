@@ -18,8 +18,9 @@ namespace squawkbus::topicbus::messages
   using serialization::FrameBuffer;
   using serialization::DataPacket;
 
-  struct ForwardedMulticastData : public Message
+  class ForwardedMulticastData : public Message
   {
+  public:
     std::string user;
     std::string host;
     std::string topic;

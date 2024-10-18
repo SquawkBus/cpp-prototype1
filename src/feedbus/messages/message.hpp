@@ -9,8 +9,9 @@
 
 namespace squawkbus::feedbus::messages
 {
-  struct Message
+  class Message
   {
+  public:
     MessageType message_type;
 
     Message(MessageType message_type)

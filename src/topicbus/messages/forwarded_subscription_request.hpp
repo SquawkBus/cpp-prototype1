@@ -15,8 +15,9 @@ namespace squawkbus::topicbus::messages
 {
   using serialization::FrameBuffer;
 
-  struct ForwardedSubscriptionRequest : public Message
+  class ForwardedSubscriptionRequest : public Message
   {
+  public:
     std::string user;
     std::string host;
     std::string client_id;

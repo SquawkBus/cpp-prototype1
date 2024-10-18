@@ -15,8 +15,9 @@ namespace squawkbus::feedbus::messages
 {
   using serialization::FrameBuffer;
 
-  struct AuthorizationRequest : public Message
+  class AuthorizationRequest : public Message
   {
+  public:
     std::string client_id;
     std::string host;
     std::string user;

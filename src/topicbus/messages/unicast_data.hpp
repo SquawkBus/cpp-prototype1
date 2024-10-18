@@ -18,8 +18,9 @@ namespace squawkbus::topicbus::messages
   using serialization::FrameBuffer;
   using serialization::DataPacket;
 
-  struct UnicastData : public Message
+  class UnicastData : public Message
   {
+  public:
     std::string client_id;
     std::string topic;
     std::string content_type;

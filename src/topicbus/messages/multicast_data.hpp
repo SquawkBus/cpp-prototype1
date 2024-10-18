@@ -18,8 +18,9 @@ namespace squawkbus::topicbus::messages
   using serialization::FrameBuffer;
   using serialization::DataPacket;
 
-  struct MulticastData : public Message
+  class MulticastData : public Message
   {
+  public:
     std::string topic;
     std::string content_type;
     std::vector<DataPacket> data_packets;
