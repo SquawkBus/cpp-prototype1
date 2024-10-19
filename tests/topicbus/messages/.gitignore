@@ -1,4 +1,4 @@
-test_authorizate
+test_authenticate
 test_forwarded_multicast_data
 test_forwarded_subscription_request
 test_forwarded_unicast_data
