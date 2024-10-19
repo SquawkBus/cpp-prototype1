@@ -1,7 +1,14 @@
 #include "distributor.hpp"
 
+#include "logging/log.hpp"
+
 namespace squawkbus::topicbus
 {
+  void Distributor::on_startup(Poller& poller)
+  {
+      logging::info("on_startup");
+  }
+
   void Distributor::on_open(Poller& poller, int fd, const std::string& host, std::uint16_t port)
   {
       logging::info(std::format("on_open: {} ({}:{})", fd, host, port));

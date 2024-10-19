@@ -32,6 +32,7 @@ namespace squawkbus::io
   struct PollClient
   {
     virtual ~PollClient() {}
+    virtual void on_startup(Poller& poller) = 0;
     virtual void on_open(Poller& poller, int fd, const std::string& host, std::uint16_t port) = 0;
     virtual void on_close(Poller& poller, int fd) = 0;
     virtual void on_read(Poller& poller, int fd, std::vector<std::vector<char>>&& bufs) = 0;
@@ -82,6 +83,8 @@ namespace squawkbus::io
 
     void event_loop(int backlog = 10)
     {
+      client_->on_startup(*this);
+
       bool is_ok = true;
 
       while (is_ok) {

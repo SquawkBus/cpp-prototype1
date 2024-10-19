@@ -5,22 +5,38 @@
 #include <memory>
 #include <span>
 #include <utility>
+#include <vector>
 
 
 #include "io/poller.hpp"
 #include "io/tcp_client_socket.hpp"
 #include "logging/log.hpp"
 #include "utils/utils.hpp"
+#include "topicbus/messages/message.hpp"
 
 namespace squawkbus::topicbus::client
 {
   using squawkbus::io::Poller;
   using squawkbus::io::PollClient;
   using squawkbus::io::TcpClientSocket;
+  using squawkbus::topicbus::messages::Authenticate;
 
   TopicClient::TopicClient(std::shared_ptr<TcpClientSocket> client_socket)
     : client_socket_(client_socket)
   {
+  }
+
+  void TopicClient::on_startup(Poller& poller)
+  {
+    logging::info("on_startup");
+
+    auto user = std::string("johndoe");
+    auto data = std::vector(user.begin(), user.end());
+    auto msg = Authenticate("PLAIN", data);
+    auto frame = msg.serialize();
+    auto buf = std::vector<char>(frame);
+    logging::info(std::format("authenticating as {}", user));
+    poller.write(client_socket_->fd(), buf);
   }
 
   void TopicClient::on_open(Poller& poller, int fd, const std::string& host, std::uint16_t port)

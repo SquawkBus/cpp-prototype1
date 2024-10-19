@@ -3,6 +3,7 @@
 
 #include <cstddef>
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -25,6 +26,7 @@ namespace squawkbus::topicbus
     std::string id_;
     Poller& poller_;
     FrameReader reader_;
+    std::optional<std::string> user_;
 
   public:
     Interactor(int fd, Poller& poller, const std::string& host, std::uint16_t port);
@@ -37,6 +39,7 @@ namespace squawkbus::topicbus
 
   private:
     void process_message(std::shared_ptr<Message> message);
+    void authenticate(std::shared_ptr<Message> message);
   };
 
 }

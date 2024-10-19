@@ -55,19 +55,20 @@ namespace squawkbus::io
       auto client = listener_.accept();
       client->blocking(false);
 
+      auto host = client->address();
+      auto port = client->port();
+
       if (!ssl_ctx_)
       {
         poller.add_handler(
           std::make_unique<TcpSocketPollHandler>(std::move(client), 8096, 8096),
-          client->address(),
-          client->port());
+          host, port);
       }
       else
       {
         poller.add_handler(
           std::make_unique<TcpSocketPollHandler>(std::move(client), *ssl_ctx_, 8096, 8096),
-          client->address(),
-          client->port());
+          host, port);
       }
 
       return true;
