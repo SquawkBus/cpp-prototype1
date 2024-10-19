@@ -12,32 +12,58 @@
 
 namespace squawkbus::serialization
 {
-  struct DataPacket
+  class DataPacket
   {
-    std::set<std::int32_t> entitlements;
-    std::vector<char> data;
+  private:
+    std::set<std::int32_t> entitlements_;
+    std::vector<char> data_;
 
-    DataPacket()
+  public:
+    DataPacket() noexcept
     {
     }
 
-    DataPacket(const std::set<std::int32_t>& entitlements, const std::vector<char>& data)
-      : entitlements(entitlements),
-        data(data)
+    DataPacket(
+      const std::set<std::int32_t>& entitlements,
+      const std::vector<char>& data) noexcept
+      : entitlements_(entitlements),
+        data_(data)
     {
     }
 
-    DataPacket(std::set<std::int32_t>&& entitlements, std::vector<char>&& data)
-      : entitlements(std::move(entitlements)),
-        data(std::move(data))
+    DataPacket(
+      std::set<std::int32_t>&& entitlements,
+      std::vector<char>&& data) noexcept
+      : entitlements_(std::move(entitlements)),
+        data_(std::move(data))
     {
     }
 
-    bool is_authorized(const std::set<std::int32_t> &granted_entitlements) const
+    const std::set<std::int32_t>& entitlements() const noexcept { return entitlements_; }
+    const std::vector<char>& data() const noexcept { return data_; }
+
+    bool is_authorized(const std::set<std::int32_t> &granted_entitlements) const noexcept
     {
       return std::includes(
         granted_entitlements.begin(), granted_entitlements.end(),
-        entitlements.begin(), entitlements.end());
+        entitlements_.begin(), entitlements_.end());
+    }
+
+    bool operator==(const DataPacket& other) const noexcept
+    {
+      return
+        entitlements_ == other.entitlements_ &&
+        data_ == other.data_;
+    }
+
+    FrameBuffer& serialize(FrameBuffer& frame) const
+    {
+      return frame << entitlements_ << data_;
+    }
+
+    FrameBuffer& deserialize(FrameBuffer& frame)
+    {
+      return frame >> entitlements_ >> data_;
     }
   };
 
@@ -45,24 +71,19 @@ namespace squawkbus::serialization
   {
     return os
       << "DataPacket"
-      << "(entitlements=" << ::to_string(d.entitlements)
-      << ",data=" << ::to_string(d.data)
+      << "(entitlements=" << ::to_string(d.entitlements())
+      << ",data=" << ::to_string(d.data())
       << ")" ;
-  }
-
-  inline bool operator == (const DataPacket& a, const DataPacket& b)
-  {
-    return a.entitlements == b.entitlements && a.data == b.data;
   }
 
   inline FrameBuffer& operator<<(FrameBuffer& frame, const DataPacket& d)
   {
-    return frame << d.entitlements << d.data;
+    return d.serialize(frame);
   }
 
   inline FrameBuffer& operator>>(FrameBuffer& frame, DataPacket& p)
   {
-    return frame >> p.entitlements >> p.data;
+    return p.serialize(frame);
   }
   
 }
