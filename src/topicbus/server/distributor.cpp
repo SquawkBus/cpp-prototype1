@@ -1,5 +1,7 @@
 #include "distributor.hpp"
 
+#include <utility>
+
 #include "logging/log.hpp"
 
 namespace squawkbus::topicbus::server
@@ -15,7 +17,7 @@ namespace squawkbus::topicbus::server
 
       interactors_.insert(std::make_pair(
         fd,
-        Interactor(fd, poller, hub_, host, port)));
+        std::make_shared<Interactor>(fd, poller, hub_, host, port)));
   }
 
   void Distributor::on_close(Poller& poller, int fd)
@@ -38,7 +40,7 @@ namespace squawkbus::topicbus::server
       return;
 
     for (auto& buf : bufs)
-      i_interactor->second.receive(std::move(buf));
+      i_interactor->second->receive(std::move(buf));
   }
 
   void Distributor::on_error(Poller& poller, int fd, std::exception error)

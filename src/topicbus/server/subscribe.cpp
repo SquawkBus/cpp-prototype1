@@ -4,13 +4,15 @@
 
 #include "logging/log.hpp"
 
+#include "interactor.hpp"
+
 namespace logging = squawkbus::logging;
 
 namespace squawkbus::topicbus::server
 {
   using squawkbus::topicbus::messages::SubscriptionRequest;
 
-  void SubscriptionManager::on_subscription(std::shared_ptr<SubscriptionRequest> message)
+  void SubscriptionManager::on_subscription(std::shared_ptr<Interactor> interactor, std::shared_ptr<SubscriptionRequest> message)
   {
     logging::debug(
       std::format(

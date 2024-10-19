@@ -11,13 +11,15 @@ namespace squawkbus::topicbus::server
 {
   using squawkbus::topicbus::messages::Message;
 
+  class Interactor;
+
   class Hub
   {
   private:
     SubscriptionManager subscription_manager_;
 
   public:
-    void on_message(std::shared_ptr<Message> message);
+    void on_message(std::shared_ptr<Interactor> interactor, std::shared_ptr<Message> message);
   };
 }
 

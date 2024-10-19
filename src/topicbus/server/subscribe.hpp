@@ -9,10 +9,12 @@ namespace squawkbus::topicbus::server
 {
   using squawkbus::topicbus::messages::SubscriptionRequest;
 
+  class Interactor;
+
   class SubscriptionManager
   {
   public:
-    void on_subscription(std::shared_ptr<SubscriptionRequest> message);
+    void on_subscription(std::shared_ptr<Interactor> interactor, std::shared_ptr<SubscriptionRequest> message);
   };
 }
 

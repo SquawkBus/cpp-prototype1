@@ -55,7 +55,7 @@ namespace squawkbus::topicbus::server
     if (user_ == std::nullopt)
       authenticate(message);
     else
-      hub_.on_message(message);
+      hub_.on_message(shared_from_this(), message);
   }
 
   void Interactor::authenticate(std::shared_ptr<Message> message)

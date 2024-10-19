@@ -3,6 +3,7 @@
 
 #include <map>
 #include <string>
+#include <memory>
 
 #include "io/poller.hpp"
 
@@ -17,7 +18,7 @@ namespace squawkbus::topicbus::server
   class Distributor : public PollClient
   {
   private:
-    std::map<int, Interactor> interactors_;
+    std::map<int, std::shared_ptr<Interactor>> interactors_;
     Hub hub_;
 
   private:
