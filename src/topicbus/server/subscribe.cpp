@@ -1,9 +1,8 @@
-#include "subscribe.hpp"
-
 #include <format>
 
 #include "logging/log.hpp"
 
+#include "subscribe.hpp"
 #include "interactor.hpp"
 
 namespace logging = squawkbus::logging;
