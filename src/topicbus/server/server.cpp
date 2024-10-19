@@ -16,7 +16,7 @@
 
 using namespace squawkbus::io;
 namespace logging = squawkbus::logging;
-using squawkbus::topicbus::Distributor;
+using squawkbus::topicbus::server::Distributor;
 
 std::shared_ptr<SslContext> make_ssl_context(const std::string& certfile, const std::string& keyfile)
 {

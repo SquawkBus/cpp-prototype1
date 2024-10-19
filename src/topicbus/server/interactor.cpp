@@ -9,7 +9,7 @@
 #include "serialization/frame_buffer.hpp"
 #include "serialization/frame_buffer_io.hpp"
 
-namespace squawkbus::topicbus
+namespace squawkbus::topicbus::server
 {
   using squawkbus::io::Poller;
   using squawkbus::serialization::FrameBuffer;
@@ -17,11 +17,17 @@ namespace squawkbus::topicbus
   using squawkbus::topicbus::messages::MessageType;
   using squawkbus::topicbus::messages::Authenticate;
 
-  Interactor::Interactor(int fd, Poller& poller, const std::string& host, std::uint16_t port)
+  Interactor::Interactor(
+    int fd,
+    Poller& poller,
+    Hub& hub,
+    const std::string& host,
+    std::uint16_t port)
     : fd_(fd),
       host_(host),
       id_(std::format("{}:{}", host, port)),
-      poller_(poller)
+      poller_(poller),
+      hub_(hub)
   {
   }
 
@@ -47,10 +53,9 @@ namespace squawkbus::topicbus
   void Interactor::process_message(std::shared_ptr<Message> message)
   {
     if (user_ == std::nullopt)
-    {
       authenticate(message);
-      return;
-    }
+    else
+      hub_.on_message(message);
   }
 
   void Interactor::authenticate(std::shared_ptr<Message> message)

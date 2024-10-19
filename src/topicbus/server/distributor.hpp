@@ -7,8 +7,9 @@
 #include "io/poller.hpp"
 
 #include "interactor.hpp"
+#include "hub.hpp"
 
-namespace squawkbus::topicbus
+namespace squawkbus::topicbus::server
 {
   using io::PollClient;
   using io::Poller;
@@ -17,6 +18,7 @@ namespace squawkbus::topicbus
   {
   private:
     std::map<int, Interactor> interactors_;
+    Hub hub_;
 
   private:
     // The implementation of PollClient

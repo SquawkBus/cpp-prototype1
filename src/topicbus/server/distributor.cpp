@@ -2,7 +2,7 @@
 
 #include "logging/log.hpp"
 
-namespace squawkbus::topicbus
+namespace squawkbus::topicbus::server
 {
   void Distributor::on_startup(Poller& poller)
   {
@@ -15,7 +15,7 @@ namespace squawkbus::topicbus
 
       interactors_.insert(std::make_pair(
         fd,
-        Interactor(fd, poller, host, port)));
+        Interactor(fd, poller, hub_, host, port)));
   }
 
   void Distributor::on_close(Poller& poller, int fd)

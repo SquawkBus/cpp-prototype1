@@ -12,7 +12,9 @@
 
 #include "topicbus/messages/message.hpp"
 
-namespace squawkbus::topicbus
+#include "hub.hpp"
+
+namespace squawkbus::topicbus::server
 {
   using squawkbus::io::Poller;
   using squawkbus::serialization::FrameReader;
@@ -25,11 +27,12 @@ namespace squawkbus::topicbus
     std::string host_;
     std::string id_;
     Poller& poller_;
+    Hub& hub_;
     FrameReader reader_;
     std::optional<std::string> user_;
 
   public:
-    Interactor(int fd, Poller& poller, const std::string& host, std::uint16_t port);
+    Interactor(int fd, Poller& poller, Hub& hub, const std::string& host, std::uint16_t port);
 
     int fd() const noexcept { return fd_; }
     const std::string& host() const noexcept { return host_; }

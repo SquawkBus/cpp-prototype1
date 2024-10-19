@@ -32,13 +32,14 @@ default: all
 .PHONEY: all
 all: server
 
-server: server.o distributor.o interactor.o
-	$(LINK.cc) server.o distributor.o interactor.o $(LOADLIBES) $(LDLIBS) -o $@
+server: server.o distributor.o interactor.o hub.o
+	$(LINK.cc) server.o distributor.o interactor.o hub.o $(LOADLIBES) $(LDLIBS) -o $@
 
 server.o: distributor.hpp $(HEADERS)
 distributor.o: distributor.cpp distributor.hpp $(HEADERS)
 interactor.o: interactor.cpp interactor.hpp $(HEADERS)
+hub.o: hub.cpp hub.hpp $(HEADERS)
 
 .PHONY: clean
 clean:
-	rm -f server.o distributor.o interactor.o server
+	rm -f server.o distributor.o interactor.o hub.o server
