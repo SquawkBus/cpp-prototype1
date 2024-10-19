@@ -43,9 +43,9 @@ namespace squawkbus::topicbus::messages
         is_add == other.is_add;
     }
 
-    bool equals(const std::shared_ptr<Message> &other) const noexcept override
+    bool equals(const Message* other) const noexcept override
     {
-      return operator==(*std::static_pointer_cast<NotificationRequest>(other));
+      return operator==(*dynamic_cast<const NotificationRequest*>(other));
     }
 
     std::string str() const override

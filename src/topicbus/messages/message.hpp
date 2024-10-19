@@ -37,7 +37,7 @@ namespace squawkbus::topicbus::messages
       serialize_body(frame);
       return frame;
     }
-    virtual bool equals(const std::shared_ptr<Message>& other) const noexcept = 0;
+    virtual bool equals(const Message* other) const noexcept = 0;
     virtual std::string str() const = 0;
 
     static std::shared_ptr<Message> deserialize(serialization::FrameBuffer& frame)
@@ -102,7 +102,7 @@ namespace squawkbus::topicbus::messages
 
   inline bool operator == (const std::shared_ptr<Message>& lhs, const std::shared_ptr<Message>& rhs)
   {
-    return lhs->equals(rhs);
+    return lhs->equals(rhs.get());
   }
 
   inline std::ostream& operator << (std::ostream& os, const std::shared_ptr<Message>& message)
