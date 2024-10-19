@@ -83,7 +83,7 @@ namespace squawkbus::serialization
 
   inline FrameBuffer& operator>>(FrameBuffer& frame, DataPacket& p)
   {
-    return p.serialize(frame);
+    return p.deserialize(frame);
   }
   
 }
