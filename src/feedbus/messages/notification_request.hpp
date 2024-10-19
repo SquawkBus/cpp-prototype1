@@ -17,32 +17,36 @@ namespace squawkbus::feedbus::messages
 
   class NotificationRequest : public Message
   {
-  public:
-    std::string feed;
-    bool is_add;
+  private:
+    std::string feed_;
+    bool is_add_;
 
-    NotificationRequest()
+  public:
+    NotificationRequest() noexcept
       : Message(MessageType::NotificationRequest)
     {
     }
 
     NotificationRequest(
       const std::string &feed,
-      bool is_add)
+      bool is_add) noexcept
       : Message(MessageType::NotificationRequest),
-        feed(feed),
-        is_add(is_add)
+        feed_(feed),
+        is_add_(is_add)
     {
     }
+
+    const std::string& feed() const noexcept { return feed_; }
+    bool is_add() const noexcept { return is_add_; }
 
     bool operator==(const NotificationRequest& other) const noexcept
     {
       return Message::operator==(other) &&
-        feed == other.feed &&
-        is_add == other.is_add;
+        feed_ == other.feed_ &&
+        is_add_ == other.is_add_;
     }
 
-    bool equals(const std::shared_ptr<Message> &other) const override
+    bool equals(const std::shared_ptr<Message> &other) const noexcept override
     {
       return operator==(*std::static_pointer_cast<NotificationRequest>(other));
     }
@@ -51,9 +55,9 @@ namespace squawkbus::feedbus::messages
     {
       return std::format(
         "NotificationRequest(message_type={},feed=\"{}\",is_add={})",
-        messages::to_string(message_type),
-        feed,
-        (is_add ? "<true>" : "<false>"));
+        messages::to_string(message_type_),
+        feed_,
+        (is_add_ ? "<true>" : "<false>"));
     }
 
   protected:
@@ -61,15 +65,15 @@ namespace squawkbus::feedbus::messages
     void serialize_body(FrameBuffer &frame) const override
     {
       frame
-        << feed
-        << is_add;
+        << feed_
+        << is_add_;
     }
 
     void deserialize_body(FrameBuffer &frame) override
     {
       frame
-        >> feed
-        >> is_add;
+        >> feed_
+        >> is_add_;
     }
   };
 }

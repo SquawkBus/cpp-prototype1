@@ -11,25 +11,33 @@ namespace squawkbus::topicbus::messages
 {
   class Message
   {
-  public:
-    MessageType message_type;
+  protected:
+    MessageType message_type_;
 
-    Message(MessageType message_type)
-      : message_type(message_type)
+  public:
+    Message(MessageType message_type) noexcept
+      : message_type_(message_type)
     {
     }
-    virtual ~Message()
+    virtual ~Message() noexcept
     {
+    }
+
+    MessageType message_type() const noexcept { return message_type_; }
+
+    bool operator==(const Message& other) const noexcept
+    {
+      return message_type_ == other.message_type_;
     }
 
     serialization::FrameBuffer serialize() const
     {
       serialization::FrameBuffer frame;
-      frame << message_type;
+      frame << message_type_;
       serialize_body(frame);
       return frame;
     }
-    virtual bool equals(const std::shared_ptr<Message>& other) const = 0;
+    virtual bool equals(const std::shared_ptr<Message>& other) const noexcept = 0;
     virtual std::string str() const = 0;
 
     static std::shared_ptr<Message> deserialize(serialization::FrameBuffer& frame)

@@ -26,7 +26,7 @@ namespace squawkbus::topicbus::messages
     std::string content_type;
     std::vector<DataPacket> data_packets;
 
-    UnicastData()
+    UnicastData() noexcept
       : Message(MessageType::UnicastData)
     {
     }
@@ -35,7 +35,7 @@ namespace squawkbus::topicbus::messages
       const std::string &client_id,
       const std::string &topic,
       const std::string& content_type,
-      const std::vector<DataPacket>& data_packets)
+      const std::vector<DataPacket>& data_packets) noexcept
       : Message(MessageType::UnicastData),
         client_id(client_id),
         topic(topic),
@@ -44,26 +44,26 @@ namespace squawkbus::topicbus::messages
     {
     }
 
-    bool equals(const std::shared_ptr<UnicastData> &other) const
+    bool operator==(const UnicastData &other) const noexcept
     {
       return
-        message_type == other->message_type &&
-        client_id == other->client_id &&
-        topic == other->topic &&
-        content_type == other->content_type &&
-        data_packets == other->data_packets;
+        Message::operator==(other) &&
+        client_id == other.client_id &&
+        topic == other.topic &&
+        content_type == other.content_type &&
+        data_packets == other.data_packets;
     }
 
-    bool equals(const std::shared_ptr<Message>& other) const override
+    bool equals(const std::shared_ptr<Message>& other) const noexcept override
     {
-      return equals(std::static_pointer_cast<UnicastData>(other));
+      return operator==(*std::static_pointer_cast<UnicastData>(other));
     }
 
     std::string str() const override
     {
       return std::format(
         "UnicastData(message_type={},client_id=\"{}\",topic=\"{}\",content_type=\"{}\",data_packets={})",
-        messages::to_string(message_type),
+        messages::to_string(message_type_),
         client_id,
         topic,
         content_type,

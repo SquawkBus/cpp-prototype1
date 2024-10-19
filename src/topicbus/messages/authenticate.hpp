@@ -19,44 +19,45 @@ namespace squawkbus::topicbus::messages
 
   class Authenticate : public Message
   {
-  public:
-    std::string method;
-    std::vector<char> data;
+  private:
+    std::string method_;
+    std::vector<char> data_;
 
-    Authenticate()
+  public:
+    Authenticate() noexcept
       : Message(MessageType::Authenticate)
     {
     }
 
     Authenticate(
       const std::string &method,
-      const std::vector<char> &data)
+      const std::vector<char> &data) noexcept
       : Message(MessageType::Authenticate),
-        method(method),
-        data(data)
+        method_(method),
+        data_(data)
     {
     }
 
-    bool equals(const std::shared_ptr<Authenticate> &other) const
+    bool operator==(const Authenticate &other) const noexcept
     {
       return
-        message_type == other->message_type &&
-        method == other->method &&
-        data == other->data;
+        Message::operator==(other) &&
+        method_ == other.method_ &&
+        data_ == other.data_;
     }
 
-    bool equals(const std::shared_ptr<Message>& other) const override
+    bool equals(const std::shared_ptr<Message>& other) const noexcept override
     {
-      return equals(std::static_pointer_cast<Authenticate>(other));
+      return operator==(*std::static_pointer_cast<Authenticate>(other));
     }
 
     std::string str() const override
     {
       return std::format(
         "Authenticate(message_type={},data=\"{}\",data={})",
-        messages::to_string(message_type),
-        method,
-        ::to_string(data));
+        messages::to_string(message_type_),
+        method_,
+        ::to_string(data_));
     }
 
     protected:
@@ -64,15 +65,15 @@ namespace squawkbus::topicbus::messages
       void serialize_body(FrameBuffer &frame) const override
       {
         frame
-          << method
-          << data;        
+          << method_
+          << data_;
       }
 
       void deserialize_body(FrameBuffer &frame) override
       {
         frame
-          >> method
-          >> data;
+          >> method_
+          >> data_;
       }
   };
 }

@@ -25,7 +25,7 @@ namespace squawkbus::topicbus::messages
     std::string content_type;
     std::vector<DataPacket> data_packets;
 
-    MulticastData()
+    MulticastData() noexcept
       : Message(MessageType::MulticastData)
     {
     }
@@ -33,7 +33,7 @@ namespace squawkbus::topicbus::messages
     MulticastData(
       const std::string &topic,
       const std::string &content_type,
-      const std::vector<DataPacket> &data_packets)
+      const std::vector<DataPacket> &data_packets) noexcept
       : Message(MessageType::MulticastData),
         topic(topic),
         content_type(content_type),
@@ -41,25 +41,25 @@ namespace squawkbus::topicbus::messages
     {
     }
 
-    bool equals(const std::shared_ptr<MulticastData> &other) const
+    bool operator==(const MulticastData &other) const noexcept
     {
       return
-        message_type == other->message_type &&
-        topic == other->topic &&
-        content_type == other->content_type &&
-        data_packets == other->data_packets;
+        Message::operator==(other) &&
+        topic == other.topic &&
+        content_type == other.content_type &&
+        data_packets == other.data_packets;
     }
 
-    bool equals(const std::shared_ptr<Message>& other) const override
+    bool equals(const std::shared_ptr<Message>& other) const noexcept override
     {
-      return equals(std::static_pointer_cast<MulticastData>(other));
+      return operator==(*std::static_pointer_cast<MulticastData>(other));
     }
 
     std::string str() const override
     {
       return std::format(
         "MulticastData(message_type={},topic=\"{}\",content_type=\"{}\",data_packets={})",
-        messages::to_string(message_type),
+        messages::to_string(message_type_),
         topic,
         content_type,
         ::to_string(data_packets));

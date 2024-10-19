@@ -20,13 +20,14 @@ namespace squawkbus::feedbus::messages
 
   class MulticastData : public Message
   {
-  public:
-    std::string feed;
-    std::string topic;
-    std::string content_type;
-    std::vector<DataPacket> data_packets;
+  private:
+    std::string feed_;
+    std::string topic_;
+    std::string content_type_;
+    std::vector<DataPacket> data_packets_;
 
-    MulticastData()
+  public:
+    MulticastData() noexcept
       : Message(MessageType::MulticastData)
     {
     }
@@ -35,25 +36,30 @@ namespace squawkbus::feedbus::messages
       const std::string &feed,
       const std::string &topic,
       const std::string &content_type,
-      const std::vector<DataPacket> &data_packets)
+      const std::vector<DataPacket> &data_packets) noexcept
       : Message(MessageType::MulticastData),
-        feed(feed),
-        topic(topic),
-        content_type(content_type),
-        data_packets(data_packets)
+        feed_(feed),
+        topic_(topic),
+        content_type_(content_type),
+        data_packets_(data_packets)
     {
     }
+
+    const std::string& feed() const noexcept { return feed_; }
+    const std::string& topic() const noexcept { return topic_; }
+    const std::string& content_type() const noexcept { return content_type_; }
+    const std::vector<DataPacket>& data_packets() const noexcept { return data_packets_; }
 
     bool operator==(const MulticastData& other) const noexcept
     {
       return Message::operator==(other) &&
-        feed == other.feed &&
-        topic == other.topic &&
-        content_type == other.content_type &&
-        data_packets == other.data_packets;
+        feed_ == other.feed_ &&
+        topic_ == other.topic_ &&
+        content_type_ == other.content_type_ &&
+        data_packets_ == other.data_packets_;
     }
 
-    bool equals(const std::shared_ptr<Message>& other) const override
+    bool equals(const std::shared_ptr<Message>& other) const noexcept override
     {
       return operator==(*std::static_pointer_cast<MulticastData>(other));
     }
@@ -62,11 +68,11 @@ namespace squawkbus::feedbus::messages
     {
       return std::format(
         "MulticastData(message_type={},feed=\"{}\",topic=\"{}\",content_type=\"{}\",data_packets={})",
-        messages::to_string(message_type),
-        feed,
-        topic,
-        content_type,
-        ::to_string(data_packets));
+        messages::to_string(message_type_),
+        feed_,
+        topic_,
+        content_type_,
+        ::to_string(data_packets_));
     }
 
   protected:
@@ -74,19 +80,19 @@ namespace squawkbus::feedbus::messages
     void serialize_body(FrameBuffer &frame) const override
     {
       frame
-        << feed
-        << topic
-        << content_type
-        << data_packets;
+        << feed_
+        << topic_
+        << content_type_
+        << data_packets_;
     }
 
     void deserialize_body(FrameBuffer &frame) override
     {
       frame
-        >> feed
-        >> topic
-        >> content_type
-        >> data_packets;
+        >> feed_
+        >> topic_
+        >> content_type_
+        >> data_packets_;
     }
   };
 }

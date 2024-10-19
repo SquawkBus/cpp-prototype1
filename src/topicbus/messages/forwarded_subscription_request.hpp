@@ -24,7 +24,7 @@ namespace squawkbus::topicbus::messages
     std::string topic;
     bool is_add;
 
-    ForwardedSubscriptionRequest()
+    ForwardedSubscriptionRequest() noexcept
       : Message(MessageType::ForwardedSubscriptionRequest)
     {
     }
@@ -34,7 +34,7 @@ namespace squawkbus::topicbus::messages
       const std::string &host,
       const std::string &client_id,
       const std::string &topic,
-      bool is_add)
+      bool is_add) noexcept
       : Message(MessageType::ForwardedSubscriptionRequest),
         user(user),
         host(host),
@@ -44,27 +44,26 @@ namespace squawkbus::topicbus::messages
     {
     }
 
-    bool equals(const std::shared_ptr<ForwardedSubscriptionRequest> &other) const
+    bool operator==(const ForwardedSubscriptionRequest &other) const noexcept
     {
-      return
-        message_type == other->message_type &&
-        user == other->user &&
-        host == other->host &&
-        client_id == other->client_id &&
-        topic == other->topic &&
-        is_add == other->is_add;
+      return Message::operator==(other) &&
+        user == other.user &&
+        host == other.host &&
+        client_id == other.client_id &&
+        topic == other.topic &&
+        is_add == other.is_add;
     }
 
-    bool equals(const std::shared_ptr<Message> &other) const override
+    bool equals(const std::shared_ptr<Message> &other) const noexcept override
     {
-      return equals(std::static_pointer_cast<ForwardedSubscriptionRequest>(other));
+      return operator==(*std::static_pointer_cast<ForwardedSubscriptionRequest>(other));
     }
 
     std::string str() const override
     {
       return std::format(
         "ForwardedSubscriptionRequest(message_type={},user=\"{}\",host=\"{}\",client_id=\"{}\",topic=\"{}\",is_add={})",
-        messages::to_string(message_type),
+        messages::to_string(message_type_),
         user,
         host,
         client_id,

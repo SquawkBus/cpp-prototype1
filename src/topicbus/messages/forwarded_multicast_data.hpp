@@ -27,7 +27,7 @@ namespace squawkbus::topicbus::messages
     std::string content_type;
     std::vector<DataPacket> data_packets;
 
-    ForwardedMulticastData()
+    ForwardedMulticastData() noexcept
       : Message(MessageType::ForwardedMulticastData)
     {
     }
@@ -37,7 +37,7 @@ namespace squawkbus::topicbus::messages
       const std::string &host,
       const std::string &topic,
       const std::string& content_type,
-      const std::vector<DataPacket>& data_packets)
+      const std::vector<DataPacket>& data_packets) noexcept
       : Message(MessageType::ForwardedMulticastData),
         user(user),
         host(host),
@@ -47,27 +47,26 @@ namespace squawkbus::topicbus::messages
     {
     }
 
-    bool equals(const std::shared_ptr<ForwardedMulticastData> &other) const
+    bool operator==(const ForwardedMulticastData &other) const noexcept
     {
-      return
-        message_type == other->message_type &&
-        user == other->user &&
-        host == other->host &&
-        topic == other->topic &&
-        content_type == other->content_type &&
-        data_packets == other->data_packets;
+      return Message::operator==(other) &&
+        user == other.user &&
+        host == other.host &&
+        topic == other.topic &&
+        content_type == other.content_type &&
+        data_packets == other.data_packets;
     }
 
-    bool equals(const std::shared_ptr<Message>& other) const override
+    bool equals(const std::shared_ptr<Message>& other) const noexcept override
     {
-      return equals(std::static_pointer_cast<ForwardedMulticastData>(other));
+      return operator==(*std::static_pointer_cast<ForwardedMulticastData>(other));
     }
 
     std::string str() const override
     {
       return std::format(
         "ForwardedMulticastData(message_type={},user=\"{}\",host=\"{}\",topic=\"{}\",content_type=\"{}\",data_packets={})",
-        messages::to_string(message_type),
+        messages::to_string(message_type_),
         user,
         host,
         topic,

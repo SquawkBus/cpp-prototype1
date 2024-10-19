@@ -21,38 +21,38 @@ namespace squawkbus::topicbus::messages
     std::string topic;
     bool is_add;
 
-    SubscriptionRequest()
+    SubscriptionRequest() noexcept
       : Message(MessageType::SubscriptionRequest)
     {
     }
 
     SubscriptionRequest(
       const std::string &topic,
-      bool is_add)
+      bool is_add) noexcept
       : Message(MessageType::SubscriptionRequest),
         topic(topic),
         is_add(is_add)
     {
     }
 
-    bool equals(const std::shared_ptr<SubscriptionRequest> &other) const
+    bool operator==(const SubscriptionRequest &other) const noexcept
     {
       return
-        message_type == other->message_type &&
-        topic == other->topic &&
-        is_add == other->is_add;
+        Message::operator==(other) &&
+        topic == other.topic &&
+        is_add == other.is_add;
     }
 
-    bool equals(const std::shared_ptr<Message> &other) const override
+    bool equals(const std::shared_ptr<Message> &other) const noexcept override
     {
-      return equals(std::static_pointer_cast<SubscriptionRequest>(other));
+      return operator==(*std::static_pointer_cast<SubscriptionRequest>(other));
     }
 
     std::string str() const override
     {
       return std::format(
         "SubscriptionRequest(message_type={},topic=\"{}\",is_add={})",
-        messages::to_string(message_type),
+        messages::to_string(message_type_),
         topic,
         (is_add ? "<true>" : "<false"));
     }

@@ -20,14 +20,15 @@ namespace squawkbus::feedbus::messages
 
   class AuthorizationResponse : public Message
   {
-  public:
-    std::string client_id;
-    std::string feed;
-    std::string topic;
-    bool is_authorization_required;
-    std::set<std::int32_t> entitlements;
+  private:
+    std::string client_id_;
+    std::string feed_;
+    std::string topic_;
+    bool is_authorization_required_;
+    std::set<std::int32_t> entitlements_;
 
-    AuthorizationResponse()
+  public:
+    AuthorizationResponse() noexcept
       : Message(MessageType::AuthorizationResponse)
     {
     }
@@ -37,27 +38,33 @@ namespace squawkbus::feedbus::messages
       const std::string &feed,
       const std::string &topic,
       bool is_authorization_required,
-      const std::set<std::int32_t> &entitlements)
+      const std::set<std::int32_t> &entitlements) noexcept
       : Message(MessageType::AuthorizationResponse),
-        client_id(client_id),
-        feed(feed),
-        topic(topic),
-        is_authorization_required(is_authorization_required),
-        entitlements(entitlements)
+        client_id_(client_id),
+        feed_(feed),
+        topic_(topic),
+        is_authorization_required_(is_authorization_required),
+        entitlements_(entitlements)
     {
     }
+
+    const std::string& client_id() const noexcept {return client_id_; }
+    const std::string& feed() const noexcept {return feed_; }
+    const std::string& topic() const noexcept {return topic_; }
+    bool is_authorization_required() const noexcept { return is_authorization_required_; }
+    const std::set<std::int32_t>& entitlements() const noexcept { return entitlements_; }
 
     bool operator==(const AuthorizationResponse& other) const noexcept
     {
       return Message::operator==(other) &&
-        client_id == other.client_id &&
-        feed == other.feed && 
-        topic == other.topic &&
-        is_authorization_required == other.is_authorization_required &&
-        entitlements == other.entitlements;
+        client_id_ == other.client_id_ &&
+        feed_ == other.feed_ && 
+        topic_ == other.topic_ &&
+        is_authorization_required_ == other.is_authorization_required_ &&
+        entitlements_ == other.entitlements_;
     }
 
-    bool equals(const std::shared_ptr<Message>& other) const override
+    bool equals(const std::shared_ptr<Message>& other) const noexcept override
     {
       return operator==(*std::static_pointer_cast<AuthorizationResponse>(other));
     }
@@ -66,12 +73,12 @@ namespace squawkbus::feedbus::messages
     {
       return std::format(
         "AuthorizationResponse(message_type={},client_id=\"{}\",feed=\"{}\",topic=\"{}\",is_authorization_required={},entitlements={})",
-        messages::to_string(message_type),
-        client_id,
-        feed,
-        topic,
-        (is_authorization_required ? "<true>" : "<false>"),
-        ::to_string(entitlements)
+        messages::to_string(message_type_),
+        client_id_,
+        feed_,
+        topic_,
+        (is_authorization_required_ ? "<true>" : "<false>"),
+        ::to_string(entitlements_)
       );
     }
 
@@ -80,23 +87,22 @@ namespace squawkbus::feedbus::messages
     void serialize_body(FrameBuffer &frame) const override
     {
       frame
-        << client_id
-        << feed
-        << topic
-        << is_authorization_required
-        << entitlements;
+        << client_id_
+        << feed_
+        << topic_
+        << is_authorization_required_
+        << entitlements_;
     }
 
     void deserialize_body(FrameBuffer &frame) override
     {
       frame
-        >> client_id
-        >> feed
-        >> topic
-        >> is_authorization_required
-        >> entitlements;
+        >> client_id_
+        >> feed_
+        >> topic_
+        >> is_authorization_required_
+        >> entitlements_;
     }
-
   };
 }
 
