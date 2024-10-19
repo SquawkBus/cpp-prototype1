@@ -20,7 +20,7 @@ namespace squawkbus::topicbus::server
   using squawkbus::serialization::FrameReader;
   using squawkbus::topicbus::messages::Message;
 
-  class Interactor : std::enable_shared_from_this<Interactor>
+  class Interactor
   {
   private:
     int fd_;
@@ -41,8 +41,8 @@ namespace squawkbus::topicbus::server
     void send(std::shared_ptr<Message> message);
 
   private:
-    void process_message(std::shared_ptr<Message> message);
-    void authenticate(std::shared_ptr<Message> message);
+    void process_message(Message* message);
+    void authenticate(Message* message);
   };
 
 }

@@ -11,12 +11,14 @@ namespace squawkbus::topicbus::server
   using squawkbus::topicbus::messages::MessageType;
   using squawkbus::topicbus::messages::SubscriptionRequest;
 
-  void Hub::on_message(std::shared_ptr<Interactor> interactor, std::shared_ptr<Message> message)
+  void Hub::on_message(Interactor* interactor, Message* message)
   {
     switch (message->message_type())
     {
     case MessageType::SubscriptionRequest:
-      subscription_manager_.on_subscription(interactor, std::static_pointer_cast<SubscriptionRequest>(message));
+      subscription_manager_.on_subscription(
+        interactor,
+        dynamic_cast<SubscriptionRequest*>(message));
       return;
       
     case MessageType::Authenticate:

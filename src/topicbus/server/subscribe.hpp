@@ -17,26 +17,23 @@ namespace squawkbus::topicbus::server
 
   class SubscriptionManager
   {
-  public:
-    typedef std::shared_ptr<Interactor> interactor_ptr;
-
   private:
-    std::map<std::string, std::vector<interactor_ptr>> subscriptions_;
+    std::map<std::string, std::vector<Interactor*>> subscriptions_;
     std::map<std::string, std::regex> regex_cache_;
-    std::map<interactor_ptr, std::string> _interactor_subscriptions_;
+    std::map<Interactor*, std::string> _interactor_subscriptions_;
 
   public:
     void on_subscription(
-      interactor_ptr interactor,
-      std::shared_ptr<SubscriptionRequest> message);
+      Interactor* interactor,
+      SubscriptionRequest* message);
 
   private:
     void add_subscription(
-      std::shared_ptr<Interactor> interactor,
+      Interactor* interactor,
       const std::string& topic
     );
     void remove_subscription(
-      std::shared_ptr<Interactor> interactor,
+      Interactor* interactor,
       const std::string& topic
     );
   };

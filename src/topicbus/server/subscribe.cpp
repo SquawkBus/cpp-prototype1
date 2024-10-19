@@ -12,8 +12,8 @@ namespace squawkbus::topicbus::server
   using squawkbus::topicbus::messages::SubscriptionRequest;
 
   void SubscriptionManager::on_subscription(
-    interactor_ptr interactor,
-    std::shared_ptr<SubscriptionRequest> message)
+    Interactor* interactor,
+    SubscriptionRequest* message)
   {
     logging::debug(
       std::format(
@@ -28,14 +28,14 @@ namespace squawkbus::topicbus::server
   }
 
   void SubscriptionManager::add_subscription(
-    interactor_ptr interactor,
+    Interactor* interactor,
     const std::string& topic)
   {
     logging::debug(std::format( "add_subscription: {}", topic));
   }
 
   void SubscriptionManager::remove_subscription(
-    interactor_ptr interactor,
+    Interactor* interactor,
     const std::string& topic)
   {
     logging::debug(std::format( "add_subscription: {}", topic));

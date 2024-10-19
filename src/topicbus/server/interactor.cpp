@@ -46,24 +46,24 @@ namespace squawkbus::topicbus::server
     {
       auto frame = reader_.read();
       auto message = Message::deserialize(frame);
-      process_message(message);
+      process_message(message.get());
     }
   }
 
-  void Interactor::process_message(std::shared_ptr<Message> message)
+  void Interactor::process_message(Message* message)
   {
     if (user_ == std::nullopt)
       authenticate(message);
     else
-      hub_.on_message(shared_from_this(), message);
+      hub_.on_message(this, message);
   }
 
-  void Interactor::authenticate(std::shared_ptr<Message> message)
+  void Interactor::authenticate(Message* message)
   {
     if (message->message_type() != MessageType::Authenticate)
       throw std::runtime_error("expected authenticate message");
 
-    auto authenticate_message = std::static_pointer_cast<Authenticate>(message);
+    auto authenticate_message = dynamic_cast<Authenticate*>(message);
     if (authenticate_message->method() == "PLAIN")
     {
       user_ = authenticate_message->data().empty()

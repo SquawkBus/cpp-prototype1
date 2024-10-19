@@ -19,7 +19,7 @@ namespace squawkbus::topicbus::server
     SubscriptionManager subscription_manager_;
 
   public:
-    void on_message(std::shared_ptr<Interactor> interactor, std::shared_ptr<Message> message);
+    void on_message(Interactor* interactor, Message* message);
   };
 }
 
