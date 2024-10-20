@@ -29,6 +29,7 @@ namespace squawkbus::topicbus::server
       SubscriptionRequest* message);
 
     void on_interactor_closed(Interactor* subscriber);
+    std::set<Interactor*> find_subscribers(const std::string& topic) const;
     
   private:
     void add_subscription(

@@ -150,4 +150,31 @@ namespace squawkbus::topicbus::server
     subscriber_topics_.erase(subscriber);
   }
 
+  std::set<Interactor*> SubscriptionManager::find_subscribers(const std::string& topic) const
+  {
+    auto subscribers = std::set<Interactor*> {};
+
+    for (auto& [pattern, regex] : regex_cache_)
+    {
+      if (!std::regex_match(topic, regex))
+      {
+        continue;
+      }
+
+      auto i_subscribers = subscriptions_.find(pattern);
+      if (i_subscribers == subscriptions_.end())
+      {
+        // should never happen.
+        continue;
+      }
+
+      for (auto& [subscriber, count] : i_subscribers->second)
+      {
+        subscribers.insert(subscriber);
+      }
+    }
+
+    return subscribers;
+  }
+
 }
