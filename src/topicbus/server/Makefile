@@ -32,8 +32,8 @@ default: all
 .PHONEY: all
 all: server
 
-server: server.o distributor.o interactor.o hub.o subscribe.o publish.o
-	$(LINK.cc) server.o distributor.o interactor.o hub.o subscribe.o publish.o $(LOADLIBES) $(LDLIBS) -o $@
+server: server.o distributor.o interactor.o hub.o subscribe.o publish.o notify.o
+	$(LINK.cc) server.o distributor.o interactor.o hub.o subscribe.o publish.o notify.o $(LOADLIBES) $(LDLIBS) -o $@
 
 server.o: distributor.hpp $(HEADERS)
 distributor.o: distributor.cpp distributor.hpp $(HEADERS)
@@ -41,7 +41,8 @@ interactor.o: interactor.cpp interactor.hpp $(HEADERS)
 hub.o: hub.cpp hub.hpp $(HEADERS)
 subscribe.o: subscribe.cpp subscribe.hpp $(HEADERS)
 publish.o: publish.cpp publish.hpp $(HEADERS)
+notify.o: notify.cpp notify.hpp $(HEADERS)
 
 .PHONY: clean
 clean:
-	rm -f server.o distributor.o interactor.o hub.o subscribe.o publish.o server
+	rm -f server.o distributor.o interactor.o hub.o subscribe.o publish.o notify.o server

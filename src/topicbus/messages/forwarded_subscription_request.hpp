@@ -17,13 +17,14 @@ namespace squawkbus::topicbus::messages
 
   class ForwardedSubscriptionRequest : public Message
   {
-  public:
-    std::string user;
-    std::string host;
-    std::string client_id;
-    std::string topic;
-    bool is_add;
+  private:
+    std::string user_;
+    std::string host_;
+    std::string client_id_;
+    std::string topic_pattern_;
+    bool is_add_;
 
+  public:
     ForwardedSubscriptionRequest() noexcept
       : Message(MessageType::ForwardedSubscriptionRequest)
     {
@@ -33,25 +34,31 @@ namespace squawkbus::topicbus::messages
       const std::string &user,
       const std::string &host,
       const std::string &client_id,
-      const std::string &topic,
+      const std::string &topic_pattern,
       bool is_add) noexcept
       : Message(MessageType::ForwardedSubscriptionRequest),
-        user(user),
-        host(host),
-        client_id(client_id),
-        topic(topic),
-        is_add(is_add)
+        user_(user),
+        host_(host),
+        client_id_(client_id),
+        topic_pattern_(topic_pattern),
+        is_add_(is_add)
     {
     }
+
+    const std::string& user() const noexcept { return user_; }
+    const std::string& host() const noexcept { return host_; }
+    const std::string& client_id() const noexcept { return client_id_; }
+    const std::string& topic_pattern() const noexcept { return topic_pattern_; }
+    bool is_add() const noexcept { return is_add_; }
 
     bool operator==(const ForwardedSubscriptionRequest &other) const noexcept
     {
       return Message::operator==(other) &&
-        user == other.user &&
-        host == other.host &&
-        client_id == other.client_id &&
-        topic == other.topic &&
-        is_add == other.is_add;
+        user_ == other.user_ &&
+        host_ == other.host_ &&
+        client_id_ == other.client_id_ &&
+        topic_pattern_ == other.topic_pattern_ &&
+        is_add_ == other.is_add_;
     }
 
     bool equals(const Message* other) const noexcept override
@@ -64,11 +71,11 @@ namespace squawkbus::topicbus::messages
       return std::format(
         "ForwardedSubscriptionRequest(message_type={},user=\"{}\",host=\"{}\",client_id=\"{}\",topic=\"{}\",is_add={})",
         messages::to_string(message_type_),
-        user,
-        host,
-        client_id,
-        topic,
-        (is_add ? "<true>" : "<false>"));
+        user_,
+        host_,
+        client_id_,
+        topic_pattern_,
+        (is_add_ ? "<true>" : "<false>"));
     }
 
   protected:
@@ -76,21 +83,21 @@ namespace squawkbus::topicbus::messages
     void serialize_body(FrameBuffer &frame) const override
     {
       frame
-        << user
-        << host
-        << client_id
-        << topic
-        << is_add;
+        << user_
+        << host_
+        << client_id_
+        << topic_pattern_
+        << is_add_;
     }
 
     void deserialize_body(FrameBuffer &frame) override
     {
       frame
-        >> user
-        >> host
-        >> client_id
-        >> topic
-        >> is_add;
+        >> user_
+        >> host_
+        >> client_id_
+        >> topic_pattern_
+        >> is_add_;
     }
   };
 }
