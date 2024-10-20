@@ -19,26 +19,26 @@ namespace squawkbus::topicbus::server
     logging::debug(
       std::format(
         "on_subscription: {} ({})",
-        message->topic(),
+        message->topic_pattern(),
         (message->is_add() ? "<true>" : "<false>")));
 
     if (message->is_add())
-      add_subscription(subscriber, message->topic());
+      add_subscription(subscriber, message->topic_pattern());
     else
-      remove_subscription(subscriber, message->topic());
+      remove_subscription(subscriber, message->topic_pattern());
   }
 
   void SubscriptionManager::add_subscription(
     Interactor* subscriber,
-    const std::string& topic)
+    const std::string& topic_pattern)
   {
-    logging::debug(std::format( "add_subscription: {}", topic));
+    logging::debug(std::format( "add_subscription: {}", topic_pattern));
 
-    auto i_subscription = subscriptions_.find(topic);
+    auto i_subscription = subscriptions_.find(topic_pattern);
     if (i_subscription == subscriptions_.end())
     {
-      subscriptions_.insert( { { topic, { {subscriber, 1} } } });
-      regex_cache_.insert({ { topic, std::regex(topic) } });
+      subscriptions_.insert( { { topic_pattern, { {subscriber, 1} } } });
+      regex_cache_.insert({ { topic_pattern, std::regex(topic_pattern) } });
     }
     else
     {
@@ -60,22 +60,22 @@ namespace squawkbus::topicbus::server
     if (i_subscriber_topics == subscriber_topics_.end())
     {
       // A new subscriber.
-      subscriber_topics_.insert({ { subscriber, { {topic} } } });
+      subscriber_topics_.insert({ { subscriber, { {topic_pattern} } } });
     }
     else
     {
       // Add this topic to the subscriber.
-      i_subscriber_topics->second.insert(topic);
+      i_subscriber_topics->second.insert(topic_pattern);
     }
   }
 
   void SubscriptionManager::remove_subscription(
     Interactor* subscriber,
-    const std::string& topic)
+    const std::string& topic_pattern)
   {
-    logging::debug(std::format( "remove_subscription: {}", topic));
+    logging::debug(std::format( "remove_subscription: {}", topic_pattern));
 
-    auto i_subscription = subscriptions_.find(topic);
+    auto i_subscription = subscriptions_.find(topic_pattern);
     if (i_subscription == subscriptions_.end())
     {
       return;
@@ -101,8 +101,8 @@ namespace squawkbus::topicbus::server
     if (subscribers.empty())
     {
       // the topic no longer has subscribers.
-      subscriptions_.erase(topic);
-      regex_cache_.erase(topic);
+      subscriptions_.erase(topic_pattern);
+      regex_cache_.erase(topic_pattern);
     }
 
     auto i_subscriber_topics = subscriber_topics_.find(subscriber);
@@ -113,7 +113,7 @@ namespace squawkbus::topicbus::server
     }
 
     // Remove the topic from the subscriber.
-    i_subscriber_topics->second.erase(topic);
+    i_subscriber_topics->second.erase(topic_pattern);
     if (i_subscriber_topics->second.empty())
     {
       // Remove a subscriber with no subscriptions.
@@ -129,9 +129,9 @@ namespace squawkbus::topicbus::server
       return;
     }
 
-    for (auto& topic : i_subscriber_topics->second)
+    for (auto& topic_pattern : i_subscriber_topics->second)
     {
-      auto i_subscriptions = subscriptions_.find(topic);
+      auto i_subscriptions = subscriptions_.find(topic_pattern);
       if (i_subscriptions == subscriptions_.end())
       {
         continue;
@@ -143,8 +143,8 @@ namespace squawkbus::topicbus::server
         continue;
       }
 
-      subscriptions_.erase(topic);
-      regex_cache_.erase(topic);
+      subscriptions_.erase(topic_pattern);
+      regex_cache_.erase(topic_pattern);
     }
 
     subscriber_topics_.erase(subscriber);
@@ -154,14 +154,14 @@ namespace squawkbus::topicbus::server
   {
     auto subscribers = std::set<Interactor*> {};
 
-    for (auto& [pattern, regex] : regex_cache_)
+    for (auto& [topic_pattern, regex] : regex_cache_)
     {
       if (!std::regex_match(topic, regex))
       {
         continue;
       }
 
-      auto i_subscribers = subscriptions_.find(pattern);
+      auto i_subscribers = subscriptions_.find(topic_pattern);
       if (i_subscribers == subscriptions_.end())
       {
         // should never happen.

@@ -34,11 +34,11 @@ namespace squawkbus::topicbus::server
   private:
     void add_subscription(
       Interactor* subscriber,
-      const std::string& topic
+      const std::string& topic_pattern
     );
     void remove_subscription(
       Interactor* subscriber,
-      const std::string& topic
+      const std::string& topic_pattern
     );
   };
 }

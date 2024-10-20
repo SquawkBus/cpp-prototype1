@@ -18,7 +18,7 @@ namespace squawkbus::topicbus::messages
   class SubscriptionRequest : public Message
   {
   private:
-    std::string topic_;
+    std::string topic_pattern_;
     bool is_add_;
 
   public:
@@ -28,22 +28,22 @@ namespace squawkbus::topicbus::messages
     }
 
     SubscriptionRequest(
-      const std::string &topic,
+      const std::string &topic_pattern,
       bool is_add) noexcept
       : Message(MessageType::SubscriptionRequest),
-        topic_(topic),
+        topic_pattern_(topic_pattern),
         is_add_(is_add)
     {
     }
 
-    const std::string& topic() const noexcept { return topic_; }
+    const std::string& topic_pattern() const noexcept { return topic_pattern_; }
     bool is_add() const noexcept { return is_add_; }
 
     bool operator==(const SubscriptionRequest &other) const noexcept
     {
       return
         Message::operator==(other) &&
-        topic_ == other.topic_ &&
+        topic_pattern_ == other.topic_pattern_ &&
         is_add_ == other.is_add_;
     }
 
@@ -55,9 +55,9 @@ namespace squawkbus::topicbus::messages
     std::string str() const override
     {
       return std::format(
-        "SubscriptionRequest(message_type={},topic=\"{}\",is_add={})",
+        "SubscriptionRequest(message_type={},topic_pattern=\"{}\",is_add={})",
         messages::to_string(message_type_),
-        topic_,
+        topic_pattern_,
         (is_add_ ? "<true>" : "<false"));
     }
 
@@ -66,14 +66,14 @@ namespace squawkbus::topicbus::messages
     void serialize_body(FrameBuffer &frame) const override
     {
       frame
-        << topic_
+        << topic_pattern_
         << is_add_;
     }
 
     void deserialize_body(FrameBuffer &frame) override
     {
       frame
-        >> topic_
+        >> topic_pattern_
         >> is_add_;
     }
   };
