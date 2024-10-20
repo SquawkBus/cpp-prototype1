@@ -5,7 +5,9 @@
 
 #include "topicbus/messages/message.hpp"
 
+#include "publish.hpp"
 #include "subscribe.hpp"
+#include "notify.hpp"
 
 namespace squawkbus::topicbus::server
 {
@@ -16,7 +18,9 @@ namespace squawkbus::topicbus::server
   class Hub
   {
   private:
+    PublisherManager publisher_manager_;
     SubscriptionManager subscription_manager_;
+    NotificationManager notification_manager_;
 
   public:
     void on_message(Interactor* interactor, Message* message);

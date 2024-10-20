@@ -1,5 +1,3 @@
-#include "interactor.hpp"
-
 #include <format>
 #include <stdexcept>
 #include <string>
@@ -8,6 +6,9 @@
 
 #include "serialization/frame_buffer.hpp"
 #include "serialization/frame_buffer_io.hpp"
+
+#include "interactor.hpp"
+#include "hub.hpp"
 
 namespace squawkbus::topicbus::server
 {

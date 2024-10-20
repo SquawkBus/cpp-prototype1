@@ -12,13 +12,13 @@
 
 #include "topicbus/messages/message.hpp"
 
-#include "hub.hpp"
-
 namespace squawkbus::topicbus::server
 {
   using squawkbus::io::Poller;
   using squawkbus::serialization::FrameReader;
   using squawkbus::topicbus::messages::Message;
+
+  class Hub;
 
   class Interactor
   {
