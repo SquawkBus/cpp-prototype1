@@ -21,13 +21,15 @@ namespace squawkbus::topicbus::server
   private:
     std::map<std::string, std::map<Interactor*, int>> subscriptions_;
     std::map<std::string, std::regex> regex_cache_;
-    std::map<Interactor*, std::set<std::string>> interactor_subscriptions_;
+    std::map<Interactor*, std::set<std::string>> subscriber_topics_;
 
   public:
     void on_subscription(
       Interactor* subscriber,
       SubscriptionRequest* message);
 
+    void on_interactor_closed(Interactor* subscriber);
+    
   private:
     void add_subscription(
       Interactor* subscriber,

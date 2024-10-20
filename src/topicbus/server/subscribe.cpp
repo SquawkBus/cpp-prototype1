@@ -56,16 +56,16 @@ namespace squawkbus::topicbus::server
       }
     }
 
-    auto i_interator_subscription = interactor_subscriptions_.find(subscriber);
-    if (i_interator_subscription == interactor_subscriptions_.end())
+    auto i_subscriber_topics = subscriber_topics_.find(subscriber);
+    if (i_subscriber_topics == subscriber_topics_.end())
     {
-      // new interactor subscription.
-      interactor_subscriptions_.insert({ { subscriber, { {topic} } } });
+      // A new subscriber.
+      subscriber_topics_.insert({ { subscriber, { {topic} } } });
     }
     else
     {
-      // add this topic.
-      i_interator_subscription->second.insert(topic);
+      // Add this topic to the subscriber.
+      i_subscriber_topics->second.insert(topic);
     }
   }
 
@@ -105,17 +105,49 @@ namespace squawkbus::topicbus::server
       regex_cache_.erase(topic);
     }
 
-    auto i_interactor_subscription = interactor_subscriptions_.find(subscriber);
-    if (i_interactor_subscription == interactor_subscriptions_.end())
+    auto i_subscriber_topics = subscriber_topics_.find(subscriber);
+    if (i_subscriber_topics == subscriber_topics_.end())
+    {
+      // This would be a program logic error.
+      return;
+    }
+
+    // Remove the topic from the subscriber.
+    i_subscriber_topics->second.erase(topic);
+    if (i_subscriber_topics->second.empty())
+    {
+      // Remove a subscriber with no subscriptions.
+      subscriber_topics_.erase(subscriber);
+    }
+  }
+
+  void SubscriptionManager::on_interactor_closed(Interactor* subscriber)
+  {
+    auto i_subscriber_topics = subscriber_topics_.find(subscriber);
+    if (i_subscriber_topics == subscriber_topics_.end())
     {
       return;
     }
-    
-    i_interactor_subscription->second.erase(topic);
-    if (i_interactor_subscription->second.empty())
+
+    for (auto& topic : i_subscriber_topics->second)
     {
-      // remove a subscriber with no subscriptions.
-      interactor_subscriptions_.erase(subscriber);
+      auto i_subscriptions = subscriptions_.find(topic);
+      if (i_subscriptions == subscriptions_.end())
+      {
+        continue;
+      }
+
+      i_subscriptions->second.erase(subscriber);
+      if (!i_subscriptions->second.empty())
+      {
+        continue;
+      }
+
+      subscriptions_.erase(topic);
+      regex_cache_.erase(topic);
     }
+
+    subscriber_topics_.erase(subscriber);
   }
+
 }
