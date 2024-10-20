@@ -18,7 +18,8 @@ namespace squawkbus::topicbus::server
     case MessageType::SubscriptionRequest:
       subscription_manager_.on_subscription(
         interactor,
-        dynamic_cast<SubscriptionRequest*>(message));
+        dynamic_cast<SubscriptionRequest*>(message),
+        notification_manager_);
       return;
       
     case MessageType::Authenticate:

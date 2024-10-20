@@ -15,6 +15,7 @@ namespace squawkbus::topicbus::server
   using squawkbus::topicbus::messages::SubscriptionRequest;
 
   class Interactor;
+  class NotificationManager;
 
   class SubscriptionManager
   {
@@ -26,7 +27,8 @@ namespace squawkbus::topicbus::server
   public:
     void on_subscription(
       Interactor* subscriber,
-      SubscriptionRequest* message);
+      SubscriptionRequest* message,
+      NotificationManager& notification_manager);
 
     void on_interactor_closed(Interactor* subscriber);
     std::set<Interactor*> find_subscribers(const std::string& topic) const;
@@ -34,12 +36,12 @@ namespace squawkbus::topicbus::server
   private:
     void add_subscription(
       Interactor* subscriber,
-      const std::string& topic_pattern
-    );
+      const std::string& topic_pattern,
+      NotificationManager& notification_manage);
     void remove_subscription(
       Interactor* subscriber,
-      const std::string& topic_pattern
-    );
+      const std::string& topic_pattern,
+      NotificationManager& notification_manage);
   };
 }
 

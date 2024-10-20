@@ -3,8 +3,9 @@
 
 #include "logging/log.hpp"
 
-#include "subscribe.hpp"
 #include "interactor.hpp"
+#include "notify.hpp"
+#include "subscribe.hpp"
 
 namespace logging = squawkbus::logging;
 
@@ -14,7 +15,8 @@ namespace squawkbus::topicbus::server
 
   void SubscriptionManager::on_subscription(
     Interactor* subscriber,
-    SubscriptionRequest* message)
+    SubscriptionRequest* message,
+    NotificationManager& notification_manager)
   {
     logging::debug(
       std::format(
@@ -23,14 +25,15 @@ namespace squawkbus::topicbus::server
         (message->is_add() ? "<true>" : "<false>")));
 
     if (message->is_add())
-      add_subscription(subscriber, message->topic_pattern());
+      add_subscription(subscriber, message->topic_pattern(), notification_manager);
     else
-      remove_subscription(subscriber, message->topic_pattern());
+      remove_subscription(subscriber, message->topic_pattern(), notification_manager);
   }
 
   void SubscriptionManager::add_subscription(
     Interactor* subscriber,
-    const std::string& topic_pattern)
+    const std::string& topic_pattern,
+    NotificationManager& notification_manager)
   {
     logging::debug(std::format( "add_subscription: {}", topic_pattern));
 
@@ -71,7 +74,8 @@ namespace squawkbus::topicbus::server
 
   void SubscriptionManager::remove_subscription(
     Interactor* subscriber,
-    const std::string& topic_pattern)
+    const std::string& topic_pattern,
+    NotificationManager& notification_manager)
   {
     logging::debug(std::format( "remove_subscription: {}", topic_pattern));
 
