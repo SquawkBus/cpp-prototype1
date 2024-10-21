@@ -26,14 +26,26 @@ HEADERS = \
 	${SRC_DIR}/utils/match.hpp \
 	${SRC_DIR}/utils/utils.hpp
 
+SOURCES = \
+	server.cpp \
+	distributor.cpp \
+	interactor.cpp \
+	hub.cpp \
+	subscription_manager.cpp \
+	subscription_repository.cpp \
+	publish.cpp \
+	notify.cpp
+
+OBJECTS = $(SOURCES:%.cpp=%.o)
+
 .PHONEY: default
 default: all
 
 .PHONEY: all
 all: server
 
-server: server.o distributor.o interactor.o hub.o subscription_manager.o subscription_repository.o  publish.o notify.o
-	$(LINK.cc) server.o distributor.o interactor.o hub.o subscription_manager.o subscription_repository.o publish.o notify.o $(LOADLIBES) $(LDLIBS) -o $@
+server: $(OBJECTS)
+	$(LINK.cc) $(OBJECTS) $(LOADLIBES) $(LDLIBS) -o $@
 
 server.o: server.cpp distributor.hpp $(HEADERS)
 distributor.o: distributor.cpp distributor.hpp $(HEADERS)
@@ -46,4 +58,4 @@ notify.o: notify.cpp notify.hpp $(HEADERS)
 
 .PHONY: clean
 clean:
-	rm -f server.o distributor.o interactor.o hub.o subscription_manager.o subscription_repository.o publish.o notify.o server
+	rm -f $(OBJECTS) server
