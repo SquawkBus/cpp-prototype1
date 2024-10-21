@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-#include "messages/message.hpp"
+#include "messages/messages.hpp"
 
 #include "subscription_repository.hpp"
 

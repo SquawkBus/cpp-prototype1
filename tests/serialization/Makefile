@@ -14,14 +14,17 @@ test: all
 	./test_frame_buffer -s
 	./test_network_bytes -s
 
-test_data_packet: test_data_packet.cpp
-test_data_packet.cpp: ${SRC_DIR}/serialization/data_packet.hpp
+test_data_packet: test_data_packet.o
+	$(LINK.cc) $^ $(LOADLIBES) $(LDLIBS) -o $@
+test_data_packet.o: test_data_packet.cpp ${SRC_DIR}/serialization/data_packet.hpp
 
-test_frame_buffer: test_frame_buffer.cpp
-test_frame_buffer.cpp: ${SRC_DIR}/serialization/frame_buffer.hpp
+test_frame_buffer: test_frame_buffer.o
+	$(LINK.cc) $^ $(LOADLIBES) $(LDLIBS) -o $@
+test_frame_buffer.o: test_frame_buffer.cpp ${SRC_DIR}/serialization/frame_buffer.hpp
 
-test_network_bytes: test_network_bytes.cpp
-test_network_bytes.cpp: ${SRC_DIR}/serialization/network_bytes.hpp
+test_network_bytes: test_network_bytes.o
+	$(LINK.cc) $^ $(LOADLIBES) $(LDLIBS) -o $@
+test_network_bytes.o: test_network_bytes.cpp ${SRC_DIR}/serialization/network_bytes.hpp
 
 clean:
 	rm -f test_data_packet.o test_data_packet

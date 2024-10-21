@@ -3,7 +3,7 @@
 
 #include <memory>
 
-#include "messages/message.hpp"
+#include "messages/messages.hpp"
 
 #include "publish.hpp"
 #include "subscription_manager.hpp"

@@ -1,5 +1,5 @@
-#ifndef SQUAWKBUS_MESSAGES_NOTIFICATION_REQUEST_HPP
-#define SQUAWKBUS_MESSAGES_NOTIFICATION_REQUEST_HPP
+#ifndef SQUAWKBUS_MESSAGES_SUBSCRIPTION_REQUEST_HPP
+#define SQUAWKBUS_MESSAGES_SUBSCRIPTION_REQUEST_HPP
 
 #include <format>
 #include <memory>
@@ -8,29 +8,29 @@
 #include "serialization/frame_buffer.hpp"
 #include "serialization/frame_buffer_io.hpp"
 
-#include "messages/message_type.hpp"
-#include "messages/message.hpp"
+#include "messages/_message_type.hpp"
+#include "messages/_message.hpp"
 
 namespace squawkbus::messages
 {
   using serialization::FrameBuffer;
 
-  class NotificationRequest : public Message
+  class SubscriptionRequest : public Message
   {
   private:
     std::string topic_pattern_;
     bool is_add_;
 
   public:
-    NotificationRequest() noexcept
-      : Message(MessageType::NotificationRequest)
+    SubscriptionRequest() noexcept
+      : Message(MessageType::SubscriptionRequest)
     {
     }
 
-    NotificationRequest(
+    SubscriptionRequest(
       const std::string &topic_pattern,
       bool is_add) noexcept
-      : Message(MessageType::NotificationRequest),
+      : Message(MessageType::SubscriptionRequest),
         topic_pattern_(topic_pattern),
         is_add_(is_add)
     {
@@ -39,7 +39,7 @@ namespace squawkbus::messages
     const std::string& topic_pattern() const noexcept { return topic_pattern_; }
     bool is_add() const noexcept { return is_add_; }
 
-    bool operator==(const NotificationRequest &other) const noexcept
+    bool operator==(const SubscriptionRequest &other) const noexcept
     {
       return
         Message::operator==(other) &&
@@ -49,16 +49,16 @@ namespace squawkbus::messages
 
     bool equals(const Message* other) const noexcept override
     {
-      return operator==(*dynamic_cast<const NotificationRequest*>(other));
+      return operator==(*dynamic_cast<const SubscriptionRequest*>(other));
     }
 
     std::string str() const override
     {
       return std::format(
-        "NotificationRequest(message_type={},topic_pattern=\"{}\",is_add={})",
+        "SubscriptionRequest(message_type={},topic_pattern=\"{}\",is_add={})",
         messages::to_string(message_type_),
         topic_pattern_,
-        (is_add_ ? "<true>" : "<false>"));
+        (is_add_ ? "<true>" : "<false"));
     }
 
   protected:
@@ -79,4 +79,4 @@ namespace squawkbus::messages
   };
 }
 
-#endif // SQUAWKBUS_MESSAGES_NOTIFICATION_REQUEST_HPP
+#endif // SQUAWKBUS_MESSAGES_SUBSCRIPTION_REQUEST_HPP

@@ -12,7 +12,7 @@
 #include "io/tcp_client_socket.hpp"
 #include "logging/log.hpp"
 #include "utils/utils.hpp"
-#include "messages/message.hpp"
+#include "messages/messages.hpp"
 
 namespace squawkbus::client
 {

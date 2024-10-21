@@ -8,8 +8,8 @@
 #include "serialization/frame_buffer.hpp"
 #include "serialization/frame_buffer_io.hpp"
 
-#include "messages/message_type.hpp"
-#include "messages/message.hpp"
+#include "messages/_message_type.hpp"
+#include "messages/_message.hpp"
 
 namespace squawkbus::messages
 {

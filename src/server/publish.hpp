@@ -5,7 +5,7 @@
 #include <set>
 #include <string>
 
-#include "messages/message.hpp"
+#include "messages/messages.hpp"
 
 #include "interactor.hpp"
 

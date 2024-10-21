@@ -10,7 +10,7 @@
 #include "io/poller.hpp"
 #include "serialization/frame_reader.hpp"
 
-#include "messages/message.hpp"
+#include "messages/messages.hpp"
 
 namespace squawkbus::server
 {

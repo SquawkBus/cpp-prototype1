@@ -35,7 +35,7 @@ all: server
 server: server.o distributor.o interactor.o hub.o subscription_manager.o subscription_repository.o  publish.o notify.o
 	$(LINK.cc) server.o distributor.o interactor.o hub.o subscription_manager.o subscription_repository.o publish.o notify.o $(LOADLIBES) $(LDLIBS) -o $@
 
-server.o: distributor.hpp $(HEADERS)
+server.o: server.cpp distributor.hpp $(HEADERS)
 distributor.o: distributor.cpp distributor.hpp $(HEADERS)
 interactor.o: interactor.cpp interactor.hpp $(HEADERS)
 hub.o: hub.cpp hub.hpp $(HEADERS)
