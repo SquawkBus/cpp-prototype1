@@ -20,12 +20,13 @@ namespace squawkbus::messages
 
   class UnicastData : public Message
   {
-  public:
-    std::string client_id;
-    std::string topic;
-    std::string content_type;
-    std::vector<DataPacket> data_packets;
+  private:
+    std::string client_id_;
+    std::string topic_;
+    std::string content_type_;
+    std::vector<DataPacket> data_packets_;
 
+  public:
     UnicastData() noexcept
       : Message(MessageType::UnicastData)
     {
@@ -37,21 +38,26 @@ namespace squawkbus::messages
       const std::string& content_type,
       const std::vector<DataPacket>& data_packets) noexcept
       : Message(MessageType::UnicastData),
-        client_id(client_id),
-        topic(topic),
-        content_type(content_type),
-        data_packets(data_packets)
+        client_id_(client_id),
+        topic_(topic),
+        content_type_(content_type),
+        data_packets_(data_packets)
     {
     }
+
+    const std::string& client_id() const noexcept { return client_id_; }
+    const std::string& topic() const noexcept { return topic_; }
+    const std::string& content_type() const noexcept { return content_type_; }
+    const std::vector<DataPacket>& data_packets() const noexcept { return data_packets_; }
 
     bool operator==(const UnicastData &other) const noexcept
     {
       return
         Message::operator==(other) &&
-        client_id == other.client_id &&
-        topic == other.topic &&
-        content_type == other.content_type &&
-        data_packets == other.data_packets;
+        client_id_ == other.client_id_ &&
+        topic_ == other.topic_ &&
+        content_type_ == other.content_type_ &&
+        data_packets_ == other.data_packets_;
     }
 
     bool equals(const Message* other) const noexcept override
@@ -64,10 +70,10 @@ namespace squawkbus::messages
       return std::format(
         "UnicastData(message_type={},client_id=\"{}\",topic=\"{}\",content_type=\"{}\",data_packets={})",
         messages::to_string(message_type_),
-        client_id,
-        topic,
-        content_type,
-        ::to_string(data_packets));
+        client_id_,
+        topic_,
+        content_type_,
+        ::to_string(data_packets_));
     }
 
   protected:
@@ -75,19 +81,19 @@ namespace squawkbus::messages
     void serialize_body(FrameBuffer &frame) const override
     {
       frame
-        << client_id
-        << topic
-        << content_type
-        << data_packets;
+        << client_id_
+        << topic_
+        << content_type_
+        << data_packets_;
     }
 
     void deserialize_body(FrameBuffer &frame) override
     {
       frame
-        >> client_id
-        >> topic
-        >> content_type
-        >> data_packets;
+        >> client_id_
+        >> topic_
+        >> content_type_
+        >> data_packets_;
     }
   };
 }

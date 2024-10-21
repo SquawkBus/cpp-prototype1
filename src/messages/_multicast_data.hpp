@@ -20,11 +20,12 @@ namespace squawkbus::messages
 
   class MulticastData : public Message
   {
-  public:
-    std::string topic;
-    std::string content_type;
-    std::vector<DataPacket> data_packets;
+  private:
+    std::string topic_;
+    std::string content_type_;
+    std::vector<DataPacket> data_packets_;
 
+  public:
     MulticastData() noexcept
       : Message(MessageType::MulticastData)
     {
@@ -35,19 +36,23 @@ namespace squawkbus::messages
       const std::string &content_type,
       const std::vector<DataPacket> &data_packets) noexcept
       : Message(MessageType::MulticastData),
-        topic(topic),
-        content_type(content_type),
-        data_packets(data_packets)
+        topic_(topic),
+        content_type_(content_type),
+        data_packets_(data_packets)
     {
     }
+
+    const std::string& topic() const noexcept { return topic_; }
+    const std::string& content_type() const noexcept { return content_type_; }
+    const std::vector<DataPacket>& data_packets() const noexcept { return data_packets_; }
 
     bool operator==(const MulticastData &other) const noexcept
     {
       return
         Message::operator==(other) &&
-        topic == other.topic &&
-        content_type == other.content_type &&
-        data_packets == other.data_packets;
+        topic_ == other.topic_ &&
+        content_type_ == other.content_type_ &&
+        data_packets_ == other.data_packets_;
     }
 
     bool equals(const Message* other) const noexcept override
@@ -60,9 +65,9 @@ namespace squawkbus::messages
       return std::format(
         "MulticastData(message_type={},topic=\"{}\",content_type=\"{}\",data_packets={})",
         messages::to_string(message_type_),
-        topic,
-        content_type,
-        ::to_string(data_packets));
+        topic_,
+        content_type_,
+        ::to_string(data_packets_));
     }
 
   protected:
@@ -70,17 +75,17 @@ namespace squawkbus::messages
     void serialize_body(FrameBuffer &frame) const override
     {
       frame
-        << topic
-        << content_type
-        << data_packets;
+        << topic_
+        << content_type_
+        << data_packets_;
     }
 
     void deserialize_body(FrameBuffer &frame) override
     {
       frame
-        >> topic
-        >> content_type
-        >> data_packets;
+        >> topic_
+        >> content_type_
+        >> data_packets_;
     }
   };
 }
