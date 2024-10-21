@@ -5,6 +5,20 @@ EXT_DIR=${ROOT_DIR}/externals
 INCLUDES=-I${SRC_DIR} -I${EXT_DIR}
 CXXFLAGS=${INCLUDES} -std=c++23 -g
 
+MESSAGES = \
+	${SRC_DIR}/messages/_authenticate.hpp \
+	${SRC_DIR}/messages/_forwarded_multicast_data.hpp \
+	${SRC_DIR}/messages/_forwarded_subscription_request.hpp \
+	${SRC_DIR}/messages/_forwarded_unicast_data.hpp \
+	${SRC_DIR}/messages/_message_inline.hpp \
+	${SRC_DIR}/messages/_message_type.hpp \
+	${SRC_DIR}/messages/_message.hpp \
+	${SRC_DIR}/messages/_multicast_data.hpp \
+	${SRC_DIR}/messages/_notification_request.hpp \
+	${SRC_DIR}/messages/_subscription_request.hpp \
+	${SRC_DIR}/messages/_unicast_data.hpp \
+	${SRC_DIR}/messages/messages.hpp
+	
 .PHONY: all clean test
 
 all: \
@@ -28,29 +42,37 @@ test: all
 	./test_subscription_request -s
 	./test_unicast_data -s
 
-test_authenticate: test_authenticate.cpp
-test_authenticate.cpp: ${SRC_DIR}/messages/authenticate.hpp
+test_authenticate: test_authenticate.o
+	$(LINK.cc) $^ $(LOADLIBES) $(LDLIBS) -o $@
+test_authenticate.o: test_authenticate.cpp ${HEADERS}
 
-test_forwarded_multicast_data: test_forwarded_multicast_data.cpp
-test_forwarded_multicast_data.cpp: ${SRC_DIR}/messages/forwarded_multicast_data.hpp
+test_forwarded_multicast_data: test_forwarded_multicast_data.o
+	$(LINK.cc) $^ $(LOADLIBES) $(LDLIBS) -o $@
+test_forwarded_multicast_data.o: test_forwarded_multicast_data.cpp ${HEADERS}
 
-test_forwarded_subscription_request: test_forwarded_subscription_request.cpp
-test_forwarded_subscription_request.cpp: ${SRC_DIR}/messages/forwarded_subscription_request.hpp
+test_forwarded_subscription_request: test_forwarded_subscription_request.o
+	$(LINK.cc) $^ $(LOADLIBES) $(LDLIBS) -o $@
+test_forwarded_subscription_request.o: test_forwarded_subscription_request.cpp ${HEADERS}
 
-test_forwarded_unicast_data: test_forwarded_unicast_data.cpp
-test_forwarded_unicast_data.cpp: ${SRC_DIR}/messages/forwarded_unicast_data.hpp
+test_forwarded_unicast_data: test_forwarded_unicast_data.o
+	$(LINK.cc) $^ $(LOADLIBES) $(LDLIBS) -o $@
+test_forwarded_unicast_data.o: test_forwarded_unicast_data.cpp ${HEADERS}
 
-test_multicast_data: test_multicast_data.cpp
-test_multicast_data.cpp: ${SRC_DIR}/messages/multicast_data.hpp
+test_multicast_data: test_multicast_data.o
+	$(LINK.cc) $^ $(LOADLIBES) $(LDLIBS) -o $@
+test_multicast_data.o: test_multicast_data.cpp ${HEADERS}
 
-test_notification_request: test_notification_request.cpp
-test_notification_request.cpp: ${SRC_DIR}/messages/notification_request.hpp
+test_notification_request: test_notification_request.o
+	$(LINK.cc) $^ $(LOADLIBES) $(LDLIBS) -o $@
+test_notification_request.o: test_notification_request.cpp ${HEADERS}
 
-test_subscription_request: test_subscription_request.cpp
-test_subscription_request.cpp: ${SRC_DIR}/messages/subscription_request.hpp
+test_subscription_request: test_subscription_request.o
+	$(LINK.cc) $^ $(LOADLIBES) $(LDLIBS) -o $@
+test_subscription_request.o: test_subscription_request.cpp ${HEADERS}
 
-test_unicast_data: test_unicast_data.cpp
-test_unicast_data.cpp: ${SRC_DIR}/messages/unicast_data.hpp
+test_unicast_data: test_unicast_data.o
+	$(LINK.cc) $^ $(LOADLIBES) $(LDLIBS) -o $@
+test_unicast_data.o: test_unicast_data.cpp ${HEADERS}
 
 clean:
 	rm -f test_authenticate.o test_authenticate

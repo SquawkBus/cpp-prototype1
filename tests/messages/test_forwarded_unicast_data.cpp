@@ -5,7 +5,7 @@
 
 #include "serialization/frame_buffer.hpp"
 #include "serialization/data_packet.hpp"
-#include "messages/message.hpp"
+#include "messages/messages.hpp"
 
 #define CATCH_CONFIG_MAIN
 #include "catch2/catch.hpp"

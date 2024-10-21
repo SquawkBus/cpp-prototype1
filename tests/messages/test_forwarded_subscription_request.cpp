@@ -1,7 +1,7 @@
 #include <memory>
 
 #include "serialization/frame_buffer.hpp"
-#include "messages/message.hpp"
+#include "messages/messages.hpp"
 
 #define CATCH_CONFIG_MAIN
 #include "catch2/catch.hpp"
