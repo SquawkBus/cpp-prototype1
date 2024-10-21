@@ -51,7 +51,7 @@ namespace squawkbus::server
     }
   }
 
-  void Interactor::process_message(Message* message)
+  void Interactor::process_message(const Message* message)
   {
     if (user_ == std::nullopt)
       authenticate(message);
@@ -59,12 +59,12 @@ namespace squawkbus::server
       hub_.on_message(this, message);
   }
 
-  void Interactor::authenticate(Message* message)
+  void Interactor::authenticate(const Message* message)
   {
     if (message->message_type() != MessageType::Authenticate)
       throw std::runtime_error("expected authenticate message");
 
-    auto authenticate_message = dynamic_cast<Authenticate*>(message);
+    auto authenticate_message = dynamic_cast<const Authenticate*>(message);
     if (authenticate_message->method() == "PLAIN")
     {
       user_ = authenticate_message->data().empty()

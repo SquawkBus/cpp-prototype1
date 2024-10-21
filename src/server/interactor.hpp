@@ -43,8 +43,8 @@ namespace squawkbus::server
     void send(std::shared_ptr<Message> message);
 
   private:
-    void process_message(Message* message);
-    void authenticate(Message* message);
+    void process_message(const Message* message);
+    void authenticate(const Message* message);
   };
 
 }
