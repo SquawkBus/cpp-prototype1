@@ -10,6 +10,8 @@
 
 #include "topicbus/messages/message.hpp"
 
+#include "subscription_repository.hpp"
+
 namespace squawkbus::topicbus::server
 {
   using squawkbus::topicbus::messages::SubscriptionRequest;
@@ -20,9 +22,7 @@ namespace squawkbus::topicbus::server
   class SubscriptionManager
   {
   private:
-    std::map<std::string, std::map<Interactor*, int>> subscriptions_;
-    std::map<std::string, std::regex> regex_cache_;
-    std::map<Interactor*, std::set<std::string>> subscriber_topics_;
+    SubscriptionRepository repository_;
 
   public:
     void on_subscription(
@@ -31,7 +31,6 @@ namespace squawkbus::topicbus::server
       NotificationManager& notification_manager);
 
     void on_interactor_closed(Interactor* subscriber);
-    std::set<Interactor*> find_subscribers(const std::string& topic) const;
     
   private:
     void add_subscription(
