@@ -36,4 +36,10 @@ namespace squawkbus::server
   {
     repository_.remove_interactor(subscriber);
   }
+
+  std::vector<std::pair<std::string, std::vector<Interactor*>>> SubscriptionManager::find_matching_subscriptions(const std::regex& regex) const
+  {
+    return repository_.find_matching_subscriptions(regex);
+
+  }
 }

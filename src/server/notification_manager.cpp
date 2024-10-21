@@ -22,9 +22,20 @@ namespace squawkbus::server
         (message->is_add() ? "<true>" : "<false>")));
 
     if (message->is_add())
-      repository_.add_listener(listener, message->topic_pattern());
+      add_listener(listener, message->topic_pattern());
     else
-      repository_.remove_listener(listener, message->topic_pattern());
+      remove_listener(listener, message->topic_pattern());
+  }
+
+  void NotificationManager::add_listener(Interactor* listener, const std::string& topic_pattern)
+  {
+    repository_.add_listener(listener, topic_pattern);
+
+  }
+
+  void NotificationManager::remove_listener(Interactor* listener, const std::string& topic_pattern)
+  {
+    repository_.remove_listener(listener, topic_pattern);
   }
 
   void NotificationManager::on_interactor_closed(Interactor* listener)

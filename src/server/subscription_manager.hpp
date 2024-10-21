@@ -31,6 +31,9 @@ namespace squawkbus::server
       NotificationManager& notification_manager);
 
     void on_interactor_closed(Interactor* subscriber);
+
+    std::vector<std::pair<std::string, std::vector<Interactor*>>> find_matching_subscriptions(const std::regex& regex) const;
+
   };
 }
 

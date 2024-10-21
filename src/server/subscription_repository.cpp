@@ -173,4 +173,24 @@ namespace squawkbus::server
 
     return subscribers;
   }
+
+  std::vector<std::pair<std::string, std::vector<Interactor*>>> SubscriptionRepository::find_matching_subscriptions(const std::regex& regex) const
+  {
+    std::vector<std::pair<std::string, std::vector<Interactor*>>> matching_subscriptions;
+
+    for (auto& [topic_pattern, subscriptions] : subscriptions_)
+    {
+      if (std::regex_match(topic_pattern, regex))
+      {
+        auto interactors = std::vector<Interactor*>{};
+        for (auto& [interactor, _count] : subscriptions)
+        {
+          interactors.push_back(interactor);
+        }
+        matching_subscriptions.push_back({topic_pattern, interactors});
+      }
+    }
+
+    return matching_subscriptions;
+  }
 }

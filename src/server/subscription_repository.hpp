@@ -26,6 +26,7 @@ namespace squawkbus::server
     void remove_subscription(Interactor* subscriber, const std::string& topic_pattern);
     void remove_interactor(Interactor*);
     std::set<Interactor*> find_subscribers(const std::string& topic) const;
+    std::vector<std::pair<std::string, std::vector<Interactor*>>> find_matching_subscriptions(const std::regex& regex) const;
   };
 }
 
