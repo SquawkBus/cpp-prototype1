@@ -25,7 +25,6 @@ namespace squawkbus::messages
     std::string host;
     std::string client_id;
     std::string topic;
-    std::string content_type;
     std::vector<DataPacket> data_packets;
 
     ForwardedUnicastData() noexcept
@@ -38,14 +37,12 @@ namespace squawkbus::messages
       const std::string &host,
       const std::string &client_id,
       const std::string &topic,
-      const std::string &content_type,
       const std::vector<DataPacket> &data_packets) noexcept
       : Message(MessageType::ForwardedUnicastData),
         user(user),
         host(host),
         client_id(client_id),
         topic(topic),
-        content_type(content_type),
         data_packets(data_packets)
     {
     }
@@ -57,7 +54,6 @@ namespace squawkbus::messages
         host == other.host &&
         client_id == other.client_id &&
         topic == other.topic &&
-        content_type == other.content_type &&
         data_packets == other.data_packets;
     }
 
@@ -69,13 +65,12 @@ namespace squawkbus::messages
     std::string str() const override
     {
       return std::format(
-        "ForwardedUnicastData(message_type={},user=\"{}\",host=\"{}\",client_id=\"{}\",topic=\"{}\",content_type=\"{}\",data_packets={})",
+        "ForwardedUnicastData(message_type={},user=\"{}\",host=\"{}\",client_id=\"{}\",topic=\"{}\",data_packets={})",
         messages::to_string(message_type_),
         user,
         host,
         client_id,
         topic,
-        content_type,
         ::to_string(data_packets));
     }
 
@@ -88,7 +83,6 @@ namespace squawkbus::messages
         << host
         << client_id
         << topic
-        << content_type
         << data_packets;
     }
 
@@ -99,7 +93,6 @@ namespace squawkbus::messages
         >> host
         >> client_id
         >> topic
-        >> content_type
         >> data_packets;
     }
   };

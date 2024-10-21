@@ -18,13 +18,14 @@ TEST_CASE("roundtrip")
     std::shared_ptr<Message> m0 = std::make_shared<UnicastData>(
         "client-1",
         "TOPIC-1",
-        "text/plain",
         std::vector<DataPacket>{
             DataPacket(
                 std::set<std::int32_t>{1, 2},
+                "text/plain",
                 std::vector<char>{'H', 'e', 'l', 'l', 'o'}),
             DataPacket(
                 std::set<std::int32_t>{3, 4, 5},
+                "text/plain",
                 std::vector<char>{'W', 'o', 'r', 'l', 'd'})});
     auto frame = m0->serialize();
 

@@ -31,7 +31,6 @@ namespace squawkbus::server
       publisher->host(),
       message->client_id(),
       message->topic(),
-      message->content_type(),
       message->data_packets()
     );
     client->send(response);
@@ -44,7 +43,6 @@ namespace squawkbus::server
       publisher->user(),
       publisher->host(),
       message->topic(),
-      message->content_type(),
       message->data_packets()
     );
     for (auto subscriber : subscribers)

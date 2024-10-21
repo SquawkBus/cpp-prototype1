@@ -24,7 +24,6 @@ namespace squawkbus::messages
     std::string user;
     std::string host;
     std::string topic;
-    std::string content_type;
     std::vector<DataPacket> data_packets;
 
     ForwardedMulticastData() noexcept
@@ -36,13 +35,11 @@ namespace squawkbus::messages
       const std::string &user,
       const std::string &host,
       const std::string &topic,
-      const std::string& content_type,
       const std::vector<DataPacket>& data_packets) noexcept
       : Message(MessageType::ForwardedMulticastData),
         user(user),
         host(host),
         topic(topic),
-        content_type(content_type),
         data_packets(data_packets)
     {
     }
@@ -53,7 +50,6 @@ namespace squawkbus::messages
         user == other.user &&
         host == other.host &&
         topic == other.topic &&
-        content_type == other.content_type &&
         data_packets == other.data_packets;
     }
 
@@ -65,12 +61,11 @@ namespace squawkbus::messages
     std::string str() const override
     {
       return std::format(
-        "ForwardedMulticastData(message_type={},user=\"{}\",host=\"{}\",topic=\"{}\",content_type=\"{}\",data_packets={})",
+        "ForwardedMulticastData(message_type={},user=\"{}\",host=\"{}\",topic=\"{}\",data_packets={})",
         messages::to_string(message_type_),
         user,
         host,
         topic,
-        content_type,
         ::to_string(data_packets)
       );
     }
@@ -83,7 +78,6 @@ namespace squawkbus::messages
         << user
         << host
         << topic
-        << content_type
         << data_packets;        
     }
 
@@ -93,7 +87,6 @@ namespace squawkbus::messages
         >> user
         >> host
         >> topic
-        >> content_type
         >> data_packets;
     }
 

@@ -3,6 +3,7 @@
 
 #include <cstddef>
 #include <set>
+#include <string>
 #include <vector>
 
 #include "utils/utils.hpp"
@@ -16,6 +17,7 @@ namespace squawkbus::serialization
   {
   private:
     std::set<std::int32_t> entitlements_;
+    std::string content_type_;
     std::vector<char> data_;
 
   public:
@@ -25,21 +27,26 @@ namespace squawkbus::serialization
 
     DataPacket(
       const std::set<std::int32_t>& entitlements,
+      const std::string& content_type,
       const std::vector<char>& data) noexcept
       : entitlements_(entitlements),
+        content_type_(content_type),
         data_(data)
     {
     }
 
     DataPacket(
       std::set<std::int32_t>&& entitlements,
+      std::string&& content_type,
       std::vector<char>&& data) noexcept
       : entitlements_(std::move(entitlements)),
+        content_type_(std::move(content_type)),
         data_(std::move(data))
     {
     }
 
     const std::set<std::int32_t>& entitlements() const noexcept { return entitlements_; }
+    const std::string& content_type() const noexcept { return content_type_; }
     const std::vector<char>& data() const noexcept { return data_; }
 
     bool is_authorized(const std::set<std::int32_t> &granted_entitlements) const noexcept
@@ -53,17 +60,26 @@ namespace squawkbus::serialization
     {
       return
         entitlements_ == other.entitlements_ &&
+        content_type_ == other.content_type_ &&
         data_ == other.data_;
     }
 
     FrameBuffer& serialize(FrameBuffer& frame) const
     {
-      return frame << entitlements_ << data_;
+      return
+        frame
+          << entitlements_
+          << content_type_
+          << data_;
     }
 
     FrameBuffer& deserialize(FrameBuffer& frame)
     {
-      return frame >> entitlements_ >> data_;
+      return
+        frame
+          >> entitlements_
+          >> content_type_
+          >> data_;
     }
   };
 
@@ -72,6 +88,7 @@ namespace squawkbus::serialization
     return os
       << "DataPacket"
       << "(entitlements=" << ::to_string(d.entitlements())
+      << ",content_type=" << d.content_type()
       << ",data=" << ::to_string(d.data())
       << ")" ;
   }

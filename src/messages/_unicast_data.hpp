@@ -23,7 +23,6 @@ namespace squawkbus::messages
   private:
     std::string client_id_;
     std::string topic_;
-    std::string content_type_;
     std::vector<DataPacket> data_packets_;
 
   public:
@@ -35,19 +34,16 @@ namespace squawkbus::messages
     UnicastData(
       const std::string &client_id,
       const std::string &topic,
-      const std::string& content_type,
       const std::vector<DataPacket>& data_packets) noexcept
       : Message(MessageType::UnicastData),
         client_id_(client_id),
         topic_(topic),
-        content_type_(content_type),
         data_packets_(data_packets)
     {
     }
 
     const std::string& client_id() const noexcept { return client_id_; }
     const std::string& topic() const noexcept { return topic_; }
-    const std::string& content_type() const noexcept { return content_type_; }
     const std::vector<DataPacket>& data_packets() const noexcept { return data_packets_; }
 
     bool operator==(const UnicastData &other) const noexcept
@@ -56,7 +52,6 @@ namespace squawkbus::messages
         Message::operator==(other) &&
         client_id_ == other.client_id_ &&
         topic_ == other.topic_ &&
-        content_type_ == other.content_type_ &&
         data_packets_ == other.data_packets_;
     }
 
@@ -68,11 +63,10 @@ namespace squawkbus::messages
     std::string str() const override
     {
       return std::format(
-        "UnicastData(message_type={},client_id=\"{}\",topic=\"{}\",content_type=\"{}\",data_packets={})",
+        "UnicastData(message_type={},client_id=\"{}\",topic=\"{}\",data_packets={})",
         messages::to_string(message_type_),
         client_id_,
         topic_,
-        content_type_,
         ::to_string(data_packets_));
     }
 
@@ -83,7 +77,6 @@ namespace squawkbus::messages
       frame
         << client_id_
         << topic_
-        << content_type_
         << data_packets_;
     }
 
@@ -92,7 +85,6 @@ namespace squawkbus::messages
       frame
         >> client_id_
         >> topic_
-        >> content_type_
         >> data_packets_;
     }
   };
