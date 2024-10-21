@@ -33,8 +33,8 @@ SOURCES = \
 	hub.cpp \
 	subscription_manager.cpp \
 	subscription_repository.cpp \
-	publish.cpp \
-	notify.cpp
+	publisher_manager.cpp \
+	notification_manager.cpp
 
 OBJECTS = $(SOURCES:%.cpp=%.o)
 
@@ -50,11 +50,11 @@ server: $(OBJECTS)
 server.o: server.cpp distributor.hpp $(HEADERS)
 distributor.o: distributor.cpp distributor.hpp $(HEADERS)
 interactor.o: interactor.cpp interactor.hpp $(HEADERS)
-hub.o: hub.cpp hub.hpp $(HEADERS)
+hub.o: hub.cpp hub.hpp subscription_manager.hpp publisher_manager.hpp notification_manager.hpp $(HEADERS)
 subscription_manager.o: subscription_manager.cpp subscription_manager.hpp $(HEADERS)
 subscription_repository.o: subscription_repository.cpp subscription_repository.hpp $(HEADERS)
-publish.o: publish.cpp publish.hpp $(HEADERS)
-notify.o: notify.cpp notify.hpp $(HEADERS)
+publisher_manager.o: publisher_manager.cpp publisher_manager.hpp $(HEADERS)
+notification_manager.o: notification_manager.cpp notification_manager.hpp $(HEADERS)
 
 .PHONY: clean
 clean:

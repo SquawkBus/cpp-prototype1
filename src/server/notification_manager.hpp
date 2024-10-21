@@ -1,0 +1,11 @@
+#ifndef SQUAWKBUS_SERVER_NOTIFICATION_MANAGER_HPP
+#define SQUAWKBUS_SERVER_NOTIFICATION_MANAGER_HPP
+
+namespace squawkbus::server
+{
+  class NotificationManager
+  {
+  };
+}
+
+#endif // SQUAWKBUS_SERVER_NOTIFICATION_MANAGER_HPP

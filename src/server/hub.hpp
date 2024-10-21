@@ -5,9 +5,9 @@
 
 #include "messages/messages.hpp"
 
-#include "publish.hpp"
+#include "publisher_manager.hpp"
 #include "subscription_manager.hpp"
-#include "notify.hpp"
+#include "notification_manager.hpp"
 
 namespace squawkbus::server
 {

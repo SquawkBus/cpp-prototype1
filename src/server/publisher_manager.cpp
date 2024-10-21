@@ -1,4 +1,4 @@
-#include "publish.hpp"
+#include "publisher_manager.hpp"
 
 namespace squawkbus::server
 {
