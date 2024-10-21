@@ -5,7 +5,7 @@
 
 #include "interactor.hpp"
 #include "notify.hpp"
-#include "subscribe.hpp"
+#include "subscription_manager.hpp"
 
 namespace logging = squawkbus::logging;
 

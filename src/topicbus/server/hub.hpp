@@ -6,7 +6,7 @@
 #include "topicbus/messages/message.hpp"
 
 #include "publish.hpp"
-#include "subscribe.hpp"
+#include "subscription_manager.hpp"
 #include "notify.hpp"
 
 namespace squawkbus::topicbus::server
