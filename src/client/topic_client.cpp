@@ -21,6 +21,9 @@ namespace squawkbus::client
   using squawkbus::io::PollClient;
   using squawkbus::io::TcpClientSocket;
   using squawkbus::messages::Authenticate;
+  using squawkbus::messages::SubscriptionRequest;
+  using squawkbus::messages::MulticastData;
+  using squawkbus::serialization::DataPacket;
 
   TopicClient::TopicClient(std::shared_ptr<TcpClientSocket> client_socket)
     : client_socket_(client_socket)
@@ -69,13 +72,38 @@ namespace squawkbus::client
         {
           poller.close(client_socket_->fd());
         }
-        else if (s == "SUBSCRIBE")
+        else if (line.size() == 2 && line[0] == "SUBSCRIBE")
         {
-          // Subscribe
+          auto message = SubscriptionRequest(line[1], true);
+          auto frame = message.serialize();
+          auto buf = std::vector<char>(frame);
+          poller.write(client_socket_->fd(), buf);
+        }
+        else if (line.size() == 2 && line[0] == "UNSUBSCRIBE")
+        {
+          auto message = SubscriptionRequest(line[1], false);
+          auto frame = message.serialize();
+          auto buf = std::vector<char>(frame);
+          poller.write(client_socket_->fd(), buf);
+        }
+        else if (line.size() == 3 && line[0] == "PUBLISH")
+        {
+          auto topic = line[1];
+          auto word = line[2];
+          auto data_packet = DataPacket(
+            {0},
+            "text/plain",
+            std::vector<char>(word.begin(), word.end()));
+          auto message = MulticastData(line[1], { data_packet });
+          auto frame = message.serialize();
+          auto buf = std::vector<char>(frame);
+          poller.write(client_socket_->fd(), buf);
         }
         else
         {
-          poller.write(client_socket_->fd(), buf);
+          auto msg = std::format("unknown command: {}", s);
+          auto buf = std::vector<char>(msg.begin(), msg.end());
+          poller.write(STDOUT_FILENO, buf);
         }
       }
       else if (fd == client_socket_->fd())

@@ -40,4 +40,4 @@ topic_client.o: topic_client.cpp topic_client.hpp $(HEADERS)
 
 .PHONY: clean
 clean:
-	rm -f client.o topic_client.o client
+	rm -f client.o topic_client.o utils.o client
