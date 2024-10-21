@@ -28,6 +28,8 @@ namespace squawkbus::server
       add_subscription(subscriber, message->topic_pattern(), notification_manager);
     else
       remove_subscription(subscriber, message->topic_pattern(), notification_manager);
+
+    notification_manager.notify(subscriber, message->topic_pattern(), message->is_add());
   }
 
   void SubscriptionManager::add_subscription(
