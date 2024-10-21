@@ -36,6 +36,8 @@ namespace squawkbus::server
 
     int fd() const noexcept { return fd_; }
     const std::string& host() const noexcept { return host_; }
+    const std::string& user() const noexcept { return *user_; }
+    const std::string& id() const noexcept { return id_; }
 
     void receive(std::vector<char>&& buf);
     void send(std::shared_ptr<Message> message);

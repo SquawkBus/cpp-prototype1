@@ -1,4 +1,5 @@
 #include <format>
+#include <memory>
 
 #include "logging/log.hpp"
 
@@ -9,6 +10,9 @@ namespace logging = squawkbus::logging;
 
 namespace squawkbus::server
 {
+  using squawkbus::messages::NotificationRequest;
+  using squawkbus::messages::ForwardedSubscriptionRequest;
+
   void NotificationManager::on_listen(Interactor* listener, NotificationRequest* message)
   {
     logging::debug(
@@ -28,8 +32,24 @@ namespace squawkbus::server
     repository_.remove_interactor(listener);
   }
 
-  void NotificationManager::notify(Interactor* subscriber, const std::string& topic_pattern, bool is_add)
+  void NotificationManager::notify(
+    Interactor* subscriber,
+    const std::string& topic_pattern,
+    bool is_add)
   {
     logging::debug(std::format( "notify: {}", topic_pattern));
+
+    auto message = std::make_shared<ForwardedSubscriptionRequest>(
+      subscriber->user(),
+      subscriber->host(),
+      subscriber->id(),
+      topic_pattern,
+      is_add);
+
+    auto listeners = repository_.find_listeners(topic_pattern);
+    for (auto listener : listeners)
+    {
+      listener->send(message);
+    }
   }
 }
