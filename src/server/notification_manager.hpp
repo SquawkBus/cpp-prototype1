@@ -12,6 +12,7 @@ namespace squawkbus::server
   using squawkbus::messages::NotificationRequest;
 
   class Interactor;
+  class SubscriptionManager;
 
   class NotificationManager
   {
@@ -21,13 +22,13 @@ namespace squawkbus::server
     std::map<Interactor*, std::set<std::string>> listener_topic_patterns_;
 
   public:
-    void on_listen(Interactor* listener, NotificationRequest* message);
+    void on_listen(Interactor* listener, NotificationRequest* message, const SubscriptionManager& subscription_manager);
     void on_interactor_closed(Interactor* listener);
     void notify(Interactor* subscriber, const std::string& topic_pattern, bool is_add);
 
   private:
-    void add_listener(Interactor* listener, const std::string& topic_pattern);
-    void remove_listener(Interactor* listener, const std::string& topic_pattern);
+    void add_listener(Interactor* listener, const std::string& topic_pattern, const SubscriptionManager& subscription_manager);
+    void remove_listener(Interactor* listener, const std::string& topic_pattern, const SubscriptionManager& subscription_manager);
     void remove_interactor(Interactor*);
     std::set<Interactor*> find_listeners(const std::string& topic) const;
   };

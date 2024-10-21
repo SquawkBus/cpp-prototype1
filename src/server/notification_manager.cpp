@@ -5,6 +5,7 @@
 
 #include "interactor.hpp"
 #include "notification_manager.hpp"
+#include "subscription_manager.hpp"
 
 namespace logging = squawkbus::logging;
 
@@ -13,7 +14,7 @@ namespace squawkbus::server
   using squawkbus::messages::NotificationRequest;
   using squawkbus::messages::ForwardedSubscriptionRequest;
 
-  void NotificationManager::on_listen(Interactor* listener, NotificationRequest* message)
+  void NotificationManager::on_listen(Interactor* listener, NotificationRequest* message, const SubscriptionManager& subscription_manager)
   {
     logging::debug(
       std::format(
@@ -22,12 +23,12 @@ namespace squawkbus::server
         (message->is_add() ? "<true>" : "<false>")));
 
     if (message->is_add())
-      add_listener(listener, message->topic_pattern());
+      add_listener(listener, message->topic_pattern(), subscription_manager);
     else
-      remove_listener(listener, message->topic_pattern());
+      remove_listener(listener, message->topic_pattern(), subscription_manager);
   }
 
-  void NotificationManager::add_listener(Interactor* listener, const std::string& topic_pattern)
+  void NotificationManager::add_listener(Interactor* listener, const std::string& topic_pattern, const SubscriptionManager& subscription_manager)
   {
     logging::debug(std::format( "add_notification: {}", topic_pattern));
 
@@ -68,9 +69,33 @@ namespace squawkbus::server
       // Add this topic to the listener.
       i_listener_topic_patterns->second.insert(topic_pattern);
     }
+
+    // Notify listener of existing subscriptions.
+    auto i_regex = regex_cache_.find(topic_pattern);
+    if (i_regex == regex_cache_.end())
+    {
+      // Should never happen.
+      return;
+    }
+    auto matching_subscriptions = subscription_manager.find_matching_subscriptions(i_regex->second);
+    for (auto& [topic_pattern, subscribers] : matching_subscriptions)
+    {
+      for (auto subscriber : subscribers)
+      {
+        auto message = std::make_shared<ForwardedSubscriptionRequest>(
+          subscriber->user(),
+          subscriber->host(),
+          subscriber->id(),
+          topic_pattern,
+          true);
+
+        listener->send(message);
+      }
+    }
+
   }
 
-  void NotificationManager::remove_listener(Interactor* listener, const std::string& topic_pattern)
+  void NotificationManager::remove_listener(Interactor* listener, const std::string& topic_pattern, const SubscriptionManager& subscription_manager)
   {
     logging::debug(std::format( "remove_notification: {}", topic_pattern));
 
