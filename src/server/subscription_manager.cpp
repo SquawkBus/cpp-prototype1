@@ -25,31 +25,11 @@ namespace squawkbus::server
         (message->is_add() ? "<true>" : "<false>")));
 
     if (message->is_add())
-      add_subscription(subscriber, message->topic_pattern(), notification_manager);
+      repository_.add_subscription(subscriber, message->topic_pattern());
     else
-      remove_subscription(subscriber, message->topic_pattern(), notification_manager);
+      repository_.remove_subscription(subscriber, message->topic_pattern());
 
     notification_manager.notify(subscriber, message->topic_pattern(), message->is_add());
-  }
-
-  void SubscriptionManager::add_subscription(
-    Interactor* subscriber,
-    const std::string& topic_pattern,
-    NotificationManager& notification_manager)
-  {
-    logging::debug(std::format( "add_subscription: {}", topic_pattern));
-
-    repository_.add_subscription(subscriber, topic_pattern);
-  }
-
-  void SubscriptionManager::remove_subscription(
-    Interactor* subscriber,
-    const std::string& topic_pattern,
-    NotificationManager& notification_manager)
-  {
-    logging::debug(std::format( "remove_subscription: {}", topic_pattern));
-
-    repository_.remove_subscription(subscriber, topic_pattern);
   }
 
   void SubscriptionManager::on_interactor_closed(Interactor* subscriber)

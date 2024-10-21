@@ -31,16 +31,6 @@ namespace squawkbus::server
       NotificationManager& notification_manager);
 
     void on_interactor_closed(Interactor* subscriber);
-    
-  private:
-    void add_subscription(
-      Interactor* subscriber,
-      const std::string& topic_pattern,
-      NotificationManager& notification_manage);
-    void remove_subscription(
-      Interactor* subscriber,
-      const std::string& topic_pattern,
-      NotificationManager& notification_manage);
   };
 }
 
