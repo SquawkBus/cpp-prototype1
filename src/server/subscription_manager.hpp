@@ -27,7 +27,7 @@ namespace squawkbus::server
   public:
     void on_subscription(
       Interactor* subscriber,
-      SubscriptionRequest* message,
+      const SubscriptionRequest& request,
       const NotificationManager& notification_manager);
 
     void on_interactor_closed(Interactor* subscriber);

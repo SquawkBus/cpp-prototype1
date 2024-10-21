@@ -14,18 +14,18 @@ namespace squawkbus::server
   using squawkbus::messages::NotificationRequest;
   using squawkbus::messages::ForwardedSubscriptionRequest;
 
-  void NotificationManager::on_listen(Interactor* listener, NotificationRequest* message, const SubscriptionManager& subscription_manager)
+  void NotificationManager::on_listen(Interactor* listener, const NotificationRequest& request, const SubscriptionManager& subscription_manager)
   {
     logging::debug(
       std::format(
         "on_subscription: {} ({})",
-        message->topic_pattern(),
-        (message->is_add() ? "<true>" : "<false>")));
+        request.topic_pattern(),
+        (request.is_add() ? "<true>" : "<false>")));
 
-    if (message->is_add())
-      add_listener(listener, message->topic_pattern(), subscription_manager);
+    if (request.is_add())
+      add_listener(listener, request.topic_pattern(), subscription_manager);
     else
-      remove_listener(listener, message->topic_pattern(), subscription_manager);
+      remove_listener(listener, request.topic_pattern(), subscription_manager);
   }
 
   void NotificationManager::add_listener(Interactor* listener, const std::string& topic_pattern, const SubscriptionManager& subscription_manager)

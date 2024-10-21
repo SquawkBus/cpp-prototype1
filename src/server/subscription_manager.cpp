@@ -15,19 +15,19 @@ namespace squawkbus::server
 
   void SubscriptionManager::on_subscription(
     Interactor* subscriber,
-    SubscriptionRequest* message,
+    const SubscriptionRequest& request,
     const NotificationManager& notification_manager)
   {
     logging::debug(
       std::format(
         "on_subscription: {} ({})",
-        message->topic_pattern(),
-        (message->is_add() ? "<true>" : "<false>")));
+        request.topic_pattern(),
+        (request.is_add() ? "<true>" : "<false>")));
 
-    if (message->is_add())
-      add_subscription(subscriber, message->topic_pattern(), notification_manager);
+    if (request.is_add())
+      add_subscription(subscriber, request.topic_pattern(), notification_manager);
     else
-      remove_subscription(subscriber, message->topic_pattern(), notification_manager);
+      remove_subscription(subscriber, request.topic_pattern(), notification_manager);
   }
 
   void SubscriptionManager::on_interactor_closed(Interactor* subscriber)

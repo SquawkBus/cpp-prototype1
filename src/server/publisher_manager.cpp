@@ -16,12 +16,15 @@ namespace squawkbus::server
   using squawkbus::messages::MulticastData;
   using squawkbus::messages::UnicastData;
   
-  void PublisherManager::on_send_unicast(Interactor* publisher, UnicastData* message, std::map<std::string, Interactor*> interactors)
+  void PublisherManager::on_send_unicast(
+    Interactor* publisher,
+    const UnicastData& request,
+    std::map<std::string, Interactor*> interactors)
   {
-    auto i_subscriber = interactors.find(message->client_id());
+    auto i_subscriber = interactors.find(request.client_id());
     if (i_subscriber == interactors.end())
     {
-      logging::info(std::format("no interactor for {}", message->client_id()));
+      logging::info(std::format("no interactor for {}", request.client_id()));
       return;
     }
     auto client = i_subscriber->second;
@@ -29,21 +32,24 @@ namespace squawkbus::server
     auto response = std::make_shared<ForwardedUnicastData>(
       publisher->user(),
       publisher->host(),
-      message->client_id(),
-      message->topic(),
-      message->data_packets()
+      request.client_id(),
+      request.topic(),
+      request.data_packets()
     );
     client->send(response);
   }
 
-  void PublisherManager::on_send_multicast(Interactor* publisher, MulticastData* message, const SubscriptionManager& subscription_manager)
+  void PublisherManager::on_send_multicast(
+    Interactor* publisher,
+    const MulticastData& request,
+    const SubscriptionManager& subscription_manager)
   {
-    auto subscribers = subscription_manager.find_subscribers(message->topic());
+    auto subscribers = subscription_manager.find_subscribers(request.topic());
     auto response = std::make_shared<ForwardedMulticastData>(
       publisher->user(),
       publisher->host(),
-      message->topic(),
-      message->data_packets()
+      request.topic(),
+      request.data_packets()
     );
     for (auto subscriber : subscribers)
     {

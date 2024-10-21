@@ -26,7 +26,7 @@ namespace squawkbus::server
     NotificationManager notification_manager_;
 
   public:
-    void on_message(Interactor* interactor, Message* message);
+    void on_message(Interactor* interactor, const Message* message);
     void on_connected(Interactor* interactor);
     void on_disconnected(Interactor* interactor);
   };

@@ -22,7 +22,7 @@ namespace squawkbus::server
     std::map<Interactor*, std::set<std::string>> listener_topic_patterns_;
 
   public:
-    void on_listen(Interactor* listener, NotificationRequest* message, const SubscriptionManager& subscription_manager);
+    void on_listen(Interactor* listener, const NotificationRequest& request, const SubscriptionManager& subscription_manager);
     void on_interactor_closed(Interactor* listener);
     void notify(Interactor* subscriber, const std::string& topic_pattern, bool is_add) const;
 

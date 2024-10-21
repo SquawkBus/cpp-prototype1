@@ -36,28 +36,28 @@ namespace squawkbus::server
     interactors_.erase(interactor->id());
   }
 
-  void Hub::on_message(Interactor* interactor, Message* message)
+  void Hub::on_message(Interactor* interactor, const Message* message)
   {
     switch (message->message_type())
     {
     case MessageType::SubscriptionRequest:
       subscription_manager_.on_subscription(
         interactor,
-        dynamic_cast<SubscriptionRequest*>(message),
+        *dynamic_cast<const SubscriptionRequest*>(message),
         notification_manager_);
       return;
 
     case MessageType::NotificationRequest:
       notification_manager_.on_listen(
         interactor,
-        dynamic_cast<NotificationRequest*>(message),
+        *dynamic_cast<const NotificationRequest*>(message),
         subscription_manager_);
       return;
 
     case MessageType::UnicastData:
       publisher_manager_.on_send_unicast(
         interactor,
-        dynamic_cast<UnicastData*>(message),
+        *dynamic_cast<const UnicastData*>(message),
         interactors_
       );
       return;
@@ -65,7 +65,7 @@ namespace squawkbus::server
     case MessageType::MulticastData:
       publisher_manager_.on_send_multicast(
         interactor,
-        dynamic_cast<MulticastData*>(message),
+        *dynamic_cast<const MulticastData*>(message),
         subscription_manager_
       );
       return;
