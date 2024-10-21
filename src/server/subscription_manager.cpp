@@ -16,7 +16,7 @@ namespace squawkbus::server
   void SubscriptionManager::on_subscription(
     Interactor* subscriber,
     SubscriptionRequest* message,
-    NotificationManager& notification_manager)
+    const NotificationManager& notification_manager)
   {
     logging::debug(
       std::format(
@@ -25,11 +25,9 @@ namespace squawkbus::server
         (message->is_add() ? "<true>" : "<false>")));
 
     if (message->is_add())
-      add_subscription(subscriber, message->topic_pattern());
+      add_subscription(subscriber, message->topic_pattern(), notification_manager);
     else
-      remove_subscription(subscriber, message->topic_pattern());
-
-    notification_manager.notify(subscriber, message->topic_pattern(), message->is_add());
+      remove_subscription(subscriber, message->topic_pattern(), notification_manager);
   }
 
   void SubscriptionManager::on_interactor_closed(Interactor* subscriber)
@@ -39,7 +37,8 @@ namespace squawkbus::server
 
   void SubscriptionManager::add_subscription(
     Interactor* subscriber,
-    const std::string& topic_pattern)
+    const std::string& topic_pattern,
+    const NotificationManager& notification_manager)
   {
     logging::debug(std::format( "add_subscription: {}", topic_pattern));
 
@@ -50,6 +49,8 @@ namespace squawkbus::server
       // New topic pattern.
       subscriptions_.insert( { {topic_pattern, { {subscriber, 1} }} });
       regex_cache_.insert({ {topic_pattern, std::regex(topic_pattern)} });
+      // Only notify for new subscriptions.
+      notification_manager.notify(subscriber, topic_pattern, true);
     }
     else
     {
@@ -84,7 +85,8 @@ namespace squawkbus::server
 
   void SubscriptionManager::remove_subscription(
     Interactor* subscriber,
-    const std::string& topic_pattern)
+    const std::string& topic_pattern,
+    const NotificationManager& notification_manager)
   {
     logging::debug(std::format( "remove_subscription: {}", topic_pattern));
 
@@ -117,6 +119,8 @@ namespace squawkbus::server
       // The topic pattern no longer has subscribers.
       subscriptions_.erase(topic_pattern);
       regex_cache_.erase(topic_pattern);
+      // Only notify for final un-subscriptions.
+      notification_manager.notify(subscriber, topic_pattern, false);
     }
 
     auto i_subscriber_topic_patterns = subscriber_topic_patterns_.find(subscriber);

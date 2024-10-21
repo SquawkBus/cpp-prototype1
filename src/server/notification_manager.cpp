@@ -182,7 +182,7 @@ namespace squawkbus::server
   void NotificationManager::notify(
     Interactor* subscriber,
     const std::string& topic_pattern,
-    bool is_add)
+    bool is_add) const
   {
     logging::debug(std::format( "notify: {}", topic_pattern));
 
