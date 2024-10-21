@@ -1,7 +1,9 @@
 #ifndef SQUAWKBUS_SERVER_HUB_HPP
 #define SQUAWKBUS_SERVER_HUB_HPP
 
+#include <map>
 #include <memory>
+#include <string>
 
 #include "messages/messages.hpp"
 
@@ -18,12 +20,15 @@ namespace squawkbus::server
   class Hub
   {
   private:
+    std::map<std::string, Interactor*> interactors_;
     PublisherManager publisher_manager_;
     SubscriptionManager subscription_manager_;
     NotificationManager notification_manager_;
 
   public:
     void on_message(Interactor* interactor, Message* message);
+    void on_connected(Interactor* interactor);
+    void on_disconnected(Interactor* interactor);
   };
 }
 

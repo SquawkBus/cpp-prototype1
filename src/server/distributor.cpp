@@ -28,6 +28,7 @@ namespace squawkbus::server
     if (i_interactor == interactors_.end())
       return;
 
+    hub_.on_disconnected(i_interactor->second.get());
     interactors_.erase(i_interactor);
   }
 

@@ -13,7 +13,10 @@ namespace squawkbus::server
 {
   using squawkbus::messages::MulticastData;
   using squawkbus::messages::UnicastData;
-  
+
+  class Interactor;
+  class SubscriptionManager;
+
   class PublisherManager
   {
   private:
@@ -21,8 +24,8 @@ namespace squawkbus::server
     std::map<Interactor*, std::set<std::string>> publisher_topics_;
 
   public:
-    void on_send_unicast(Interactor* publisher, UnicastData* message);
-    void on_send_multicast(Interactor* publisher, MulticastData* message);
+    void on_send_unicast(Interactor* publisher, UnicastData* message, std::map<std::string, Interactor*> interactors);
+    void on_send_multicast(Interactor* publisher, MulticastData* message, const SubscriptionManager& subscription_manager);
     void on_interactor_closed(Interactor* interactor);
 
   private:

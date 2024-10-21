@@ -1,16 +1,56 @@
+#include <format>
+#include <memory>
+#include <utility>
+
+#include "logging/log.hpp"
+
 #include "publisher_manager.hpp"
+#include "subscription_manager.hpp"
+
+namespace logging = squawkbus::logging;
 
 namespace squawkbus::server
 {
+  using squawkbus::messages::ForwardedMulticastData;
+  using squawkbus::messages::ForwardedUnicastData;
   using squawkbus::messages::MulticastData;
   using squawkbus::messages::UnicastData;
   
-  void PublisherManager::on_send_unicast(Interactor* publisher, UnicastData* message)
+  void PublisherManager::on_send_unicast(Interactor* publisher, UnicastData* message, std::map<std::string, Interactor*> interactors)
   {
+    auto i_subscriber = interactors.find(message->client_id());
+    if (i_subscriber == interactors.end())
+    {
+      logging::info(std::format("no interactor for {}", message->client_id()));
+      return;
+    }
+    auto client = i_subscriber->second;
+
+    auto response = std::make_shared<ForwardedUnicastData>(
+      publisher->user(),
+      publisher->host(),
+      message->client_id(),
+      message->topic(),
+      message->content_type(),
+      message->data_packets()
+    );
+    client->send(response);
   }
 
-  void PublisherManager::on_send_multicast(Interactor* publisher, MulticastData* message)
+  void PublisherManager::on_send_multicast(Interactor* publisher, MulticastData* message, const SubscriptionManager& subscription_manager)
   {
+    auto subscribers = subscription_manager.find_subscribers(message->topic());
+    auto response = std::make_shared<ForwardedMulticastData>(
+      publisher->user(),
+      publisher->host(),
+      message->topic(),
+      message->content_type(),
+      message->data_packets()
+    );
+    for (auto subscriber : subscribers)
+    {
+      subscriber->send(response);
+    }
   }
 
   void PublisherManager::on_interactor_closed(Interactor* interactor)

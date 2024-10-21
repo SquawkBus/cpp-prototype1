@@ -1,16 +1,38 @@
-#include "hub.hpp"
-
+#include <format>
 #include <stdexcept>
 #include <utility>
 
+#include "logging/log.hpp"
+
+#include "hub.hpp"
 #include "interactor.hpp"
 
 namespace squawkbus::server
 {
+  namespace logging = squawkbus::logging;
+
   using squawkbus::messages::Message;
   using squawkbus::messages::MessageType;
   using squawkbus::messages::SubscriptionRequest;
   using squawkbus::messages::NotificationRequest;
+
+  void Hub::on_connected(Interactor* interactor)
+  {
+    logging::debug(std::format("adding interactor {}", interactor->id()));
+
+    interactors_.insert({interactor->id(), interactor});
+  }
+
+  void Hub::on_disconnected(Interactor* interactor)
+  {
+    logging::debug(std::format("removing interactor {}", interactor->id()));
+
+    subscription_manager_.on_interactor_closed(interactor);
+    notification_manager_.on_interactor_closed(interactor);
+    publisher_manager_.on_interactor_closed(interactor);
+
+    interactors_.erase(interactor->id());
+  }
 
   void Hub::on_message(Interactor* interactor, Message* message)
   {
@@ -30,9 +52,23 @@ namespace squawkbus::server
         subscription_manager_);
       return;
 
-    case MessageType::Authenticate:
-    case MessageType::MulticastData:
     case MessageType::UnicastData:
+      publisher_manager_.on_send_unicast(
+        interactor,
+        dynamic_cast<UnicastData*>(message),
+        interactors_
+      );
+      return;
+
+    case MessageType::MulticastData:
+      publisher_manager_.on_send_multicast(
+        interactor,
+        dynamic_cast<MulticastData*>(message),
+        subscription_manager_
+      );
+      return;
+
+    case MessageType::Authenticate:
     case MessageType::ForwardedSubscriptionRequest:
     case MessageType::ForwardedMulticastData:
     case MessageType::ForwardedUnicastData:
