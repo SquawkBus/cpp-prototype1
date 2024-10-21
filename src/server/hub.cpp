@@ -15,6 +15,8 @@ namespace squawkbus::server
   using squawkbus::messages::MessageType;
   using squawkbus::messages::SubscriptionRequest;
   using squawkbus::messages::NotificationRequest;
+  using squawkbus::messages::UnicastData;
+  using squawkbus::messages::MulticastData;
 
   void Hub::on_connected(Interactor* interactor)
   {
