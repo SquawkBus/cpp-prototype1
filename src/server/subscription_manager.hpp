@@ -10,8 +10,6 @@
 
 #include "messages/messages.hpp"
 
-#include "subscription_repository.hpp"
-
 namespace squawkbus::server
 {
   using squawkbus::messages::SubscriptionRequest;
@@ -22,7 +20,9 @@ namespace squawkbus::server
   class SubscriptionManager
   {
   private:
-    SubscriptionRepository repository_;
+    std::map<std::string, std::map<Interactor*, int>> subscriptions_;
+    std::map<std::string, std::regex> regex_cache_;
+    std::map<Interactor*, std::set<std::string>> subscriber_topic_patterns_;
 
   public:
     void on_subscription(
@@ -34,6 +34,11 @@ namespace squawkbus::server
 
     std::vector<std::pair<std::string, std::vector<Interactor*>>> find_matching_subscriptions(const std::regex& regex) const;
 
+  private:
+    void add_subscription(Interactor* subscriber, const std::string& topic_pattern);
+    void remove_subscription(Interactor* subscriber, const std::string& topic_pattern);
+    void remove_interactor(Interactor*);
+    std::set<Interactor*> find_subscribers(const std::string& topic) const;
   };
 }
 
