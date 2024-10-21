@@ -1,5 +1,3 @@
-#include "topic_client.hpp"
-
 #include <cstdio>
 #include <format>
 #include <memory>
@@ -13,6 +11,9 @@
 #include "logging/log.hpp"
 #include "utils/utils.hpp"
 #include "messages/messages.hpp"
+
+#include "topic_client.hpp"
+#include "utils.hpp"
 
 namespace squawkbus::client
 {
@@ -55,13 +56,22 @@ namespace squawkbus::client
 
     for (auto& buf : bufs)
     {
-      std::string s {buf.begin(), buf.end()};
+      auto s = std::string(buf.begin(), buf.end());
+
       logging::info(std::format("on_read: received {}", s));
       if (fd == STDIN_FILENO)
       {
-        if (s == "CLOSE\n")
+        auto line = split(s, " ");
+        for (auto& word : line)
+          trim(word);
+
+        if (s == "CLOSE")
         {
           poller.close(client_socket_->fd());
+        }
+        else if (s == "SUBSCRIBE")
+        {
+          // Subscribe
         }
         else
         {
