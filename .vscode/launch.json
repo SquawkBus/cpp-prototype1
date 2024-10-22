@@ -12,7 +12,10 @@
             "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
-            "environment": [],
+            "environment": [
+                { "name": "LOGGER_LEVEL", "value": "INFO" },
+                { "name": "LOGGER_LEVEL_squawkbus", "value": "TRACE" }
+            ],
             "externalConsole": false,
             "MIMode": "gdb",
             "setupCommands": [
@@ -65,7 +68,10 @@
             ],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
-            "environment": [],
+            "environment": [
+                { "name": "LOGGER_LEVEL", "value": "INFO" },
+                { "name": "LOGGER_LEVEL_squawkbus", "value": "TRACE" }
+            ],
             "externalConsole": false,
             "MIMode": "gdb",
             "setupCommands": [
