@@ -7,7 +7,7 @@ CXX = clang++
 INCLUDES = -I${SRC_DIR} -I${EXT_DIR} -I/opt/homebrew/include
 LIBS = -L/opt/homebrew/lib
 CXXFLAGS = -g -std=c++23 -Wall ${INCLUDES}
-LDLIBS = ${LIBS} -lssl -lcrypto
+LDLIBS = ${LIBS} -lssl -lcrypto -luuid
 
 HEADERS = \
 	${SRC_DIR}/io/bio.hpp \

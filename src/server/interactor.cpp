@@ -9,6 +9,7 @@
 
 #include "interactor.hpp"
 #include "hub.hpp"
+#include "uuid.hpp"
 
 namespace squawkbus::server
 {
@@ -31,7 +32,7 @@ namespace squawkbus::server
     std::uint16_t port)
     : fd_(fd),
       host_(host),
-      id_(std::format("{}:{}", host, port)),
+      id_(uuid::generate().str()),
       poller_(poller),
       hub_(hub)
   {
