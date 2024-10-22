@@ -118,10 +118,6 @@ int main(int argc, char** argv)
     console_input->blocking(false);
     poller.add_handler(std::make_unique<FilePollHandler>(console_input, 1024, 1024), "localhost", 0);
 
-    auto console_output = std::make_shared<File>(STDOUT_FILENO, O_WRONLY);
-    console_output->blocking(false);
-    poller.add_handler(std::make_unique<FilePollHandler>(console_output, 1024, 1024), "localhost", 0);
-
     poller.event_loop();
   }
   catch(const std::exception& error)

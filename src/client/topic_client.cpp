@@ -140,8 +140,7 @@ namespace squawkbus::client
       auto frame = reader_.read();
       auto message = Message::deserialize(frame);
       auto text = std::format("on_message: {}", message->str());
-      auto response = std::vector<char>(text.begin(), text.end());
-      poller.write(STDOUT_FILENO, buf);
+      std::puts(text.c_str());
     }
   }
 
