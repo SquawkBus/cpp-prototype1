@@ -8,17 +8,21 @@
 
 #include "io/poller.hpp"
 #include "io/tcp_client_socket.hpp"
+#include "serialization/frame_reader.hpp"
 
 namespace squawkbus::client
 {
   using squawkbus::io::Poller;
   using squawkbus::io::PollClient;
   using squawkbus::io::TcpClientSocket;
+  using squawkbus::serialization::FrameReader;
 
   class TopicClient : public PollClient
   {
   private:
     std::shared_ptr<TcpClientSocket> client_socket_;
+    FrameReader reader_;
+    
 
   public:
     TopicClient(std::shared_ptr<TcpClientSocket> client_socket);
