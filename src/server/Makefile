@@ -59,6 +59,7 @@ distributor.o: \
 interactor.o: \
 	interactor.cpp \
 	interactor.hpp \
+	uuid.hpp \
 	$(HEADERS)
 
 hub.o: \
