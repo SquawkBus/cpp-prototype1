@@ -9,7 +9,10 @@
 
 namespace squawkbus::server
 {
-  namespace logging = squawkbus::logging;
+  namespace
+  {
+    auto log = logging::logger("squawkbus");
+  }
 
   using squawkbus::messages::Message;
   using squawkbus::messages::MessageType;
@@ -20,14 +23,14 @@ namespace squawkbus::server
 
   void Hub::on_connected(Interactor* interactor)
   {
-    logging::debug(std::format("adding interactor {}", interactor->id()));
+    log.debug(std::format("adding interactor {}", interactor->id()));
 
     interactors_.insert({interactor->id(), interactor});
   }
 
   void Hub::on_disconnected(Interactor* interactor)
   {
-    logging::debug(std::format("removing interactor {}", interactor->id()));
+    log.debug(std::format("removing interactor {}", interactor->id()));
 
     subscription_manager_.on_interactor_closed(interactor);
     notification_manager_.on_interactor_closed(interactor);
@@ -38,7 +41,7 @@ namespace squawkbus::server
 
   void Hub::on_message(Interactor* interactor, const Message* message)
   {
-    logging::debug(std::format("on_message from {} with {}", interactor->id(), message->str()));
+    log.debug(std::format("on_message from {} with {}", interactor->id(), message->str()));
 
     switch (message->message_type())
     {

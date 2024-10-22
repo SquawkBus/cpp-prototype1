@@ -7,10 +7,13 @@
 #include "notification_manager.hpp"
 #include "subscription_manager.hpp"
 
-namespace logging = squawkbus::logging;
-
 namespace squawkbus::server
 {
+  namespace
+  {
+    auto log = logging::logger("squawkbus");
+  }
+
   using squawkbus::messages::SubscriptionRequest;
 
   void SubscriptionManager::on_subscription(
@@ -18,7 +21,7 @@ namespace squawkbus::server
     const SubscriptionRequest& request,
     const NotificationManager& notification_manager)
   {
-    logging::debug(
+    log.debug(
       std::format(
         "on_subscription: {} ({})",
         request.topic_pattern(),
@@ -40,7 +43,7 @@ namespace squawkbus::server
     const std::string& topic_pattern,
     const NotificationManager& notification_manager)
   {
-    logging::debug(std::format( "add_subscription: {}", topic_pattern));
+    log.debug(std::format( "add_subscription: {}", topic_pattern));
 
     // Try to find the topic pattern.
     auto i_subscribers = subscriptions_.find(topic_pattern);
@@ -88,7 +91,7 @@ namespace squawkbus::server
     const std::string& topic_pattern,
     const NotificationManager& notification_manager)
   {
-    logging::debug(std::format( "remove_subscription: {}", topic_pattern));
+    log.debug(std::format( "remove_subscription: {}", topic_pattern));
 
     auto i_subscriptions = subscriptions_.find(topic_pattern);
     if (i_subscriptions == subscriptions_.end())

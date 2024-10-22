@@ -6,14 +6,19 @@
 
 namespace squawkbus::server
 {
+  namespace
+  {
+    auto log = logging::logger("squawkbus");
+  }
+
   void Distributor::on_startup(Poller& poller)
   {
-      logging::info("on_startup");
+      log.info("on_startup");
   }
 
   void Distributor::on_open(Poller& poller, int fd, const std::string& host, std::uint16_t port)
   {
-      logging::info(std::format("on_open: {} ({}:{})", fd, host, port));
+      log.info(std::format("on_open: {} ({}:{})", fd, host, port));
 
       interactors_.insert(std::make_pair(
         fd,
@@ -22,7 +27,7 @@ namespace squawkbus::server
 
   void Distributor::on_close(Poller& poller, int fd)
   {
-    logging::info(std::format("on_close: {}", fd));
+    log.info(std::format("on_close: {}", fd));
 
     auto i_interactor = interactors_.find(fd);
     if (i_interactor == interactors_.end())
@@ -34,7 +39,7 @@ namespace squawkbus::server
 
   void Distributor::on_read(Poller& poller, int fd, std::vector<std::vector<char>>&& bufs)
   {
-    logging::info(std::format("on_read: {}", fd));
+    log.info(std::format("on_read: {}", fd));
 
     auto i_interactor = interactors_.find(fd);
     if (i_interactor == interactors_.end())
@@ -46,7 +51,7 @@ namespace squawkbus::server
 
   void Distributor::on_error(Poller& poller, int fd, std::exception error)
   {
-    logging::info(std::format("on_error: {}, {}", fd, error.what()));
+    log.info(std::format("on_error: {}, {}", fd, error.what()));
   }
 
 }

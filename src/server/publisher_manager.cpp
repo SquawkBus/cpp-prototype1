@@ -7,10 +7,13 @@
 #include "publisher_manager.hpp"
 #include "subscription_manager.hpp"
 
-namespace logging = squawkbus::logging;
-
 namespace squawkbus::server
 {
+  namespace
+  {
+    auto log = logging::logger("squawkbus");
+  }
+
   using squawkbus::messages::ForwardedMulticastData;
   using squawkbus::messages::ForwardedUnicastData;
   using squawkbus::messages::MulticastData;
@@ -24,7 +27,7 @@ namespace squawkbus::server
     auto i_subscriber = interactors.find(request.client_id());
     if (i_subscriber == interactors.end())
     {
-      logging::info(std::format("no interactor for {}", request.client_id()));
+      log.info(std::format("no interactor for {}", request.client_id()));
       return;
     }
     auto client = i_subscriber->second;

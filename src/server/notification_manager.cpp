@@ -7,16 +7,19 @@
 #include "notification_manager.hpp"
 #include "subscription_manager.hpp"
 
-namespace logging = squawkbus::logging;
-
 namespace squawkbus::server
 {
+  namespace
+  {
+    auto log = logging::logger("squawkbus");
+  }
+
   using squawkbus::messages::NotificationRequest;
   using squawkbus::messages::ForwardedSubscriptionRequest;
 
   void NotificationManager::on_listen(Interactor* listener, const NotificationRequest& request, const SubscriptionManager& subscription_manager)
   {
-    logging::debug(
+    log.debug(
       std::format(
         "on_subscription: {} ({})",
         request.topic_pattern(),
@@ -30,7 +33,7 @@ namespace squawkbus::server
 
   void NotificationManager::add_listener(Interactor* listener, const std::string& topic_pattern, const SubscriptionManager& subscription_manager)
   {
-    logging::debug(std::format( "add_notification: {}", topic_pattern));
+    log.debug(std::format( "add_notification: {}", topic_pattern));
 
     // Try to find the topic pattern.
     auto i_notifications = notifications_.find(topic_pattern);
@@ -97,7 +100,7 @@ namespace squawkbus::server
 
   void NotificationManager::remove_listener(Interactor* listener, const std::string& topic_pattern, const SubscriptionManager& subscription_manager)
   {
-    logging::debug(std::format( "remove_notification: {}", topic_pattern));
+    log.debug(std::format( "remove_notification: {}", topic_pattern));
 
     auto i_notifications = notifications_.find(topic_pattern);
     if (i_notifications == notifications_.end())
@@ -184,7 +187,7 @@ namespace squawkbus::server
     const std::string& topic_pattern,
     bool is_add) const
   {
-    logging::debug(std::format( "notify: {}", topic_pattern));
+    log.debug(std::format( "notify: {}", topic_pattern));
 
     auto message = std::make_shared<ForwardedSubscriptionRequest>(
       subscriber->user(),

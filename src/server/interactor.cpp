@@ -12,6 +12,11 @@
 
 namespace squawkbus::server
 {
+  namespace
+  {
+    auto log = logging::logger("squawkbus");
+  }
+
   using squawkbus::io::Poller;
   using squawkbus::serialization::FrameBuffer;
   using squawkbus::messages::Message;
@@ -72,7 +77,7 @@ namespace squawkbus::server
         : std::string(
             authenticate_message->data().begin(),
             authenticate_message->data().end());
-      logging::info(std::format("authenticated as {}", *user_));
+      log.info(std::format("authenticated as {}", *user_));
       return;
     }
 
