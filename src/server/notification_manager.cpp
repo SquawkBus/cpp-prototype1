@@ -187,7 +187,11 @@ namespace squawkbus::server
     const std::string& topic_pattern,
     bool is_add) const
   {
-    log.debug(std::format( "notify: {}", topic_pattern));
+    auto listeners = find_listeners(topic_pattern);
+    if (listeners.empty())
+    {
+      return;
+    }
 
     auto message = std::make_shared<ForwardedSubscriptionRequest>(
       subscriber->user(),
@@ -196,9 +200,15 @@ namespace squawkbus::server
       topic_pattern,
       is_add);
 
-    auto listeners = find_listeners(topic_pattern);
     for (auto listener : listeners)
     {
+      log.debug(
+        std::format(
+          "notifying subscription from {} on \"{}\" to {}",
+          subscriber->str(),
+          topic_pattern,
+          listener->str()));
+          
       listener->send(message);
     }
   }

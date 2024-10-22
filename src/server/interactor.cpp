@@ -77,7 +77,8 @@ namespace squawkbus::server
         : std::string(
             authenticate_message->data().begin(),
             authenticate_message->data().end());
-      log.info(std::format("authenticated {}.", str()));
+      log.info(std::format("Authenticated {}.", str()));
+      hub_.on_connected(this);
       return;
     }
 

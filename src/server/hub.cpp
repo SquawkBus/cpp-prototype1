@@ -23,14 +23,14 @@ namespace squawkbus::server
 
   void Hub::on_connected(Interactor* interactor)
   {
-    log.debug(std::format("adding interactor {}", interactor->id()));
+    log.debug(std::format("Connected {}.", interactor->str()));
 
     interactors_.insert({interactor->id(), interactor});
   }
 
   void Hub::on_disconnected(Interactor* interactor)
   {
-    log.debug(std::format("removing interactor {}", interactor->id()));
+    log.debug(std::format("Disconnected {}.", interactor->str()));
 
     subscription_manager_.on_interactor_closed(interactor);
     notification_manager_.on_interactor_closed(interactor);
@@ -41,7 +41,7 @@ namespace squawkbus::server
 
   void Hub::on_message(Interactor* interactor, const Message* message)
   {
-    log.debug(std::format("on_message from {} with {}", interactor->id(), message->str()));
+    log.debug(std::format("received {} message from {}.", to_string(message->message_type()), interactor->id()));
 
     switch (message->message_type())
     {

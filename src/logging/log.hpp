@@ -118,7 +118,7 @@ namespace squawkbus::logging {
     void emit(const LogRecord& log_record) override
     {
         auto line = std::format(
-          "{:%Y-%m-%d %X} {} {} {} ({}, {})\n",
+          "{:%Y-%m-%d %X} {:7} {} {} ({}, {})\n",
           log_record.time,
           to_string(log_record.level),
           log_record.msg,
