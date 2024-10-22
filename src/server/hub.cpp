@@ -38,6 +38,8 @@ namespace squawkbus::server
 
   void Hub::on_message(Interactor* interactor, const Message* message)
   {
+    logging::debug(std::format("on_message from {} with {}", interactor->id(), message->str()));
+
     switch (message->message_type())
     {
     case MessageType::SubscriptionRequest:
