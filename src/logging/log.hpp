@@ -170,9 +170,11 @@ namespace squawkbus::logging {
       {
         std::scoped_lock lock(key_);
 
+        auto time = std::chrono::current_zone()->to_local(std::chrono::system_clock::now());
+
         auto log_record = LogRecord
         {
-          .time = std::chrono::current_zone()->to_local(std::chrono::system_clock::now()),
+          .time = time,
           .name = name_,
           .level = level,
           .loc = loc,
