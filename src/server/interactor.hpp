@@ -41,6 +41,7 @@ namespace squawkbus::server
 
     void receive(std::vector<char>&& buf);
     void send(std::shared_ptr<Message> message);
+    std::string str() const noexcept;
 
   private:
     void process_message(const Message* message);

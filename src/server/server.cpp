@@ -71,7 +71,7 @@ int main(int argc, char** argv)
 
     logging::info(
       std::format(
-        "starting echo server on port {}{}.",
+        "Starting squawkbus on port {}{}.",
         static_cast<int>(port),
         (use_tls ? " with TLS" : "")));
 

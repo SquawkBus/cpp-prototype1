@@ -77,10 +77,16 @@ namespace squawkbus::server
         : std::string(
             authenticate_message->data().begin(),
             authenticate_message->data().end());
-      log.info(std::format("authenticated as {}", *user_));
+      log.info(std::format("authenticated {}.", str()));
       return;
     }
 
     throw std::runtime_error("unknown authentication method");
+  }
+
+  std::string Interactor::str() const noexcept
+  {
+    auto user = user_.has_value() ? user_.value() : "unauthenticated";
+    return std::format("<interactor [{}/{}] ({})>", id_, fd_, user);
   }
 }

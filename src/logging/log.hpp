@@ -121,8 +121,8 @@ namespace squawkbus::logging {
           "{:%Y-%m-%d %X} {} {} {} ({}, {})\n",
           log_record.time,
           to_string(log_record.level),
-          log_record.loc.function_name(),
           log_record.msg,
+          log_record.loc.function_name(),
           log_record.loc.file_name(),
           log_record.loc.line());
         fputs(line.c_str(), stream_);

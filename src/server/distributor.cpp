@@ -13,21 +13,19 @@ namespace squawkbus::server
 
   void Distributor::on_startup(Poller& poller)
   {
-      log.info("on_startup");
+      log.debug("Starting the server.");
   }
 
   void Distributor::on_open(Poller& poller, int fd, const std::string& host, std::uint16_t port)
   {
-      log.info(std::format("on_open: {} ({}:{})", fd, host, port));
-
-      interactors_.insert(std::make_pair(
-        fd,
-        std::make_shared<Interactor>(fd, poller, hub_, host, port)));
+      auto interactor = std::make_shared<Interactor>(fd, poller, hub_, host, port);
+      log.info(std::format("Created interactor {}", interactor->str()));
+      interactors_.insert({fd, interactor});
   }
 
   void Distributor::on_close(Poller& poller, int fd)
   {
-    log.info(std::format("on_close: {}", fd));
+    log.debug(std::format("Closing: fd={}", fd));
 
     auto i_interactor = interactors_.find(fd);
     if (i_interactor == interactors_.end())
@@ -39,7 +37,7 @@ namespace squawkbus::server
 
   void Distributor::on_read(Poller& poller, int fd, std::vector<std::vector<char>>&& bufs)
   {
-    log.info(std::format("on_read: {}", fd));
+    log.trace(std::format("on_read: {}", fd));
 
     auto i_interactor = interactors_.find(fd);
     if (i_interactor == interactors_.end())
