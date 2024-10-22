@@ -32,6 +32,10 @@ namespace squawkbus::client
     void on_close(Poller& poller, int fd) override;
     void on_read(Poller& poller, int fd, std::vector<std::vector<char>>&& bufs) override;
     void on_error(Poller& poller, int fd, std::exception error) override;
+
+  private:
+    void handle_message(Poller& poller, std::vector<char> buf);
+    void handle_command(Poller& poller, std::vector<char> buf);
   };
 
 }

@@ -60,65 +60,13 @@ namespace squawkbus::client
 
     for (auto& buf : bufs)
     {
-      auto s = std::string(buf.begin(), buf.end());
-
-      logging::info(std::format("on_read: received {}", s));
       if (fd == STDIN_FILENO)
       {
-        auto line = split(s, " ");
-        for (auto& word : line)
-          trim(word);
-
-        if (s == "CLOSE")
-        {
-          poller.close(client_socket_->fd());
-        }
-        else if (line.size() == 2 && line[0] == "SUBSCRIBE")
-        {
-          auto message = SubscriptionRequest(line[1], true);
-          auto frame = message.serialize();
-          auto response = std::vector<char>(frame);
-          poller.write(client_socket_->fd(), response);
-        }
-        else if (line.size() == 2 && line[0] == "UNSUBSCRIBE")
-        {
-          auto message = SubscriptionRequest(line[1], false);
-          auto frame = message.serialize();
-          auto response = std::vector<char>(frame);
-          poller.write(client_socket_->fd(), response);
-        }
-        else if (line.size() == 3 && line[0] == "PUBLISH")
-        {
-          auto topic = line[1];
-          auto word = line[2];
-          auto data_packet = DataPacket(
-            {0},
-            "text/plain",
-            std::vector<char>(word.begin(), word.end()));
-          auto message = MulticastData(line[1], { data_packet });
-          auto frame = message.serialize();
-          auto response = std::vector<char>(frame);
-          poller.write(client_socket_->fd(), response);
-        }
-        else
-        {
-          auto msg = std::format("unknown command: {}", s);
-          auto response = std::vector<char>(msg.begin(), msg.end());
-          poller.write(STDOUT_FILENO, response);
-        }
+        handle_command(poller, buf);
       }
       else if (fd == client_socket_->fd())
       {
-        reader_.write(buf);
-
-        while (reader_.has_frame())
-        {
-          auto frame = reader_.read();
-          auto message = Message::deserialize(frame);
-          auto text = std::format("on_message: {}", message->str());
-          auto response = std::vector<char>(text.begin(), text.end());
-          poller.write(STDOUT_FILENO, buf);
-        }
+        handle_message(poller, buf);
       }
     }
   }
@@ -126,6 +74,75 @@ namespace squawkbus::client
   void TopicClient::on_error(Poller& poller, int fd, std::exception error)
   {
     logging::info(std::format("on_error: {} - {}", fd, error.what()));
+  }
+
+  void TopicClient::handle_command(Poller& poller, std::vector<char> buf)
+  {
+    auto line = std::string(buf.begin(), buf.end());
+    logging::info(std::format("on_read: received {}", line));
+
+    auto words = split(line, " ");
+    for (auto& word : words)
+      trim(word);
+
+    if (words.size() < 1)
+      return;
+
+    auto command = words[0];
+
+    if (command == "CLOSE")
+    {
+      poller.close(client_socket_->fd());
+    }
+    else if (words.size() == 2 && command == "SUBSCRIBE")
+    {
+      auto topic_pattern = words[1];
+      auto message = SubscriptionRequest(topic_pattern, true);
+      auto frame = message.serialize();
+      auto response = std::vector<char>(frame);
+      poller.write(client_socket_->fd(), response);
+    }
+    else if (words.size() == 2 && command == "UNSUBSCRIBE")
+    {
+      auto topic_pattern = words[1];
+      auto message = SubscriptionRequest(topic_pattern, false);
+      auto frame = message.serialize();
+      auto response = std::vector<char>(frame);
+      poller.write(client_socket_->fd(), response);
+    }
+    else if (words.size() == 3 && command == "PUBLISH")
+    {
+      auto topic = words[1];
+      auto content = words[2];
+      auto data_packet = DataPacket(
+        {0},
+        "text/plain",
+        std::vector<char>(content.begin(), content.end()));
+      auto message = MulticastData(topic, { data_packet });
+      auto frame = message.serialize();
+      auto response = std::vector<char>(frame);
+      poller.write(client_socket_->fd(), response);
+    }
+    else
+    {
+      auto msg = std::format("unknown command: {}", command);
+      auto response = std::vector<char>(msg.begin(), msg.end());
+      poller.write(STDOUT_FILENO, response);
+    }
+  }
+
+  void TopicClient::handle_message(Poller& poller, std::vector<char> buf)
+  {
+    reader_.write(buf);
+
+    while (reader_.has_frame())
+    {
+      auto frame = reader_.read();
+      auto message = Message::deserialize(frame);
+      auto text = std::format("on_message: {}", message->str());
+      auto response = std::vector<char>(text.begin(), text.end());
+      poller.write(STDOUT_FILENO, buf);
+    }
   }
 
 }
