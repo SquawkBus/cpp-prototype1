@@ -52,12 +52,14 @@ namespace squawkbus::server
     else
     {
       // Existing topic pattern.
-      auto subscribers = i_subscribers->second;
+      auto& subscribers = i_subscribers->second;
       auto i_subscriber = subscribers.find(subscriber);
       if (i_subscriber == subscribers.end())
       {
         // new subscriber for topic pattern.
-        subscribers.insert({ {subscriber,1 } });
+        subscribers.insert({ {subscriber, 1} });
+        // Only notify for new subscriptions.
+        notification_manager.notify(subscriber, topic_pattern, true);
       }
       else
       {

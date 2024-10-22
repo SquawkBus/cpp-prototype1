@@ -18,6 +18,7 @@ namespace squawkbus::server
   using squawkbus::messages::ForwardedUnicastData;
   using squawkbus::messages::MulticastData;
   using squawkbus::messages::UnicastData;
+  using squawkbus::serialization::DataPacket;
   
   void PublisherManager::on_send_unicast(
     Interactor* publisher,
@@ -30,6 +31,9 @@ namespace squawkbus::server
       log.info(std::format("no interactor for {}", request.client_id()));
       return;
     }
+
+    add_publisher(publisher, request.topic());
+
     auto client = i_subscriber->second;
 
     auto response = std::make_shared<ForwardedUnicastData>(
@@ -47,7 +51,14 @@ namespace squawkbus::server
     const MulticastData& request,
     const SubscriptionManager& subscription_manager)
   {
+    add_publisher(publisher, request.topic());
+
     auto subscribers = subscription_manager.find_subscribers(request.topic());
+    if (subscribers.empty())
+    {
+      return;
+    }
+
     auto response = std::make_shared<ForwardedMulticastData>(
       publisher->user(),
       publisher->host(),
@@ -60,7 +71,9 @@ namespace squawkbus::server
     }
   }
 
-  void PublisherManager::on_interactor_closed(Interactor* interactor)
+  void PublisherManager::on_interactor_closed(
+    Interactor* interactor,
+    const SubscriptionManager& subscription_manager)
   {
     // Find any topics this interactor has published.
     auto i_publisher_topics = publisher_topics_.find(interactor);
@@ -82,7 +95,25 @@ namespace squawkbus::server
       for (auto& topic : stale_topics)
       {
         topic_publishers_.erase(topic);
+
+        // Inform subscribers that the publisher has disconnected by sending
+        // an empty message.
+        auto subscribers = subscription_manager.find_subscribers(topic);
+        if (subscribers.empty())
+        {
+          continue;
+        }
+        auto message = std::make_shared<ForwardedMulticastData>(
+          interactor->user(),
+          interactor->host(),
+          topic,
+          std::vector<DataPacket> {});
+        for (auto subscriber: subscribers)
+        {
+          subscriber->send(message);
+        }
       }
+
     }
   }
 

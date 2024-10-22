@@ -26,7 +26,7 @@ namespace squawkbus::server
   public:
     void on_send_unicast(Interactor* publisher, const UnicastData& request, std::map<std::string, Interactor*> interactors);
     void on_send_multicast(Interactor* publisher, const MulticastData& request, const SubscriptionManager& subscription_manager);
-    void on_interactor_closed(Interactor* interactor);
+    void on_interactor_closed(Interactor* interactor, const SubscriptionManager& subscription_manager);
 
   private:
     void add_publisher(Interactor* publisher, const std::string& topic);

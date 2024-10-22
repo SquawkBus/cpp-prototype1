@@ -34,7 +34,7 @@ namespace squawkbus::server
 
     subscription_manager_.on_interactor_closed(interactor);
     notification_manager_.on_interactor_closed(interactor);
-    publisher_manager_.on_interactor_closed(interactor);
+    publisher_manager_.on_interactor_closed(interactor, subscription_manager_);
 
     interactors_.erase(interactor->id());
   }
