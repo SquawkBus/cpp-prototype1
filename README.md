@@ -11,4 +11,5 @@ I installed
 sudo apt update
 sudo apt install clang
 sudo apt install uuid-dev
+sudo apt install gdb
 ```
