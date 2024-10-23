@@ -4,7 +4,6 @@
 #include <chrono>
 #include <cstdio>
 #include <cstdlib>
-#include <fmt/format.h>
 #include <format>
 #include <map>
 #include <mutex>
