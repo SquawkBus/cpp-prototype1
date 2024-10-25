@@ -2,6 +2,15 @@
 
 A C++ prototype for SquawkBus.
 
+## Things to do
+
+* Add authentication
+  * Make an htpasswd file reader
+  * Add a JSON or YAML loader for configuration
+  * Reload config on signal.
+* Remove regex from subscriptions, but leave for notifications.
+* Make task specific clients
+
 ## Container
 
 I used ubuntu noble 24.04
