@@ -1,15 +1,14 @@
-#include <cstdint>
 #include <memory>
 #include <vector>
 
-#include "serialization/frame_buffer.hpp"
 #include "messages/messages.hpp"
 
 #define CATCH_CONFIG_MAIN
 #include "catch2/catch.hpp"
 
-using namespace squawkbus::serialization;
-using namespace squawkbus::messages;
+using squawkbus::messages::Message;
+using squawkbus::messages::MulticastData;
+using squawkbus::messages::DataPacket;
 
 TEST_CASE("roundtrip")
 {
@@ -24,6 +23,7 @@ TEST_CASE("roundtrip")
                 2,
                 "text/plain",
                 std::vector<char>{'W', 'o', 'r', 'l', 'd'})});
+                
     auto frame = m0->serialize();
 
     auto m1 = Message::deserialize(frame);

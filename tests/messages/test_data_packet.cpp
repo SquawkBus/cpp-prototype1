@@ -1,15 +1,11 @@
-#define CATCH_CONFIG_MAIN
-
-#include <iostream>
-#include <sstream>
-
 #include "serialization/frame_buffer.hpp"
 #include "messages/messages.hpp"
 
+#define CATCH_CONFIG_MAIN
 #include "catch2/catch.hpp"
 
-using namespace squawkbus::serialization;
-using namespace squawkbus::messages;
+using squawkbus::serialization::FrameBuffer;
+using squawkbus::messages::DataPacket;
 
 TEST_CASE("smoke test") {
     auto dp = DataPacket(
