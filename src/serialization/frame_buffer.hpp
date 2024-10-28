@@ -8,7 +8,7 @@
 #include <numeric>
 #include <vector>
 
-#include "network_bytes.hpp"
+#include "serialization/network_bytes.hpp"
 
 namespace squawkbus::serialization
 {

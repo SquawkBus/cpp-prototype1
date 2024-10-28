@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-#include "frame_buffer.hpp"
+#include "serialization/frame_buffer.hpp"
 
 namespace squawkbus::serialization
 {

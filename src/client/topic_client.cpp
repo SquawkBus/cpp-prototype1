@@ -24,7 +24,7 @@ namespace squawkbus::client
   using squawkbus::messages::Authenticate;
   using squawkbus::messages::SubscriptionRequest;
   using squawkbus::messages::MulticastData;
-  using squawkbus::serialization::DataPacket;
+  using squawkbus::messages::DataPacket;
 
   TopicClient::TopicClient(std::shared_ptr<TcpClientSocket> client_socket)
     : client_socket_(client_socket)

@@ -18,7 +18,7 @@ namespace squawkbus::server
   using squawkbus::messages::ForwardedUnicastData;
   using squawkbus::messages::MulticastData;
   using squawkbus::messages::UnicastData;
-  using squawkbus::serialization::DataPacket;
+  using squawkbus::messages::DataPacket;
   
   void PublisherManager::on_send_unicast(
     Interactor* publisher,

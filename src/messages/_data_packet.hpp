@@ -1,5 +1,5 @@
-#ifndef SQUAWKBUS_SERIALIZATION_DATA_PACKET_HPP
-#define SQUAWKBUS_SERIALIZATION_DATA_PACKET_HPP
+#ifndef SQUAWKBUS_MESSAGES_DATA_PACKET_HPP
+#define SQUAWKBUS_MESSAGES_DATA_PACKET_HPP
 
 #include <cstddef>
 #include <set>
@@ -8,11 +8,13 @@
 
 #include "utils/utils.hpp"
 
-#include "frame_buffer.hpp"
-#include "frame_buffer_io.hpp"
+#include "serialization/frame_buffer.hpp"
+#include "serialization/frame_buffer_io.hpp"
 
-namespace squawkbus::serialization
+namespace squawkbus::messages
 {
+  using squawkbus::serialization::FrameBuffer;
+  
   class DataPacket
   {
   private:
@@ -105,4 +107,4 @@ namespace squawkbus::serialization
   
 }
 
-#endif // SQUAWKBUS_SERIALIZATION_DATA_PACKET_HPP
+#endif // SQUAWKBUS_MESSAGES_DATA_PACKET_HPP

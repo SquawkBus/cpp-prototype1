@@ -8,8 +8,8 @@
 
 #include "serialization/frame_buffer.hpp"
 #include "serialization/frame_buffer_io.hpp"
-#include "serialization/data_packet.hpp"
 
+#include "messages/_data_packet.hpp"
 #include "messages/_message_type.hpp"
 #include "messages/_message.hpp"
 

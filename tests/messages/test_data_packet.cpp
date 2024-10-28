@@ -3,12 +3,13 @@
 #include <iostream>
 #include <sstream>
 
-#include "serialization/data_packet.hpp"
 #include "serialization/frame_buffer.hpp"
+#include "messages/messages.hpp"
 
 #include "catch2/catch.hpp"
 
 using namespace squawkbus::serialization;
+using namespace squawkbus::messages;
 
 TEST_CASE("smoke test") {
     auto dp = DataPacket(

@@ -5,6 +5,7 @@
 #include <string>
 #include <utility>
 
+#include "messages/_data_packet.hpp"
 #include "messages/_message.hpp"
 #include "messages/_authenticate.hpp"
 #include "messages/_forwarded_multicast_data.hpp"
