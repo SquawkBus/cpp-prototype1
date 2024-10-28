@@ -11,7 +11,7 @@ TEST_CASE("smoke test") {
     auto dp = DataPacket(
         static_cast<std::int32_t>(1),
         std::string("text/plain"),
-        std::vector<char> { 'H', 'e', 'l', 'l', 'o' }
+        std::vector { 'H', 'e', 'l', 'l', 'o' }
     );
     auto user_entitlements_pass = std::set<std::int32_t> { 1, 2, 3 };
     auto user_entitlements_fail = std::set<std::int32_t> { 4, 5, 6 };
@@ -25,12 +25,12 @@ TEST_CASE("frames") {
     auto dp1 = DataPacket(
         static_cast<std::int32_t>(1),
         "text/plain",
-        std::vector<char> { 'H', 'e', 'l', 'l', 'o' }
+        std::vector { 'H', 'e', 'l', 'l', 'o' }
     );
     auto dp2 = DataPacket(
         static_cast<std::int32_t>(1),
         "text/plain",
-        std::vector<char> { 'W', 'o', 'r', 'l', 'd' }
+        std::vector { 'W', 'o', 'r', 'l', 'd' }
     );
     std::vector<DataPacket> data_packets_in, data_packets_out;
     data_packets_in.push_back(dp1);

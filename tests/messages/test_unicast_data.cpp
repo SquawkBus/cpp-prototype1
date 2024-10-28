@@ -20,12 +20,12 @@ TEST_CASE("roundtrip")
             DataPacket(
                 1,
                 "text/plain",
-                std::vector<char>{'H', 'e', 'l', 'l', 'o'}),
+                std::vector {'H', 'e', 'l', 'l', 'o'}),
             DataPacket(
                 2,
                 "text/plain",
-                std::vector<char>{'W', 'o', 'r', 'l', 'd'})});
-                
+                std::vector {'W', 'o', 'r', 'l', 'd'})});
+
     auto frame = m0->serialize();
 
     auto m1 = Message::deserialize(frame);

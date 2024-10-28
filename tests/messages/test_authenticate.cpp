@@ -13,7 +13,7 @@ TEST_CASE("smoke test")
 {
     std::shared_ptr<Message> m0 = std::make_shared<Authenticate>(
         "PLAIN",
-        std::vector<char>{'f', 'r', 'e', 'd'}
+        std::vector {'f', 'r', 'e', 'd'}
     );
     
     auto frame = m0->serialize();
