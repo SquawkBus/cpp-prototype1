@@ -115,7 +115,7 @@ namespace squawkbus::client
       auto topic = words[1];
       auto content = words[2];
       auto data_packet = DataPacket(
-        {0},
+        0,
         "text/plain",
         std::vector<char>(content.begin(), content.end()));
       auto message = MulticastData(topic, { data_packet });

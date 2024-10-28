@@ -1,5 +1,4 @@
 #include <cstdint>
-#include <set>
 #include <memory>
 #include <vector>
 
@@ -20,11 +19,11 @@ TEST_CASE("roundtrip")
         "TOPIC-1",
         std::vector<DataPacket>{
             DataPacket(
-                std::set<std::int32_t>{1, 2},
+                1,
                 "text/plain",
                 std::vector<char>{'H', 'e', 'l', 'l', 'o'}),
             DataPacket(
-                std::set<std::int32_t>{3, 4, 5},
+                2,
                 "text/plain",
                 std::vector<char>{'W', 'o', 'r', 'l', 'd'})});
     auto frame = m0->serialize();

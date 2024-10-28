@@ -18,7 +18,7 @@ namespace squawkbus::messages
   class DataPacket
   {
   private:
-    std::set<std::int32_t> entitlements_;
+    std::int32_t entitlement_;
     std::string content_type_;
     std::vector<char> data_;
 
@@ -28,40 +28,38 @@ namespace squawkbus::messages
     }
 
     DataPacket(
-      const std::set<std::int32_t>& entitlements,
+      const std::int32_t& entitlement,
       const std::string& content_type,
       const std::vector<char>& data) noexcept
-      : entitlements_(entitlements),
+      : entitlement_(entitlement),
         content_type_(content_type),
         data_(data)
     {
     }
 
     DataPacket(
-      std::set<std::int32_t>&& entitlements,
+      std::int32_t&& entitlement,
       std::string&& content_type,
       std::vector<char>&& data) noexcept
-      : entitlements_(std::move(entitlements)),
+      : entitlement_(entitlement),
         content_type_(std::move(content_type)),
         data_(std::move(data))
     {
     }
 
-    const std::set<std::int32_t>& entitlements() const noexcept { return entitlements_; }
+    std::int32_t entitlement() const noexcept { return entitlement_; }
     const std::string& content_type() const noexcept { return content_type_; }
     const std::vector<char>& data() const noexcept { return data_; }
 
     bool is_authorized(const std::set<std::int32_t> &granted_entitlements) const noexcept
     {
-      return std::includes(
-        granted_entitlements.begin(), granted_entitlements.end(),
-        entitlements_.begin(), entitlements_.end());
+      return granted_entitlements.contains(entitlement_);
     }
 
     bool operator==(const DataPacket& other) const noexcept
     {
       return
-        entitlements_ == other.entitlements_ &&
+        entitlement_ == other.entitlement_ &&
         content_type_ == other.content_type_ &&
         data_ == other.data_;
     }
@@ -70,7 +68,7 @@ namespace squawkbus::messages
     {
       return
         frame
-          << entitlements_
+          << entitlement_
           << content_type_
           << data_;
     }
@@ -79,7 +77,7 @@ namespace squawkbus::messages
     {
       return
         frame
-          >> entitlements_
+          >> entitlement_
           >> content_type_
           >> data_;
     }
@@ -89,7 +87,7 @@ namespace squawkbus::messages
   {
     return os
       << "DataPacket"
-      << "(entitlements=" << ::to_string(d.entitlements())
+      << "(entitlement=" << d.entitlement()
       << ",content_type=" << d.content_type()
       << ",data=" << ::to_string(d.data())
       << ")" ;
