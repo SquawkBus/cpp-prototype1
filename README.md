@@ -9,6 +9,7 @@ A C++ prototype for SquawkBus.
   * Add a JSON or YAML loader for configuration
   * Reload config on signal.
 * Remove regex from subscriptions, but leave for notifications.
+* Make data packets have a single entitlement.
 * Make task specific clients
 
 ## Container
