@@ -21,8 +21,7 @@ namespace squawkbus::server
   {
   private:
     std::map<std::string, std::map<Interactor*, int>> subscriptions_;
-    std::map<std::string, std::regex> regex_cache_;
-    std::map<Interactor*, std::set<std::string>> subscriber_topic_patterns_;
+    std::map<Interactor*, std::set<std::string>> subscriber_topics_;
 
   public:
     void on_subscription(

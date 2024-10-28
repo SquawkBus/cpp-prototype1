@@ -21,7 +21,7 @@ namespace squawkbus::messages
     std::string user_;
     std::string host_;
     std::string client_id_;
-    std::string topic_pattern_;
+    std::string topic_;
     bool is_add_;
 
   public:
@@ -34,13 +34,13 @@ namespace squawkbus::messages
       const std::string &user,
       const std::string &host,
       const std::string &client_id,
-      const std::string &topic_pattern,
+      const std::string &topic,
       bool is_add) noexcept
       : Message(MessageType::ForwardedSubscriptionRequest),
         user_(user),
         host_(host),
         client_id_(client_id),
-        topic_pattern_(topic_pattern),
+        topic_(topic),
         is_add_(is_add)
     {
     }
@@ -48,7 +48,7 @@ namespace squawkbus::messages
     const std::string& user() const noexcept { return user_; }
     const std::string& host() const noexcept { return host_; }
     const std::string& client_id() const noexcept { return client_id_; }
-    const std::string& topic_pattern() const noexcept { return topic_pattern_; }
+    const std::string& topic() const noexcept { return topic_; }
     bool is_add() const noexcept { return is_add_; }
 
     bool operator==(const ForwardedSubscriptionRequest &other) const noexcept
@@ -57,7 +57,7 @@ namespace squawkbus::messages
         user_ == other.user_ &&
         host_ == other.host_ &&
         client_id_ == other.client_id_ &&
-        topic_pattern_ == other.topic_pattern_ &&
+        topic_ == other.topic_ &&
         is_add_ == other.is_add_;
     }
 
@@ -74,7 +74,7 @@ namespace squawkbus::messages
         user_,
         host_,
         client_id_,
-        topic_pattern_,
+        topic_,
         (is_add_ ? "<true>" : "<false>"));
     }
 
@@ -86,7 +86,7 @@ namespace squawkbus::messages
         << user_
         << host_
         << client_id_
-        << topic_pattern_
+        << topic_
         << is_add_;
     }
 
@@ -96,7 +96,7 @@ namespace squawkbus::messages
         >> user_
         >> host_
         >> client_id_
-        >> topic_pattern_
+        >> topic_
         >> is_add_;
     }
   };

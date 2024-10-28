@@ -22,9 +22,9 @@ namespace squawkbus::server
     const NotificationManager& notification_manager)
   {
     if (request.is_add())
-      add_subscription(subscriber, request.topic_pattern(), notification_manager);
+      add_subscription(subscriber, request.topic(), notification_manager);
     else
-      remove_subscription(subscriber, request.topic_pattern(), notification_manager);
+      remove_subscription(subscriber, request.topic(), notification_manager);
   }
 
   void SubscriptionManager::on_interactor_closed(Interactor* subscriber)
@@ -34,32 +34,31 @@ namespace squawkbus::server
 
   void SubscriptionManager::add_subscription(
     Interactor* subscriber,
-    const std::string& topic_pattern,
+    const std::string& topic,
     const NotificationManager& notification_manager)
   {
-    log.debug(std::format( "subscribing {} to \"{}\"", subscriber->str(), topic_pattern));
+    log.debug(std::format( "subscribing {} to \"{}\"", subscriber->str(), topic));
 
     // Try to find the topic pattern.
-    auto i_subscribers = subscriptions_.find(topic_pattern);
+    auto i_subscribers = subscriptions_.find(topic);
     if (i_subscribers == subscriptions_.end())
     {
-      // New topic pattern.
-      subscriptions_.insert( { {topic_pattern, { {subscriber, 1} }} });
-      regex_cache_.insert({ {topic_pattern, std::regex(topic_pattern)} });
+      // New topic.
+      subscriptions_.insert( { {topic, { {subscriber, 1} }} });
       // Only notify for new subscriptions.
-      notification_manager.notify(subscriber, topic_pattern, true);
+      notification_manager.notify(subscriber, topic, true);
     }
     else
     {
-      // Existing topic pattern.
+      // Existing topic.
       auto& subscribers = i_subscribers->second;
       auto i_subscriber = subscribers.find(subscriber);
       if (i_subscriber == subscribers.end())
       {
-        // new subscriber for topic pattern.
+        // new subscriber for topic.
         subscribers.insert({ {subscriber, 1} });
         // Only notify for new subscriptions.
-        notification_manager.notify(subscriber, topic_pattern, true);
+        notification_manager.notify(subscriber, topic, true);
       }
       else
       {
@@ -69,30 +68,30 @@ namespace squawkbus::server
     }
 
     // Handle the reverse lookup.
-    auto i_subscriber_topic_patterns = subscriber_topic_patterns_.find(subscriber);
-    if (i_subscriber_topic_patterns == subscriber_topic_patterns_.end())
+    auto i_subscriber_topics = subscriber_topics_.find(subscriber);
+    if (i_subscriber_topics == subscriber_topics_.end())
     {
       // A new subscriber.
-      subscriber_topic_patterns_.insert({ {subscriber, { {topic_pattern} }} });
+      subscriber_topics_.insert({ {subscriber, { {topic} }} });
     }
     else
     {
       // Add this topic to the subscriber.
-      i_subscriber_topic_patterns->second.insert(topic_pattern);
+      i_subscriber_topics->second.insert(topic);
     }
   }
 
   void SubscriptionManager::remove_subscription(
     Interactor* subscriber,
-    const std::string& topic_pattern,
+    const std::string& topic,
     const NotificationManager& notification_manager)
   {
-    log.debug(std::format( "unsubscribing {} from \"{}\"", subscriber->str(), topic_pattern));
+    log.debug(std::format( "unsubscribing {} from \"{}\"", subscriber->str(), topic));
 
-    auto i_subscriptions = subscriptions_.find(topic_pattern);
+    auto i_subscriptions = subscriptions_.find(topic);
     if (i_subscriptions == subscriptions_.end())
     {
-      // The pattern has no subscribers.
+      // The topic has no subscribers.
       return;
     }
 
@@ -115,42 +114,41 @@ namespace squawkbus::server
     subscribers.erase(i_subscriber);
     if (subscribers.empty())
     {
-      // The topic pattern no longer has subscribers.
-      subscriptions_.erase(topic_pattern);
-      regex_cache_.erase(topic_pattern);
+      // The topic no longer has subscribers.
+      subscriptions_.erase(topic);
       // Only notify for final un-subscriptions.
-      notification_manager.notify(subscriber, topic_pattern, false);
+      notification_manager.notify(subscriber, topic, false);
     }
 
-    auto i_subscriber_topic_patterns = subscriber_topic_patterns_.find(subscriber);
-    if (i_subscriber_topic_patterns == subscriber_topic_patterns_.end())
+    auto i_subscriber_topics = subscriber_topics_.find(subscriber);
+    if (i_subscriber_topics == subscriber_topics_.end())
     {
       // This would be a program logic error.
       return;
     }
 
-    // Remove the topic pattern from the subscriber.
-    i_subscriber_topic_patterns->second.erase(topic_pattern);
-    if (i_subscriber_topic_patterns->second.empty())
+    // Remove the topic from the subscriber.
+    i_subscriber_topics->second.erase(topic);
+    if (i_subscriber_topics->second.empty())
     {
       // Remove a subscriber with no subscriptions.
-      subscriber_topic_patterns_.erase(subscriber);
+      subscriber_topics_.erase(subscriber);
     }
   }
 
   void SubscriptionManager::remove_interactor(Interactor* subscriber)
   {
-    auto i_subscriber_topic_patterns = subscriber_topic_patterns_.find(subscriber);
-    if (i_subscriber_topic_patterns == subscriber_topic_patterns_.end())
+    auto i_subscriber_topics = subscriber_topics_.find(subscriber);
+    if (i_subscriber_topics == subscriber_topics_.end())
     {
       // The subscriber has no subscriptions.
       return;
     }
 
     // Go through each of the subscriptions removing the subscriber.
-    for (auto& topic_pattern : i_subscriber_topic_patterns->second)
+    for (auto& topic : i_subscriber_topics->second)
     {
-      auto i_subscriptions = subscriptions_.find(topic_pattern);
+      auto i_subscriptions = subscriptions_.find(topic);
       if (i_subscriptions == subscriptions_.end())
       {
         // This should never happen, and would be a logic error.
@@ -164,41 +162,25 @@ namespace squawkbus::server
         continue;
       }
 
-      subscriptions_.erase(topic_pattern);
-      regex_cache_.erase(topic_pattern);
+      subscriptions_.erase(topic);
     }
 
-    subscriber_topic_patterns_.erase(subscriber);
+    subscriber_topics_.erase(subscriber);
   }
 
   std::set<Interactor*> SubscriptionManager::find_subscribers(const std::string& topic) const
   {
     auto subscribers = std::set<Interactor*> {};
 
-    // Go through each of the topic patterns checking for a match.
-    for (auto& [topic_pattern, regex] : regex_cache_)
+    auto i_subscriptions = subscriptions_.find(topic);
+    if (i_subscriptions != subscriptions_.end())
     {
-      if (!std::regex_match(topic, regex))
-      {
-        // No match.
-        continue;
-      }
-
-      auto i_subscriptions = subscriptions_.find(topic_pattern);
-      if (i_subscriptions == subscriptions_.end())
-      {
-        // A match is found with no subscribers.
-        // Should never happen.
-        continue;
-      }
-
-      // Add the interactors that have subscribed to this topic pattern.
       for (auto& [subscriber, count] : i_subscriptions->second)
       {
         subscribers.insert(subscriber);
       }
     }
-
+    
     return subscribers;
   }
 
@@ -206,16 +188,16 @@ namespace squawkbus::server
   {
     std::vector<std::pair<std::string, std::vector<Interactor*>>> matching_subscriptions;
 
-    for (auto& [topic_pattern, subscriptions] : subscriptions_)
+    for (auto& [topic, subscriptions] : subscriptions_)
     {
-      if (std::regex_match(topic_pattern, regex))
+      if (std::regex_match(topic, regex))
       {
         auto interactors = std::vector<Interactor*>{};
         for (auto& [interactor, _count] : subscriptions)
         {
           interactors.push_back(interactor);
         }
-        matching_subscriptions.push_back({topic_pattern, interactors});
+        matching_subscriptions.push_back({topic, interactors});
       }
     }
 

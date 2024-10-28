@@ -17,7 +17,10 @@ namespace squawkbus::server
   using squawkbus::messages::NotificationRequest;
   using squawkbus::messages::ForwardedSubscriptionRequest;
 
-  void NotificationManager::on_listen(Interactor* listener, const NotificationRequest& request, const SubscriptionManager& subscription_manager)
+  void NotificationManager::on_listen(
+    Interactor* listener,
+    const NotificationRequest& request,
+    const SubscriptionManager& subscription_manager)
   {
     log.debug(
       std::format(
@@ -31,7 +34,10 @@ namespace squawkbus::server
       remove_listener(listener, request.topic_pattern(), subscription_manager);
   }
 
-  void NotificationManager::add_listener(Interactor* listener, const std::string& topic_pattern, const SubscriptionManager& subscription_manager)
+  void NotificationManager::add_listener(
+    Interactor* listener,
+    const std::string& topic_pattern,
+    const SubscriptionManager& subscription_manager)
   {
     log.debug(std::format( "add_notification: {}", topic_pattern));
 
@@ -98,7 +104,10 @@ namespace squawkbus::server
 
   }
 
-  void NotificationManager::remove_listener(Interactor* listener, const std::string& topic_pattern, const SubscriptionManager& subscription_manager)
+  void NotificationManager::remove_listener(
+    Interactor* listener,
+    const std::string& topic_pattern,
+    const SubscriptionManager& subscription_manager)
   {
     log.debug(std::format( "remove_notification: {}", topic_pattern));
 
@@ -184,10 +193,10 @@ namespace squawkbus::server
 
   void NotificationManager::notify(
     Interactor* subscriber,
-    const std::string& topic_pattern,
+    const std::string& topic,
     bool is_add) const
   {
-    auto listeners = find_listeners(topic_pattern);
+    auto listeners = find_listeners(topic);
     if (listeners.empty())
     {
       return;
@@ -197,7 +206,7 @@ namespace squawkbus::server
       subscriber->user(),
       subscriber->host(),
       subscriber->id(),
-      topic_pattern,
+      topic,
       is_add);
 
     for (auto listener : listeners)
@@ -206,7 +215,7 @@ namespace squawkbus::server
         std::format(
           "notifying subscription from {} on \"{}\" to {}",
           subscriber->str(),
-          topic_pattern,
+          topic,
           listener->str()));
           
       listener->send(message);

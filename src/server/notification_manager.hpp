@@ -24,7 +24,7 @@ namespace squawkbus::server
   public:
     void on_listen(Interactor* listener, const NotificationRequest& request, const SubscriptionManager& subscription_manager);
     void on_interactor_closed(Interactor* listener);
-    void notify(Interactor* subscriber, const std::string& topic_pattern, bool is_add) const;
+    void notify(Interactor* subscriber, const std::string& topic, bool is_add) const;
 
   private:
     void add_listener(Interactor* listener, const std::string& topic_pattern, const SubscriptionManager& subscription_manager);
