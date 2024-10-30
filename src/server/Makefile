@@ -7,7 +7,7 @@ CXX = clang++
 INCLUDES = -I${SRC_DIR} -I${EXT_DIR} -I/opt/homebrew/include
 LIBS = -L/opt/homebrew/lib
 CXXFLAGS = -g -std=c++23 -Wall ${INCLUDES}
-LDLIBS = ${LIBS} -lssl -lcrypto -luuid
+LDLIBS = ${LIBS} -lyaml-cpp -lssl -lcrypto -luuid
 
 MESSAGE_HEADERS = \
 	${SRC_DIR}/messages/_authenticate.hpp \
@@ -119,6 +119,7 @@ notification_manager.o: \
 authorization.o: \
 	authorization.cpp \
 	authorization.hpp \
+	authorization_yaml.hpp \
 	role.hpp
 
 cmd_line.o: \

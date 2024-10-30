@@ -8,10 +8,18 @@
 #include <stdexcept>
 #include <vector>
 
+#include "logging/log.hpp"
+
 #include "authorization.hpp"
+#include "authorization_yaml.hpp"
 
 namespace squawkbus::server
 {
+  namespace
+  {
+    auto log = logging::logger("squawkbus");
+  }
+
   AuthorizationSpec AuthorizationSpec::from(const std::string& line)
   {
     using namespace std::string_view_literals;
@@ -57,4 +65,80 @@ namespace squawkbus::server
     };
   }
 
+  bool AuthorizationManager::has_entitlement(
+    const std::string& user,
+    const std::string& topic,
+    Role role) const
+  {
+    auto cached_value = cache_.get(user, topic, role);
+    if (cached_value.has_value())
+      return *cached_value;
+
+    for (auto& spec : specs_)
+    {
+      if (!std::regex_match(user, spec.user_pattern()))
+        continue;
+      if (!std::regex_match(topic, spec.topic_pattern()))
+        continue;
+      if ((role & spec.roles()) == role)
+      {
+        cache_.set(user, topic, role, true);
+        return true;
+      }
+    }
+    cache_.set(user, topic, role, false);
+    return false;
+  }
+
+  AuthorizationManager AuthorizationManager::load(const std::filesystem::path& path)
+  {
+    log.info(std::format("Loading authorizations from file \"{}\"", path.string()));
+
+    YAML::Node yaml = YAML::LoadFile("authorizations-simple.yaml");
+    auto config = yaml.as<std::map<std::string, std::map<std::string, squawkbus::server::Authorization>>>();
+
+    std::vector<AuthorizationSpec> specs;
+    for (auto& [user_pattern, authorizations] : config)
+    {
+      for (auto& [topic_pattern, authorization] : authorizations)
+      {
+        auto entitlements = std::set<int>(authorization.entitlements.begin(), authorization.entitlements.end());
+        auto spec = AuthorizationSpec(
+          std::regex(user_pattern),
+          std::regex(topic_pattern),
+          entitlements,
+          authorization.role);
+
+        specs.push_back(AuthorizationSpec());
+      }
+    }
+
+    return AuthorizationManager(specs);
+  }
+
+  AuthorizationManager AuthorizationManager::make(
+    const std::optional<std::filesystem::path>& path,
+    const std::vector<AuthorizationSpec>& cmd_line_specs)
+  {
+    if (path)
+    {
+      return AuthorizationManager::load(*path);
+    }
+
+    auto specs = cmd_line_specs; // copy the command line specs;
+    if (specs.empty())
+    {
+      log.info("Using default authorizations");
+      
+      auto spec = AuthorizationSpec(
+        std::regex(".*"),
+        std::regex(".*"),
+        std::set<std::int32_t> { 0 },
+        Role::All
+      );
+      specs.push_back(spec);
+    }
+
+    return AuthorizationManager(specs);
+  }
 }

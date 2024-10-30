@@ -15,6 +15,8 @@
 
 using namespace squawkbus::io;
 namespace logging = squawkbus::logging;
+
+using squawkbus::server::AuthorizationManager;
 using squawkbus::server::Distributor;
 using squawkbus::io::Endpoint;
 using squawkbus::server::Options;
@@ -62,6 +64,10 @@ int main(int argc, const char** argv)
     {
       ssl_ctx = make_ssl_context(options.tls->certfile, options.tls->keyfile);
     }
+
+    auto authorization_manager = AuthorizationManager::make(
+      options.authorizations_file,
+      options.authorizations);
 
     start_server(options.endpoint, std::move(ssl_ctx));
   }

@@ -9,9 +9,12 @@ namespace squawkbus::server {
   enum class Role : int
   {
     None        = 0x00,
+    
     Subscriber  = 0x01,
     Publisher   = 0x02,
     Notifier    = 0x04,
+
+    All         = 0x07
   };
 
   inline constexpr Role
