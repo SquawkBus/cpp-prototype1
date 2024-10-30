@@ -91,6 +91,7 @@
         "feedbus",
         "Interactor",
         "interactors",
+        "jetblack",
         "roundtrip",
         "servaddr",
         "squawkbus",
