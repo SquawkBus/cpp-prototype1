@@ -8,11 +8,13 @@
 #include "messages/messages.hpp"
 
 #include "interactor.hpp"
+#include "authorization.hpp"
 
 namespace squawkbus::server
 {
   using squawkbus::messages::MulticastData;
   using squawkbus::messages::UnicastData;
+  using squawkbus::messages::DataPacket;
 
   class Interactor;
   class SubscriptionManager;
@@ -24,12 +26,23 @@ namespace squawkbus::server
     std::map<Interactor*, std::set<std::string>> publisher_topics_;
 
   public:
-    void on_send_unicast(Interactor* publisher, const UnicastData& request, std::map<std::string, Interactor*> interactors);
-    void on_send_multicast(Interactor* publisher, const MulticastData& request, const SubscriptionManager& subscription_manager);
+    void on_send_unicast(
+      Interactor* publisher,
+      const UnicastData& request,
+      std::map<std::string, Interactor*> interactors,
+      const AuthorizationManager& authorization_manager);
+    void on_send_multicast(
+      Interactor* publisher,
+      const MulticastData& request,
+      const SubscriptionManager& subscription_manager,
+      const AuthorizationManager& authorization_manager);
     void on_interactor_closed(Interactor* interactor, const SubscriptionManager& subscription_manager);
 
   private:
     void add_publisher(Interactor* publisher, const std::string& topic);
+    std::vector<DataPacket> get_authorized_data(
+      const std::vector<DataPacket>& data_packets,
+      const std::set<std::int32_t>& entitlements) const;
   };
 }
 

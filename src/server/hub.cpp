@@ -21,6 +21,11 @@ namespace squawkbus::server
   using squawkbus::messages::UnicastData;
   using squawkbus::messages::MulticastData;
 
+  void Hub::on_startup()
+  {
+    authorization_manager_ = AuthorizationManager::make(authorization_file_, cmd_line_authorizations_);
+  }
+
   void Hub::on_connected(Interactor* interactor)
   {
     log.debug(std::format("Connected {}.", interactor->str()));
@@ -63,7 +68,8 @@ namespace squawkbus::server
       publisher_manager_.on_send_unicast(
         interactor,
         *dynamic_cast<const UnicastData*>(message),
-        interactors_
+        interactors_,
+        authorization_manager_
       );
       return;
 
@@ -71,7 +77,8 @@ namespace squawkbus::server
       publisher_manager_.on_send_multicast(
         interactor,
         *dynamic_cast<const MulticastData*>(message),
-        subscription_manager_
+        subscription_manager_,
+        authorization_manager_
       );
       return;
 

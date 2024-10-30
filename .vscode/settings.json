@@ -80,7 +80,8 @@
         "forward_list": "cpp",
         "ranges": "cpp",
         "valarray": "cpp",
-        "text_encoding": "cpp"
+        "text_encoding": "cpp",
+        "list": "cpp"
     },
     "C_Cpp.clang_format_fallbackStyle": "Mozilla",
     "C_Cpp.clang_format_style": "Mozilla",

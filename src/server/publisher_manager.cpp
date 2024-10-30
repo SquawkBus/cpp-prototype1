@@ -1,11 +1,15 @@
+#include "publisher_manager.hpp"
+
+#include <algorithm>
 #include <format>
+#include <iterator>
 #include <memory>
 #include <utility>
 
 #include "logging/log.hpp"
 
-#include "publisher_manager.hpp"
 #include "subscription_manager.hpp"
+#include "authorization.hpp"
 
 namespace squawkbus::server
 {
@@ -20,10 +24,24 @@ namespace squawkbus::server
   using squawkbus::messages::UnicastData;
   using squawkbus::messages::DataPacket;
   
+  std::vector<DataPacket> PublisherManager::get_authorized_data(
+    const std::vector<DataPacket>& data_packets,
+    const std::set<std::int32_t>& entitlements) const
+  {
+    std::vector<DataPacket> authorized_data_packets;
+    for (auto &data_packet : data_packets)
+    {
+      if (data_packet.is_authorized(entitlements))
+        authorized_data_packets.push_back(data_packet);
+    }
+    return authorized_data_packets;
+  }
+
   void PublisherManager::on_send_unicast(
     Interactor* publisher,
     const UnicastData& request,
-    std::map<std::string, Interactor*> interactors)
+    std::map<std::string, Interactor*> interactors,
+    const AuthorizationManager& authorization_manager)
   {
     auto i_subscriber = interactors.find(request.client_id());
     if (i_subscriber == interactors.end())
@@ -32,24 +50,59 @@ namespace squawkbus::server
       return;
     }
 
-    add_publisher(publisher, request.topic());
+    auto receiver = i_subscriber->second;
 
-    auto client = i_subscriber->second;
+    auto publisher_entitlements = authorization_manager.entitlements(
+      publisher->user(),
+      request.topic(),
+      Role::Publisher
+    );
+    auto receiver_entitlements = authorization_manager.entitlements(
+      receiver->user(),
+      request.topic(),
+      Role::Subscriber
+    );
+    auto entitlements = std::set<std::int32_t>();
+    std::set_intersection(
+      publisher_entitlements.begin(), publisher_entitlements.end(),
+      receiver_entitlements.begin(), receiver_entitlements.end(),
+      std::inserter(entitlements, entitlements.begin())
+    );
+
+    if (!publisher_entitlements.empty() && entitlements.empty())
+    {
+      log.debug(
+        std::format(
+          "no entitlements from {} to {} for {}",
+          publisher->user(),
+          receiver->user(),
+          request.topic()
+        )
+      );
+      return;
+    }
+
+    auto authorized_data_packets = get_authorized_data(
+      request.data_packets(),
+      entitlements);
+
+    add_publisher(publisher, request.topic());
 
     auto response = std::make_shared<ForwardedUnicastData>(
       publisher->user(),
       publisher->host(),
       request.client_id(),
       request.topic(),
-      request.data_packets()
+      authorized_data_packets
     );
-    client->send(response);
+    receiver->send(response);
   }
 
   void PublisherManager::on_send_multicast(
     Interactor* publisher,
     const MulticastData& request,
-    const SubscriptionManager& subscription_manager)
+    const SubscriptionManager& subscription_manager,
+    const AuthorizationManager& authorization_manager)
   {
     add_publisher(publisher, request.topic());
 
@@ -59,16 +112,59 @@ namespace squawkbus::server
       return;
     }
 
-    auto response = std::make_shared<ForwardedMulticastData>(
+    auto publisher_entitlements = authorization_manager.entitlements(
       publisher->user(),
-      publisher->host(),
       request.topic(),
-      request.data_packets()
+      Role::Publisher
     );
+
+    bool has_published = false;
+
     for (auto subscriber : subscribers)
     {
+      auto subscriber_entitlements = authorization_manager.entitlements(
+        subscriber->user(),
+        request.topic(),
+        Role::Subscriber
+      );
+      auto entitlements = std::set<std::int32_t>();
+      std::set_intersection(
+        publisher_entitlements.begin(), publisher_entitlements.end(),
+        subscriber_entitlements.begin(), subscriber_entitlements.end(),
+        std::inserter(entitlements, entitlements.begin())
+      );
+
+      if (!publisher_entitlements.empty() && entitlements.empty())
+      {
+        log.debug(
+          std::format(
+            "no entitlements from {} to {} for {}",
+            publisher->user(),
+            subscriber->user(),
+            request.topic()
+          )
+        );
+        continue;
+      }
+
+      auto authorized_data_packets = get_authorized_data(
+        request.data_packets(),
+        entitlements);
+
+      auto response = std::make_shared<ForwardedMulticastData>(
+        publisher->user(),
+        publisher->host(),
+        request.topic(),
+        authorized_data_packets
+      );
+
       subscriber->send(response);
+
+      has_published = true;
     }
+
+    if (has_published)
+      add_publisher(publisher, request.topic());
   }
 
   void PublisherManager::on_interactor_closed(
