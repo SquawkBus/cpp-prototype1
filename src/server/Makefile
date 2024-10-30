@@ -26,6 +26,7 @@ MESSAGE_HEADERS = \
 
 IO_HEADERS = \
 	${SRC_DIR}/io/bio.hpp \
+	${SRC_DIR}/io/endpoint.hpp \
 	${SRC_DIR}/io/poll_handler.hpp \
 	${SRC_DIR}/io/poller.hpp \
 	${SRC_DIR}/io/tcp_listener_poll_handler.hpp \
@@ -124,7 +125,8 @@ cmd_line.o: \
 	cmd_line.cpp \
 	cmd_line.hpp \
 	authorization.hpp \
-	role.hpp
+	role.hpp \
+	${IO_HEADERS}
 
 .PHONY: clean
 clean:

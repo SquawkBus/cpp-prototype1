@@ -1,5 +1,5 @@
-#ifndef SQUAWKBUS_SERVER_ENDPOINT_HPP
-#define SQUAWKBUS_SERVER_ENDPOINT_HPP
+#ifndef SQUAWKBUS_IO_ENDPOINT_HPP
+#define SQUAWKBUS_IO_ENDPOINT_HPP
 
 #include <cstdint>
 #include <format>
@@ -7,7 +7,7 @@
 #include <stdexcept>
 #include <string>
 
-namespace squawkbus::server
+namespace squawkbus::io
 {
   class Endpoint
   {
@@ -52,4 +52,4 @@ namespace squawkbus::server
   };
 }
 
-#endif // SQUAWKBUS_SERVER_ENDPOINT_HPP
+#endif // SQUAWKBUS_IO_ENDPOINT_HPP

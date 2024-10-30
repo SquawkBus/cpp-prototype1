@@ -61,10 +61,8 @@
             "request": "launch",
             "program": "${workspaceFolder}/src/server/server",
             "args": [
-                "--ssl",
-                "--certfile", "${env:HOME}/.keys/server.crt",
-                "--keyfile", "${env:HOME}/.keys/server.key",
-                "--port", "8080"
+                "--tls", "${env:HOME}/.keys/server.crt", "${env:HOME}/.keys/server.key",
+                "--endpoint", "0.0.0.0:8080"
             ],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
@@ -139,7 +137,5 @@
                 }
             ]
         }
-
-
     ]
 }

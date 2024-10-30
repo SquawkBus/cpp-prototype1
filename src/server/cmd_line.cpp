@@ -11,6 +11,8 @@
 
 namespace squawkbus::server
 {
+  using squawkbus::io::Endpoint;
+  
   std::string Options::usage(std::string program_name)
   {
     std::stringstream ss;

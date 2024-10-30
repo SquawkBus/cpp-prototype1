@@ -11,10 +11,12 @@
 #include <vector>
 
 #include "authorization.hpp"
-#include "endpoint.hpp"
+#include "io/endpoint.hpp"
 
 namespace squawkbus::server
 {
+  using squawkbus::io::Endpoint;
+  
   struct TLSOptions
   {
     std::filesystem::path certfile;
