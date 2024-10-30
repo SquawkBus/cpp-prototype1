@@ -4,6 +4,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <utility>
 
 #include "messages/messages.hpp"
 
@@ -21,19 +22,14 @@ namespace squawkbus::server
   class Hub
   {
   private:
-    std::optional<std::filesystem::path> authorization_file_;
-    std::vector<AuthorizationSpec> cmd_line_authorizations_;
-
     std::map<std::string, Interactor*> interactors_;
     PublisherManager publisher_manager_;
     SubscriptionManager subscription_manager_;
     NotificationManager notification_manager_;
-    AuthorizationManager authorization_manager_;
 
   public:
-    Hub(std::optional<std::filesystem::path> authorization_file, std::vector<AuthorizationSpec> cmd_line_authorizations)
-      : authorization_file_(authorization_file),
-        cmd_line_authorizations_(cmd_line_authorizations)
+    Hub(AuthorizationManager&& authorization_manager)
+      : publisher_manager_(std::move(authorization_manager))
     {
     }
 

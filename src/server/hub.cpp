@@ -23,7 +23,7 @@ namespace squawkbus::server
 
   void Hub::on_startup()
   {
-    authorization_manager_ = AuthorizationManager::make(authorization_file_, cmd_line_authorizations_);
+    publisher_manager_.reload_authorizations();
   }
 
   void Hub::on_connected(Interactor* interactor)
@@ -68,8 +68,7 @@ namespace squawkbus::server
       publisher_manager_.on_send_unicast(
         interactor,
         *dynamic_cast<const UnicastData*>(message),
-        interactors_,
-        authorization_manager_
+        interactors_
       );
       return;
 
@@ -77,8 +76,7 @@ namespace squawkbus::server
       publisher_manager_.on_send_multicast(
         interactor,
         *dynamic_cast<const MulticastData*>(message),
-        subscription_manager_,
-        authorization_manager_
+        subscription_manager_
       );
       return;
 

@@ -65,7 +65,7 @@ namespace squawkbus::server
     };
   }
 
-  const std::set<std::int32_t>& AuthorizationManager::entitlements(
+  const std::set<std::int32_t>& AuthorizationRepository::entitlements(
     const std::string& user,
     const std::string& topic,
     Role role) const
@@ -89,11 +89,11 @@ namespace squawkbus::server
     return cache_.get(user, topic, role);
   }
 
-  AuthorizationManager AuthorizationManager::load(const std::filesystem::path& path)
+  AuthorizationRepository AuthorizationRepository::load(const std::filesystem::path& path)
   {
     log.info(std::format("Loading authorizations from file \"{}\"", path.string()));
 
-    YAML::Node yaml = YAML::LoadFile("authorizations-simple.yaml");
+    YAML::Node yaml = YAML::LoadFile(path.string());
     auto config = yaml.as<std::map<std::string, std::map<std::string, squawkbus::server::Authorization>>>();
 
     std::vector<AuthorizationSpec> specs;
@@ -112,16 +112,16 @@ namespace squawkbus::server
       }
     }
 
-    return AuthorizationManager(specs);
+    return AuthorizationRepository(specs);
   }
 
-  AuthorizationManager AuthorizationManager::make(
+  AuthorizationRepository AuthorizationRepository::make(
     const std::optional<std::filesystem::path>& path,
     const std::vector<AuthorizationSpec>& cmd_line_specs)
   {
     if (path)
     {
-      return AuthorizationManager::load(*path);
+      return AuthorizationRepository::load(*path);
     }
 
     auto specs = cmd_line_specs; // copy the command line specs;
@@ -138,6 +138,6 @@ namespace squawkbus::server
       specs.push_back(spec);
     }
 
-    return AuthorizationManager(specs);
+    return AuthorizationRepository(specs);
   }
 }

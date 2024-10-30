@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <format>
 #include <set>
+#include <utility>
 
 #include "io/poller.hpp"
 #include "io/tcp_listener_poll_handler.hpp"
@@ -12,6 +13,7 @@
 
 #include "cmd_line.hpp"
 #include "distributor.hpp"
+#include "authorization.hpp"
 
 using namespace squawkbus::io;
 namespace logging = squawkbus::logging;
@@ -33,14 +35,17 @@ std::shared_ptr<SslContext> make_ssl_context(const std::string& certfile, const 
   return ctx;
 }
 
-void start_server(const Options& options, std::optional<std::shared_ptr<SslContext>> ssl_ctx)
+void start_server(
+  const Endpoint& endpoint,
+  AuthorizationManager&& authorization_manager,
+  std::optional<std::shared_ptr<SslContext>> ssl_ctx)
 {
-  auto poll_client = std::make_shared<Distributor>(options.authorizations_file, options.authorizations);
+  auto poll_client = std::make_shared<Distributor>(std::move(authorization_manager));
   auto poller = Poller(poll_client);
   poller.add_handler(
-    std::make_unique<TcpListenerPollHandler>(options.endpoint.port(), ssl_ctx),
-    options.endpoint.host(),
-    options.endpoint.port());
+    std::make_unique<TcpListenerPollHandler>(endpoint.port(), ssl_ctx),
+    endpoint.host(),
+    endpoint.port());
   poller.event_loop();
 }
 
@@ -65,11 +70,11 @@ int main(int argc, const char** argv)
       ssl_ctx = make_ssl_context(options.tls->certfile, options.tls->keyfile);
     }
 
-    auto authorization_manager = AuthorizationManager::make(
+    auto authorization_manager = AuthorizationManager(
       options.authorizations_file,
       options.authorizations);
 
-    start_server(options, std::move(ssl_ctx));
+    start_server(options.endpoint, std::move(authorization_manager), std::move(ssl_ctx));
   }
   catch(const std::exception& error)
   {

@@ -80,6 +80,10 @@ namespace squawkbus::server
           auto authorization_spec = AuthorizationSpec::from(arg);
           options.authorizations.push_back(authorization_spec);
         }
+        else
+        {
+          throw std::runtime_error(std::format("invalid argument \"{}\"", arg));
+        }
       }
 
       if (options.endpoint.empty())

@@ -24,11 +24,10 @@ namespace squawkbus::server
   private:
     std::map<int, std::shared_ptr<Interactor>> interactors_;
     Hub hub_;
-    AuthorizationManager authorization_manager_;
 
   public:
-    Distributor(std::optional<std::filesystem::path> authorization_file, std::vector<AuthorizationSpec> cmd_line_authorizations)
-      : hub_(authorization_file, cmd_line_authorizations)
+    Distributor(AuthorizationManager&& authorization_manager)
+      : hub_(std::move(authorization_manager))
     {
     }
 

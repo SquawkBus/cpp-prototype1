@@ -51,8 +51,7 @@ namespace squawkbus::server
   void PublisherManager::on_send_unicast(
     Interactor* publisher,
     const UnicastData& request,
-    std::map<std::string, Interactor*> interactors,
-    const AuthorizationManager& authorization_manager)
+    std::map<std::string, Interactor*> interactors)
   {
     auto i_subscriber = interactors.find(request.client_id());
     if (i_subscriber == interactors.end())
@@ -63,12 +62,12 @@ namespace squawkbus::server
 
     auto receiver = i_subscriber->second;
 
-    auto publisher_entitlements = authorization_manager.entitlements(
+    auto publisher_entitlements = authorization_manager_.entitlements(
       publisher->user(),
       request.topic(),
       Role::Publisher
     );
-    auto receiver_entitlements = authorization_manager.entitlements(
+    auto receiver_entitlements = authorization_manager_.entitlements(
       receiver->user(),
       request.topic(),
       Role::Subscriber
@@ -107,8 +106,7 @@ namespace squawkbus::server
   void PublisherManager::on_send_multicast(
     Interactor* publisher,
     const MulticastData& request,
-    const SubscriptionManager& subscription_manager,
-    const AuthorizationManager& authorization_manager)
+    const SubscriptionManager& subscription_manager)
   {
     add_publisher(publisher, request.topic());
 
@@ -118,7 +116,7 @@ namespace squawkbus::server
       return;
     }
 
-    auto publisher_entitlements = authorization_manager.entitlements(
+    auto publisher_entitlements = authorization_manager_.entitlements(
       publisher->user(),
       request.topic(),
       Role::Publisher
@@ -128,7 +126,7 @@ namespace squawkbus::server
 
     for (auto subscriber : subscribers)
     {
-      auto subscriber_entitlements = authorization_manager.entitlements(
+      auto subscriber_entitlements = authorization_manager_.entitlements(
         subscriber->user(),
         request.topic(),
         Role::Subscriber

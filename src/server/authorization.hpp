@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <filesystem>
+#include <optional>
 #include <regex>
 #include <set>
 #include <string>
@@ -86,17 +87,17 @@ namespace squawkbus::server
     }
   };
 
-  class AuthorizationManager
+  class AuthorizationRepository
   {
   private:
     std::vector<AuthorizationSpec> specs_;
     mutable AuthorizationCache cache_;
 
   public:
-    AuthorizationManager()
+    AuthorizationRepository()
     {
     }
-    AuthorizationManager(const std::vector<AuthorizationSpec>& specs)
+    AuthorizationRepository(const std::vector<AuthorizationSpec>& specs)
       : specs_(specs)
     {
     }
@@ -105,10 +106,41 @@ namespace squawkbus::server
       const std::string& user,
       const std::string& topic,
       Role role) const;
-    static AuthorizationManager load(const std::filesystem::path& path);
-    static AuthorizationManager make(
+    static AuthorizationRepository load(const std::filesystem::path& path);
+    static AuthorizationRepository make(
       const std::optional<std::filesystem::path>& path,
       const std::vector<AuthorizationSpec>& specs);
+  };
+
+  class AuthorizationManager
+  {
+  private:
+    std::optional<std::filesystem::path> path_;
+    std::vector<AuthorizationSpec> cmd_line_specs_;
+    AuthorizationRepository repository_;
+
+  public:
+    AuthorizationManager(
+      const std::optional<std::filesystem::path>& path,
+      const std::vector<AuthorizationSpec>& cmd_line_specs)
+      : path_(path),
+        cmd_line_specs_(cmd_line_specs)
+    {
+    }
+
+    void reload()
+    {
+      repository_ = AuthorizationRepository::make(path_, cmd_line_specs_);
+    }
+
+    const std::set<std::int32_t>& entitlements(
+      const std::string& user,
+      const std::string& topic,
+      Role role) const
+    {
+      return repository_.entitlements(user, topic, role);
+    }
+
   };
 }
 

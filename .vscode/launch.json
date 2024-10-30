@@ -62,7 +62,8 @@
             "program": "${workspaceFolder}/src/server/server",
             "args": [
                 "--tls", "${env:HOME}/.keys/server.crt", "${env:HOME}/.keys/server.key",
-                "--endpoint", "0.0.0.0:8080"
+                "--endpoint", "0.0.0.0:8080",
+                "--authorizations-file", "${workspaceFolder}/etc/authorizations-simple.yaml"
             ],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
