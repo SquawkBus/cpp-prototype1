@@ -65,29 +65,28 @@ namespace squawkbus::server
     };
   }
 
-  bool AuthorizationManager::has_entitlement(
+  const std::set<std::int32_t>& AuthorizationManager::entitlements(
     const std::string& user,
     const std::string& topic,
     Role role) const
   {
-    auto cached_value = cache_.get(user, topic, role);
-    if (cached_value.has_value())
-      return *cached_value;
-
-    for (auto& spec : specs_)
+    if (!cache_.contains(user, topic, role))
     {
-      if (!std::regex_match(user, spec.user_pattern()))
-        continue;
-      if (!std::regex_match(topic, spec.topic_pattern()))
-        continue;
-      if ((role & spec.roles()) == role)
+      for (auto& spec : specs_)
       {
-        cache_.set(user, topic, role, true);
-        return true;
+        if (!std::regex_match(user, spec.user_pattern()))
+          continue;
+        if (!std::regex_match(topic, spec.topic_pattern()))
+          continue;
+        if ((role & spec.roles()) != role)
+          continue;
+
+        cache_.set(user, topic, role, spec.entitlements());
+        break;
       }
     }
-    cache_.set(user, topic, role, false);
-    return false;
+
+    return cache_.get(user, topic, role);
   }
 
   AuthorizationManager AuthorizationManager::load(const std::filesystem::path& path)

@@ -1,12 +1,16 @@
 #ifndef SQUAWKBUS_SERVER_SERVER_HPP
 #define SQUAWKBUS_SERVER_SERVER_HPP
 
+#include <filesystem>
 #include <map>
+#include <optional>
 #include <string>
 #include <memory>
+#include <vector>
 
 #include "io/poller.hpp"
 
+#include "authorization.hpp"
 #include "interactor.hpp"
 #include "hub.hpp"
 
@@ -18,8 +22,18 @@ namespace squawkbus::server
   class Distributor : public PollClient
   {
   private:
+    std::optional<std::filesystem::path> authorization_file_;
+    std::vector<AuthorizationSpec> cmd_line_authorizations_;
     std::map<int, std::shared_ptr<Interactor>> interactors_;
     Hub hub_;
+    AuthorizationManager authorization_manager_;
+
+  public:
+    Distributor(std::optional<std::filesystem::path> authorization_file, std::vector<AuthorizationSpec> cmd_line_authorizations)
+      : authorization_file_(authorization_file),
+        cmd_line_authorizations_(cmd_line_authorizations)
+    {
+    }
 
   private:
     // The implementation of PollClient

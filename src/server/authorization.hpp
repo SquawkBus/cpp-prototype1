@@ -48,29 +48,41 @@ namespace squawkbus::server
   class AuthorizationCache
   {
   private:
-    std::map<std::string, std::map<std::string, std::map<Role, bool>>> authorizations_;
+    std::map<std::string, std::map<std::string, std::map<Role, std::set<std::int32_t>>>> authorizations_;
 
   public:
-    std::optional<bool> get(const std::string& user, const std::string& topic, Role role) const
+    bool contains(const std::string& user, const std::string& topic, Role role) const
     {
       auto i_user = authorizations_.find(user);
       if (i_user == authorizations_.end())
-        return std::nullopt;
+        return false;
       
       auto i_topic = i_user->second.find(topic);
       if (i_topic == i_user->second.end())
-        return std::nullopt;
+        return false;
 
       auto i_role = i_topic->second.find(role);
       if (i_role == i_topic->second.end())
-        return std::nullopt;
+        return false;
 
-      return i_role->second;
+      return true;
     }
 
-    void set(const std::string& user, const std::string& topic, Role role, bool is_authorized)
+    const std::set<std::int32_t>& get(
+      const std::string& user,
+      const std::string& topic,
+      Role role)
     {
-      authorizations_[user][topic][role] = is_authorized;
+      return authorizations_[user][topic][role];
+    }
+
+    void set(
+      const std::string& user,
+      const std::string& topic,
+      Role role,
+      const std::set<std::int32_t>& entitlements)
+    {
+      authorizations_[user][topic][role] = entitlements;
     }
   };
 
@@ -89,7 +101,10 @@ namespace squawkbus::server
     {
     }
 
-    bool has_entitlement(const std::string& user, const std::string& topic, Role role) const;
+    const std::set<std::int32_t>& entitlements(
+      const std::string& user,
+      const std::string& topic,
+      Role role) const;
     static AuthorizationManager load(const std::filesystem::path& path);
     static AuthorizationManager make(
       const std::optional<std::filesystem::path>& path,

@@ -33,14 +33,14 @@ std::shared_ptr<SslContext> make_ssl_context(const std::string& certfile, const 
   return ctx;
 }
 
-void start_server(const Endpoint& endpoint, std::optional<std::shared_ptr<SslContext>> ssl_ctx)
+void start_server(const Options& options, std::optional<std::shared_ptr<SslContext>> ssl_ctx)
 {
-  auto poll_client = std::make_shared<Distributor>();
+  auto poll_client = std::make_shared<Distributor>(options.authorizations_file, options.authorizations);
   auto poller = Poller(poll_client);
   poller.add_handler(
-    std::make_unique<TcpListenerPollHandler>(endpoint.port(), ssl_ctx),
-    endpoint.host(),
-    endpoint.port());
+    std::make_unique<TcpListenerPollHandler>(options.endpoint.port(), ssl_ctx),
+    options.endpoint.host(),
+    options.endpoint.port());
   poller.event_loop();
 }
 
@@ -69,7 +69,7 @@ int main(int argc, const char** argv)
       options.authorizations_file,
       options.authorizations);
 
-    start_server(options.endpoint, std::move(ssl_ctx));
+    start_server(options, std::move(ssl_ctx));
   }
   catch(const std::exception& error)
   {

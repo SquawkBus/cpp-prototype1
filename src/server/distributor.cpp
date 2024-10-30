@@ -14,6 +14,8 @@ namespace squawkbus::server
   void Distributor::on_startup(Poller& poller)
   {
       log.debug("Starting the server.");
+
+      authorization_manager_ = AuthorizationManager::make(authorization_file_, cmd_line_authorizations_);
   }
 
   void Distributor::on_open(Poller& poller, int fd, const std::string& host, std::uint16_t port)
