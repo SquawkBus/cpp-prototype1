@@ -21,6 +21,7 @@ I installed
 sudo apt update
 sudo apt install clang
 sudo apt install uuid-dev
+sudo apt install libyaml-cpp-dev
 sudo apt install gdb
 # for htpasswd utility
 sudo apt install apache2-utils

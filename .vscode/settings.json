@@ -84,6 +84,7 @@
     "C_Cpp.clang_format_fallbackStyle": "Mozilla",
     "C_Cpp.clang_format_style": "Mozilla",
     "cSpell.words": [
+        "argi",
         "clientaddr",
         "clientlen",
         "eputs",

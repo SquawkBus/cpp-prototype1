@@ -10,13 +10,14 @@
 #include "logging/log.hpp"
 #include "utils/utils.hpp"
 
-#include "popl.hpp"
-
+#include "cmd_line.hpp"
 #include "distributor.hpp"
 
 using namespace squawkbus::io;
 namespace logging = squawkbus::logging;
 using squawkbus::server::Distributor;
+using squawkbus::server::Endpoint;
+using squawkbus::server::Options;
 
 std::shared_ptr<SslContext> make_ssl_context(const std::string& certfile, const std::string& keyfile)
 {
@@ -30,71 +31,39 @@ std::shared_ptr<SslContext> make_ssl_context(const std::string& certfile, const 
   return ctx;
 }
 
-void echo_server(const std::string& host, std::uint16_t port, std::optional<std::shared_ptr<SslContext>> ssl_ctx)
+void start_server(const Endpoint& endpoint, std::optional<std::shared_ptr<SslContext>> ssl_ctx)
 {
   auto poll_client = std::make_shared<Distributor>();
   auto poller = Poller(poll_client);
   poller.add_handler(
-    std::make_unique<TcpListenerPollHandler>(port, ssl_ctx),
-    host,
-    port);
+    std::make_unique<TcpListenerPollHandler>(endpoint.port(), ssl_ctx),
+    endpoint.host(),
+    endpoint.port());
   poller.event_loop();
 }
 
-int main(int argc, char** argv)
+int main(int argc, const char** argv)
 {
   // signal(SIGPIPE,SIG_IGN);
 
-  bool use_tls = false;
-  uint16_t port = 22000;
-  popl::OptionParser op("options");
-  op.add<popl::Switch>("s", "ssl", "Connect with TLS", &use_tls);
-  auto help_option = op.add<popl::Switch>("", "help", "produce help message");
-  op.add<popl::Value<decltype(port)>>("p", "port", "port number", port, &port);
-  auto certfile_option = op.add<popl::Value<std::string>>("c", "certfile", "path to certificate file");
-  auto keyfile_option = op.add<popl::Value<std::string>>("k", "keyfile", "path to key file");
-
   try
   {
-    op.parse(argc, argv);
-
-    if (help_option->is_set())
-    {
-      if (help_option->count() == 1)
-        print_line(stderr, op.help());
-	    else if (help_option->count() == 2)
-		    print_line(stderr, op.help(popl::Attribute::advanced));
-	    else
-		    print_line(stderr, op.help(popl::Attribute::expert));
-      exit(1);
-    }
+    auto options = Options::parse(argc, argv);
 
     logging::info(
       std::format(
-        "Starting squawkbus on port {}{}.",
-        static_cast<int>(port),
-        (use_tls ? " with TLS" : "")));
+        "Starting squawkbus on endpoint {}{}.",
+        std::string(options.endpoint),
+        (options.tls == std::nullopt ? "" : " with TLS")));
 
     std::optional<std::shared_ptr<SslContext>> ssl_ctx;
 
-    if (use_tls)
+    if (options.tls != std::nullopt)
     {
-      if (!certfile_option->is_set())
-      {
-        print_line(stderr, "For ssl must use certfile");
-        print_line(stderr, op.help());
-        exit(1);
-      }
-      if (!keyfile_option->is_set())
-      {
-        print_line(stderr, "For ssl must use keyfile");
-        print_line(stderr, op.help());
-        exit(1);
-      }
-      ssl_ctx = make_ssl_context(certfile_option->value(), keyfile_option->value());
+      ssl_ctx = make_ssl_context(options.tls->certfile, options.tls->keyfile);
     }
 
-    echo_server("localhost", port, std::move(ssl_ctx));
+    start_server(options.endpoint, std::move(ssl_ctx));
   }
   catch(const std::exception& error)
   {

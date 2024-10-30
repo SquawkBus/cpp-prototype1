@@ -57,7 +57,9 @@ SOURCES = \
 	hub.cpp \
 	subscription_manager.cpp \
 	publisher_manager.cpp \
-	notification_manager.cpp
+	notification_manager.cpp \
+	authorization.o \
+	cmd_line.o
 
 OBJECTS = $(SOURCES:%.cpp=%.o)
 
@@ -73,6 +75,9 @@ server: $(OBJECTS)
 server.o: \
 	server.cpp \
 	distributor.hpp \
+	cmd_line.hpp \
+	authorization.hpp \
+	role.hpp \
 	$(HEADERS)
 
 distributor.o: \
@@ -109,6 +114,17 @@ notification_manager.o: \
 	notification_manager.cpp \
 	notification_manager.hpp \
 	$(HEADERS)
+
+authorization.o: \
+	authorization.cpp \
+	authorization.hpp \
+	role.hpp
+
+cmd_line.o: \
+	cmd_line.cpp \
+	cmd_line.hpp \
+	authorization.hpp \
+	role.hpp
 
 .PHONY: clean
 clean:
