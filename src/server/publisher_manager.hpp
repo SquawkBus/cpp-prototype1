@@ -40,9 +40,6 @@ namespace squawkbus::server
 
   private:
     void add_publisher(Interactor* publisher, const std::string& topic);
-    std::vector<DataPacket> get_authorized_data(
-      const std::vector<DataPacket>& data_packets,
-      const std::set<std::int32_t>& entitlements) const;
   };
 }
 

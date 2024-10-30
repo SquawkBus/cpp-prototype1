@@ -24,9 +24,9 @@ namespace squawkbus::server
   using squawkbus::messages::UnicastData;
   using squawkbus::messages::DataPacket;
   
-  std::vector<DataPacket> PublisherManager::get_authorized_data(
+  static std::vector<DataPacket> get_authorized_data(
     const std::vector<DataPacket>& data_packets,
-    const std::set<std::int32_t>& entitlements) const
+    const std::set<std::int32_t>& entitlements)
   {
     std::vector<DataPacket> authorized_data_packets;
     for (auto &data_packet : data_packets)
@@ -35,6 +35,17 @@ namespace squawkbus::server
         authorized_data_packets.push_back(data_packet);
     }
     return authorized_data_packets;
+  }
+
+  template<typename T>
+  static std::set<T> intersection(const std::set<T>& a, const std::set<T>& b)
+  {
+    auto c = std::set<T>();
+    std::set_intersection(
+      a.begin(), a.end(),
+      b.begin(), b.end(),
+      std::inserter(c, c.begin()));
+    return c;
   }
 
   void PublisherManager::on_send_unicast(
@@ -62,12 +73,7 @@ namespace squawkbus::server
       request.topic(),
       Role::Subscriber
     );
-    auto entitlements = std::set<std::int32_t>();
-    std::set_intersection(
-      publisher_entitlements.begin(), publisher_entitlements.end(),
-      receiver_entitlements.begin(), receiver_entitlements.end(),
-      std::inserter(entitlements, entitlements.begin())
-    );
+    auto entitlements = intersection(publisher_entitlements, receiver_entitlements);
 
     if (!publisher_entitlements.empty() && entitlements.empty())
     {
@@ -127,12 +133,7 @@ namespace squawkbus::server
         request.topic(),
         Role::Subscriber
       );
-      auto entitlements = std::set<std::int32_t>();
-      std::set_intersection(
-        publisher_entitlements.begin(), publisher_entitlements.end(),
-        subscriber_entitlements.begin(), subscriber_entitlements.end(),
-        std::inserter(entitlements, entitlements.begin())
-      );
+      auto entitlements = intersection(publisher_entitlements, subscriber_entitlements);
 
       if (!publisher_entitlements.empty() && entitlements.empty())
       {
