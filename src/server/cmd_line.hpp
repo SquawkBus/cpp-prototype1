@@ -10,7 +10,7 @@
 #include <sstream>
 #include <vector>
 
-#include "authorization.hpp"
+#include "authorization_spec.hpp"
 #include "io/endpoint.hpp"
 
 namespace squawkbus::server

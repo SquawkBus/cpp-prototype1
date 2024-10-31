@@ -14,7 +14,7 @@
 
 #include "cmd_line.hpp"
 #include "distributor.hpp"
-#include "authorization.hpp"
+#include "authorization_manager.hpp"
 
 using namespace squawkbus::io;
 namespace logging = squawkbus::logging;

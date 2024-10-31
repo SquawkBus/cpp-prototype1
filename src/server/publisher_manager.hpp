@@ -8,7 +8,7 @@
 #include "messages/messages.hpp"
 
 #include "interactor.hpp"
-#include "authorization.hpp"
+#include "authorization_manager.hpp"
 
 namespace squawkbus::server
 {

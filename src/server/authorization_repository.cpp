@@ -1,3 +1,5 @@
+#include "authorization_repository.hpp"
+
 #include <algorithm>
 #include <cstdint>
 #include <format>
@@ -10,7 +12,6 @@
 
 #include "logging/log.hpp"
 
-#include "authorization.hpp"
 #include "authorization_yaml.hpp"
 
 namespace squawkbus::server
@@ -56,7 +57,9 @@ namespace squawkbus::server
     {
       for (auto& [topic_pattern, authorization] : authorizations)
       {
-        auto entitlements = std::set<int>(authorization.entitlements.begin(), authorization.entitlements.end());
+        auto entitlements = std::set<int>(
+          authorization.entitlements.begin(),
+          authorization.entitlements.end());
         auto spec = AuthorizationSpec(
           std::regex(user_pattern),
           std::regex(topic_pattern),
@@ -94,11 +97,5 @@ namespace squawkbus::server
     }
 
     return AuthorizationRepository(specs);
-  }
-
-  void AuthorizationManager::reload()
-  {
-    log.info("Reloading authorizations");
-    repository_ = AuthorizationRepository::make(path_, cmd_line_specs_);
   }
 }

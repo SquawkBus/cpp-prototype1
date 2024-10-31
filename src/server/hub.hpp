@@ -11,7 +11,7 @@
 #include "publisher_manager.hpp"
 #include "subscription_manager.hpp"
 #include "notification_manager.hpp"
-#include "authorization.hpp"
+#include "authorization_manager.hpp"
 
 namespace squawkbus::server
 {

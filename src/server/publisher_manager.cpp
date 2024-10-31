@@ -9,7 +9,7 @@
 #include "logging/log.hpp"
 
 #include "subscription_manager.hpp"
-#include "authorization.hpp"
+#include "authorization_manager.hpp"
 
 namespace squawkbus::server
 {

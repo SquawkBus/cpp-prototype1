@@ -59,8 +59,10 @@ SOURCES = \
 	subscription_manager.cpp \
 	publisher_manager.cpp \
 	notification_manager.cpp \
-	authorization.cpp \
 	authorization_spec.cpp \
+	authorization_cache.cpp \
+	authorization_repository.cpp \
+	authorization_manager.cpp \
 	cmd_line.cpp
 
 OBJECTS = $(SOURCES:%.cpp=%.o)
@@ -80,13 +82,22 @@ server.o: \
 	server.cpp \
 	distributor.hpp \
 	cmd_line.hpp \
-	authorization.hpp \
+	authorization_spec.hpp \
+	authorization_cache.hpp \
+	authorization_repository.hpp \
+	authorization_yaml.hpp \
+	authorization_manager.hpp \
 	role.hpp \
 	$(HEADERS)
 
 distributor.o: \
 	distributor.cpp \
 	distributor.hpp \
+	authorization_spec.hpp \
+	authorization_cache.hpp \
+	authorization_repository.hpp \
+	authorization_yaml.hpp \
+	authorization_manager.hpp \
 	$(HEADERS)
 
 interactor.o: \
@@ -101,6 +112,11 @@ hub.o: \
 	subscription_manager.hpp \
 	publisher_manager.hpp \
 	notification_manager.hpp \
+	authorization_spec.hpp \
+	authorization_cache.hpp \
+	authorization_repository.hpp \
+	authorization_yaml.hpp \
+	authorization_manager.hpp \
 	$(HEADERS)
 
 subscription_manager.o: \
@@ -112,6 +128,11 @@ subscription_manager.o: \
 publisher_manager.o: \
 	publisher_manager.cpp \
 	publisher_manager.hpp \
+	authorization_spec.hpp \
+	authorization_cache.hpp \
+	authorization_repository.hpp \
+	authorization_yaml.hpp \
+	authorization_manager.hpp \
 	$(HEADERS)
 
 notification_manager.o: \
@@ -124,9 +145,25 @@ authorization_spec.o: \
 	authorization_spec.hpp \
 	role.hpp
 
-authorization.o: \
-	authorization.cpp \
-	authorization.hpp \
+authorization_cache.o: \
+	authorization_cache.cpp \
+	authorization_cache.hpp \
+	authorization_spec.hpp \
+	role.hpp
+
+authorization_repository.o: \
+	authorization_repository.cpp \
+	authorization_repository.hpp \
+	authorization_spec.hpp \
+	authorization_cache.hpp \
+	authorization_yaml.hpp \
+	role.hpp
+
+authorization_manager.o: \
+	authorization_manager.cpp \
+	authorization_manager.hpp \
+	authorization_repository.hpp \
+	authorization_cache.hpp \
 	authorization_spec.hpp \
 	authorization_yaml.hpp \
 	role.hpp
@@ -134,7 +171,7 @@ authorization.o: \
 cmd_line.o: \
 	cmd_line.cpp \
 	cmd_line.hpp \
-	authorization.hpp \
+	authorization_spec.hpp \
 	role.hpp \
 	${IO_HEADERS}
 

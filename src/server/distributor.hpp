@@ -10,7 +10,7 @@
 
 #include "io/poller.hpp"
 
-#include "authorization.hpp"
+#include "authorization_manager.hpp"
 #include "interactor.hpp"
 #include "hub.hpp"
 
