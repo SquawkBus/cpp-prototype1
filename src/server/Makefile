@@ -60,6 +60,7 @@ SOURCES = \
 	publisher_manager.cpp \
 	notification_manager.cpp \
 	authorization.cpp \
+	authorization_spec.cpp \
 	cmd_line.cpp
 
 OBJECTS = $(SOURCES:%.cpp=%.o)
@@ -118,9 +119,15 @@ notification_manager.o: \
 	notification_manager.hpp \
 	$(HEADERS)
 
+authorization_spec.o: \
+	authorization_spec.cpp \
+	authorization_spec.hpp \
+	role.hpp
+
 authorization.o: \
 	authorization.cpp \
 	authorization.hpp \
+	authorization_spec.hpp \
 	authorization_yaml.hpp \
 	role.hpp
 
