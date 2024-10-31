@@ -44,6 +44,11 @@ namespace squawkbus::client
     poller.write(client_socket_->fd(), buf);
   }
 
+  void TopicClient::on_interrupt(Poller& poller)
+  {
+    logging::info("on_interrupt");
+  }
+
   void TopicClient::on_open(Poller& poller, int fd, const std::string& host, std::uint16_t port)
   {
     logging::info(std::format("on_open: {} ({}:{})", fd, host, port));

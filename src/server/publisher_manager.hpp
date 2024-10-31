@@ -32,10 +32,7 @@ namespace squawkbus::server
     {
     }
 
-    void reload_authorizations()
-    {
-      authorization_manager_.reload();
-    }
+    void reload_authorizations();
 
     void on_send_unicast(
       Interactor* publisher,
@@ -45,7 +42,9 @@ namespace squawkbus::server
       Interactor* publisher,
       const MulticastData& request,
       const SubscriptionManager& subscription_manager);
-    void on_interactor_closed(Interactor* interactor, const SubscriptionManager& subscription_manager);
+    void on_interactor_closed(
+      Interactor* interactor,
+      const SubscriptionManager& subscription_manager);
 
   private:
     void add_publisher(Interactor* publisher, const std::string& topic);

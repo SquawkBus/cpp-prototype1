@@ -3,6 +3,7 @@
 
 #include <poll.h>
 
+#include <csignal>
 #include <deque>
 #include <format>
 #include <functional>
@@ -17,13 +18,15 @@
 
 namespace squawkbus::io
 {
-  inline int poll(std::vector<pollfd> &fds)
+  inline int poll(std::vector<pollfd> &fds, int timeout = -1)
   {
     log.trace("polling");
 
-    int active_fd_count = ::poll(fds.data(), fds.size(), -1);
+    int active_fd_count = ::poll(fds.data(), fds.size(), timeout);
     if (active_fd_count < 0)
     {
+      if (errno == EINTR)
+        return 0; // raising a caught signal causes this behaviour.
       throw std::system_error(errno, std::generic_category(), "poll failed");
     }
     return active_fd_count;
@@ -33,6 +36,7 @@ namespace squawkbus::io
   {
     virtual ~PollClient() {}
     virtual void on_startup(Poller& poller) = 0;
+    virtual void on_interrupt(Poller& poller) = 0;
     virtual void on_open(Poller& poller, int fd, const std::string& host, std::uint16_t port) = 0;
     virtual void on_close(Poller& poller, int fd) = 0;
     virtual void on_read(Poller& poller, int fd, std::vector<std::vector<char>>&& bufs) = 0;
@@ -81,17 +85,27 @@ namespace squawkbus::io
       }
     }
 
-    void event_loop(int backlog = 10)
+    void event_loop(volatile std::sig_atomic_t& signal, int backlog = 10)
     {
       client_->on_startup(*this);
 
-      bool is_ok = true;
-
-      while (is_ok) {
+      while (true) {
 
         std::vector<pollfd> fds = make_poll_fds();
 
-        int active_fd_count = poll(fds);
+        int active_fd_count = poll(fds, 1000);
+
+        if (signal != 0)
+        {
+          signal = 0;
+          try
+          {
+            client_->on_interrupt(*this);
+          }
+          catch (...)
+          {
+          }
+        }
 
         for (const auto& poll_state : fds)
         {

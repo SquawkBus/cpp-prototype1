@@ -128,10 +128,7 @@ namespace squawkbus::server
     {
     }
 
-    void reload()
-    {
-      repository_ = AuthorizationRepository::make(path_, cmd_line_specs_);
-    }
+    void reload();
 
     const std::set<std::int32_t>& entitlements(
       const std::string& user,

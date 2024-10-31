@@ -26,6 +26,11 @@ namespace squawkbus::server
     publisher_manager_.reload_authorizations();
   }
 
+  void Hub::on_interrupt()
+  {
+    publisher_manager_.reload_authorizations();
+  }
+
   void Hub::on_connected(Interactor* interactor)
   {
     log.debug(std::format("Connected {}.", interactor->str()));

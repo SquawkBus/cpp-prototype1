@@ -1,3 +1,6 @@
+#include <signal.h>
+
+#include <csignal>
 #include <cstdio>
 #include <format>
 #include <iostream>
@@ -25,6 +28,11 @@
 using namespace squawkbus::io;
 namespace logging = squawkbus::logging;
 using squawkbus::client::TopicClient;
+
+namespace
+{
+  volatile std::sig_atomic_t last_signal = 0;
+}
 
 std::shared_ptr<SslContext> make_ssl_context(std::optional<std::string> capath)
 {
@@ -118,7 +126,7 @@ int main(int argc, char** argv)
     console_input->blocking(false);
     poller.add_handler(std::make_unique<FilePollHandler>(console_input, 1024, 1024), "localhost", 0);
 
-    poller.event_loop();
+    poller.event_loop(last_signal);
   }
   catch(const std::exception& error)
   {

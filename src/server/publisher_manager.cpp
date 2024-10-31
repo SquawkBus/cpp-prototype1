@@ -212,6 +212,11 @@ namespace squawkbus::server
     }
   }
 
+  void PublisherManager::reload_authorizations()
+  {
+      authorization_manager_.reload();
+  }
+
   void PublisherManager::add_publisher(Interactor* publisher, const std::string& topic)
   {
     auto i_topic_publishers = topic_publishers_.find(topic);

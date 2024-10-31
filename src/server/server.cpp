@@ -1,5 +1,6 @@
 #include <signal.h>
 
+#include <csignal>
 #include <cstdio>
 #include <format>
 #include <set>
@@ -22,6 +23,18 @@ using squawkbus::server::AuthorizationManager;
 using squawkbus::server::Distributor;
 using squawkbus::io::Endpoint;
 using squawkbus::server::Options;
+
+namespace
+{
+  volatile std::sig_atomic_t last_signal = 0;
+}
+
+void signal_handler(int signal)
+{
+  logging::info(std::format("Received signal {}", signal));
+  
+  last_signal = signal;
+}
 
 std::shared_ptr<SslContext> make_ssl_context(const std::string& certfile, const std::string& keyfile)
 {
@@ -46,12 +59,12 @@ void start_server(
     std::make_unique<TcpListenerPollHandler>(endpoint.port(), ssl_ctx),
     endpoint.host(),
     endpoint.port());
-  poller.event_loop();
+  poller.event_loop(last_signal);
 }
 
 int main(int argc, const char** argv)
 {
-  // signal(SIGPIPE,SIG_IGN);
+  std::signal(SIGHUP, signal_handler);
 
   try
   {

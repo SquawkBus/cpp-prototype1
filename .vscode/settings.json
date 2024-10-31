@@ -81,7 +81,8 @@
         "ranges": "cpp",
         "valarray": "cpp",
         "text_encoding": "cpp",
-        "list": "cpp"
+        "list": "cpp",
+        "csignal": "cpp"
     },
     "C_Cpp.clang_format_fallbackStyle": "Mozilla",
     "C_Cpp.clang_format_style": "Mozilla",

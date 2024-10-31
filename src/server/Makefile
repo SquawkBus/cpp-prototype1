@@ -59,18 +59,20 @@ SOURCES = \
 	subscription_manager.cpp \
 	publisher_manager.cpp \
 	notification_manager.cpp \
-	authorization.o \
-	cmd_line.o
+	authorization.cpp \
+	cmd_line.cpp
 
 OBJECTS = $(SOURCES:%.cpp=%.o)
+
+EXECUTABLE = squawkbus
 
 .PHONEY: default
 default: all
 
 .PHONEY: all
-all: server
+all: ${EXECUTABLE}
 
-server: $(OBJECTS)
+${EXECUTABLE}: $(OBJECTS)
 	$(LINK.cc) $(OBJECTS) $(LOADLIBES) $(LDLIBS) -o $@
 
 server.o: \
@@ -131,4 +133,4 @@ cmd_line.o: \
 
 .PHONY: clean
 clean:
-	rm -f $(OBJECTS) server
+	rm -f $(OBJECTS) ${EXECUTABLE}

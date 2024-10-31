@@ -33,6 +33,7 @@ namespace squawkbus::server
     {
     }
 
+    void on_interrupt();
     void on_startup();
     void on_message(Interactor* interactor, const Message* message);
     void on_connected(Interactor* interactor);

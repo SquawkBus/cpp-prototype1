@@ -127,7 +127,7 @@ namespace squawkbus::server
     auto specs = cmd_line_specs; // copy the command line specs;
     if (specs.empty())
     {
-      log.info("Using default authorizations");
+      log.debug("Using default authorizations");
       
       auto spec = AuthorizationSpec(
         std::regex(".*"),
@@ -139,5 +139,11 @@ namespace squawkbus::server
     }
 
     return AuthorizationRepository(specs);
+  }
+
+  void AuthorizationManager::reload()
+  {
+    log.info("Reloading authorizations");
+    repository_ = AuthorizationRepository::make(path_, cmd_line_specs_);
   }
 }

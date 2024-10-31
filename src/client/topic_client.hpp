@@ -28,6 +28,7 @@ namespace squawkbus::client
     TopicClient(std::shared_ptr<TcpClientSocket> client_socket);
 
     void on_startup(Poller& poller) override;
+    void on_interrupt(Poller& poller) override;
     void on_open(Poller& poller, int fd, const std::string& host, std::uint16_t port) override;
     void on_close(Poller& poller, int fd) override;
     void on_read(Poller& poller, int fd, std::vector<std::vector<char>>&& bufs) override;

@@ -18,6 +18,13 @@ namespace squawkbus::server
       hub_.on_startup();
   }
 
+  void Distributor::on_interrupt(Poller& poller)
+  {
+      log.debug("Reloading the configuration.");
+
+      hub_.on_startup();
+  }
+
   void Distributor::on_open(Poller& poller, int fd, const std::string& host, std::uint16_t port)
   {
       auto interactor = std::make_shared<Interactor>(fd, poller, hub_, host, port);
