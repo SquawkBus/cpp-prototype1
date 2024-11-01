@@ -64,11 +64,25 @@ namespace squawkbus::server
 
     if (message.method() == "NONE")
     {
-      return "nobody";
+      return authenticate_none(message);
     }
-
-    if (message.method() == "HTPASSWD")
+    else if (message.method() == "HTPASSWD")
     {
+      return authenticate_htpasswd(message);
+    }
+    else
+    {
+      return std::nullopt;
+    }
+  }
+
+  std::optional<std::string> AuthenticationManager::authenticate_none(Authenticate& message) const
+  {
+      return "nobody";
+  }
+
+  std::optional<std::string> AuthenticationManager::authenticate_htpasswd(Authenticate& message) const
+  {
       auto frame = FrameBuffer::from(std::move(message.data()));
       std::string username, password;
       frame >> username >> password;
@@ -76,8 +90,6 @@ namespace squawkbus::server
         return std::nullopt;
 
       return username;
-    }
-
-    return std::nullopt;
   }
+
 }

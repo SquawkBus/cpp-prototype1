@@ -32,6 +32,11 @@ namespace squawkbus::server
 
     void load();
     std::optional<std::string> authenticate(Authenticate&& message) const;
+
+  private:
+    std::optional<std::string> authenticate_none(Authenticate& message) const;
+    std::optional<std::string> authenticate_htpasswd(Authenticate& message) const;
+
   };
 }
 
