@@ -75,30 +75,9 @@ namespace squawkbus::server
       throw std::runtime_error("expected authenticate message");
 
     auto authenticate_message = *dynamic_cast<Authenticate*>(message);
-    if (authenticate_message.method() == "NONE")
-    {
-      user_ = authenticate_message.data().empty()
-        ? std::string("nobody")
-        : std::string(
-            authenticate_message.data().begin(),
-            authenticate_message.data().end());
-      log.info(std::format("Authenticated {}.", str()));
-      hub_.on_connected(this);
-      return;
-    }
-    else if (authenticate_message.method() == "HTPASSWD")
-    {
-      auto frame = FrameBuffer::from(std::move(authenticate_message.data()));
-      std::string username, password;
-      frame >> username >> password;
-      if (!authentication_manager_.authenticate(username, password))
-        throw std::runtime_error("Failed to authenticate");
-      log.info(std::format("Authenticated {}.", str()));
-      hub_.on_connected(this);
-      return;
-    }
-
-    throw std::runtime_error("unknown authentication method");
+    user_ = authentication_manager_.authenticate(std::move(authenticate_message));
+    if (user_ == std::nullopt)
+      throw std::runtime_error("authentication failed");
   }
 
   std::string Interactor::str() const noexcept

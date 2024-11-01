@@ -10,12 +10,20 @@
 
 #include "logging/log.hpp"
 
+#include "serialization/frame_buffer.hpp"
+#include "serialization/frame_buffer_io.hpp"
+
+#include "messages/messages.hpp"
+
 namespace squawkbus::server
 {
   namespace
   {
     auto log = logging::logger("squawkbus");
   }
+
+  using squawkbus::messages::Authenticate;
+  using squawkbus::serialization::FrameBuffer;
 
   void AuthenticationManager::load()
   {
@@ -50,10 +58,26 @@ namespace squawkbus::server
     repository_ = AuthenticationRepository(std::move(entries));
   }
 
-  bool AuthenticationManager::authenticate(const std::string& username, const std::string& password) const
+  std::optional<std::string> AuthenticationManager::authenticate(Authenticate&& message) const
   {
-    log.debug(std::format("Authenticating \"{}\"", username));
-    
-    return repository_.authenticate(username, password);
+    log.debug(std::format("Authenticating \"{}\"", message.method()));
+
+    if (message.method() == "NONE")
+    {
+      return "nobody";
+    }
+
+    if (message.method() == "HTPASSWD")
+    {
+      auto frame = FrameBuffer::from(std::move(message.data()));
+      std::string username, password;
+      frame >> username >> password;
+      if (!repository_.authenticate(username, password))
+        return std::nullopt;
+
+      return username;
+    }
+
+    return std::nullopt;
   }
 }

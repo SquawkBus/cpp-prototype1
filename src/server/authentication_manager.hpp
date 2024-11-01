@@ -5,10 +5,14 @@
 #include <string>
 #include <utility>
 
+#include "messages/messages.hpp"
+
 #include "authentication_repository.hpp"
 
 namespace squawkbus::server
 {
+  using squawkbus::messages::Authenticate;
+
   class AuthenticationManager
   {
   private:
@@ -27,7 +31,7 @@ namespace squawkbus::server
     }
 
     void load();
-    bool authenticate(const std::string& username, const std::string& password) const;
+    std::optional<std::string> authenticate(Authenticate&& message) const;
   };
 }
 
