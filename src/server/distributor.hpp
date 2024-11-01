@@ -10,6 +10,7 @@
 
 #include "io/poller.hpp"
 
+#include "authentication_manager.hpp"
 #include "authorization_manager.hpp"
 #include "interactor.hpp"
 #include "hub.hpp"
@@ -23,11 +24,15 @@ namespace squawkbus::server
   {
   private:
     std::map<int, std::shared_ptr<Interactor>> interactors_;
+    AuthenticationManager authentication_manager_;
     Hub hub_;
 
   public:
-    Distributor(AuthorizationManager&& authorization_manager)
-      : hub_(std::move(authorization_manager))
+    Distributor(
+      AuthenticationManager&& authentication_manager,
+      AuthorizationManager&& authorization_manager)
+      : authentication_manager_(std::move(authentication_manager)),
+        hub_(std::move(authorization_manager))
     {
     }
 

@@ -15,6 +15,7 @@ namespace squawkbus::server
   {
       log.debug("Starting the server.");
 
+      authentication_manager_.load();
       hub_.on_startup();
   }
 
@@ -22,12 +23,13 @@ namespace squawkbus::server
   {
       log.debug("Reloading the configuration.");
 
+      authentication_manager_.load();
       hub_.on_startup();
   }
 
   void Distributor::on_open(Poller& poller, int fd, const std::string& host, std::uint16_t port)
   {
-      auto interactor = std::make_shared<Interactor>(fd, poller, hub_, host, port);
+      auto interactor = std::make_shared<Interactor>(fd, poller, authentication_manager_, hub_, host, port);
       log.info(std::format("Created interactor {}", interactor->str()));
       interactors_.insert({fd, interactor});
   }

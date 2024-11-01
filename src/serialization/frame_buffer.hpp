@@ -21,6 +21,13 @@ namespace squawkbus::serialization
 
   public:
 
+    static FrameBuffer from(std::vector<char>&& buf)
+    {
+      FrameBuffer frame;
+      frame.data_.push_back(std::move(buf));
+      return frame;
+    }
+
     std::size_t size() const noexcept
     {
       return

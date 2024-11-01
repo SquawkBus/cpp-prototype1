@@ -1,3 +1,5 @@
+#include "interactor.hpp"
+
 #include <format>
 #include <stdexcept>
 #include <string>
@@ -7,7 +9,7 @@
 #include "serialization/frame_buffer.hpp"
 #include "serialization/frame_buffer_io.hpp"
 
-#include "interactor.hpp"
+#include "authentication_manager.hpp"
 #include "hub.hpp"
 #include "uuid.hpp"
 
@@ -27,6 +29,7 @@ namespace squawkbus::server
   Interactor::Interactor(
     int fd,
     Poller& poller,
+    AuthenticationManager& authentication_manager,
     Hub& hub,
     const std::string& host,
     std::uint16_t port)
@@ -34,6 +37,7 @@ namespace squawkbus::server
       host_(host),
       id_(uuid::generate().str()),
       poller_(poller),
+      authentication_manager_(authentication_manager),
       hub_(hub)
   {
   }
@@ -57,7 +61,7 @@ namespace squawkbus::server
     }
   }
 
-  void Interactor::process_message(const Message* message)
+  void Interactor::process_message(Message* message)
   {
     if (user_ == std::nullopt)
       authenticate(message);
@@ -65,19 +69,30 @@ namespace squawkbus::server
       hub_.on_message(this, message);
   }
 
-  void Interactor::authenticate(const Message* message)
+  void Interactor::authenticate(Message* message)
   {
     if (message->message_type() != MessageType::Authenticate)
       throw std::runtime_error("expected authenticate message");
 
-    auto authenticate_message = dynamic_cast<const Authenticate*>(message);
-    if (authenticate_message->method() == "PLAIN")
+    auto authenticate_message = *dynamic_cast<Authenticate*>(message);
+    if (authenticate_message.method() == "NONE")
     {
-      user_ = authenticate_message->data().empty()
+      user_ = authenticate_message.data().empty()
         ? std::string("nobody")
         : std::string(
-            authenticate_message->data().begin(),
-            authenticate_message->data().end());
+            authenticate_message.data().begin(),
+            authenticate_message.data().end());
+      log.info(std::format("Authenticated {}.", str()));
+      hub_.on_connected(this);
+      return;
+    }
+    else if (authenticate_message.method() == "HTPASSWD")
+    {
+      auto frame = FrameBuffer::from(std::move(authenticate_message.data()));
+      std::string username, password;
+      frame >> username >> password;
+      if (!authentication_manager_.authenticate(username, password))
+        throw std::runtime_error("Failed to authenticate");
       log.info(std::format("Authenticated {}.", str()));
       hub_.on_connected(this);
       return;

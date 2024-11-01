@@ -41,6 +41,9 @@ namespace squawkbus::messages
     const std::string& method() const noexcept { return method_; }
     const std::vector<char>& data() const noexcept { return data_; }
 
+    std::string& method() noexcept { return method_; }
+    std::vector<char>& data() noexcept { return data_; }
+
     bool operator==(const Authenticate &other) const noexcept
     {
       return

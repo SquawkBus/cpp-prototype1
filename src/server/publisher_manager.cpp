@@ -8,6 +8,7 @@
 
 #include "logging/log.hpp"
 
+#include "interactor.hpp"
 #include "subscription_manager.hpp"
 #include "authorization_manager.hpp"
 

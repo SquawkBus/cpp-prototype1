@@ -12,6 +12,8 @@
 
 #include "messages/messages.hpp"
 
+#include "hub.hpp"
+
 namespace squawkbus::server
 {
   using squawkbus::io::Poller;
@@ -19,6 +21,7 @@ namespace squawkbus::server
   using squawkbus::messages::Message;
 
   class Hub;
+  class AuthenticationManager;
 
   class Interactor
   {
@@ -27,12 +30,19 @@ namespace squawkbus::server
     std::string host_;
     std::string id_;
     Poller& poller_;
+    AuthenticationManager& authentication_manager_;
     Hub& hub_;
     FrameReader reader_;
     std::optional<std::string> user_;
 
   public:
-    Interactor(int fd, Poller& poller, Hub& hub, const std::string& host, std::uint16_t port);
+    Interactor(
+      int fd,
+      Poller& poller,
+      AuthenticationManager& authentication_manager,
+      Hub& hub,
+      const std::string& host,
+      std::uint16_t port);
 
     int fd() const noexcept { return fd_; }
     const std::string& host() const noexcept { return host_; }
@@ -44,8 +54,8 @@ namespace squawkbus::server
     std::string str() const noexcept;
 
   private:
-    void process_message(const Message* message);
-    void authenticate(const Message* message);
+    void process_message(Message* message);
+    void authenticate(Message* message);
   };
 
 }

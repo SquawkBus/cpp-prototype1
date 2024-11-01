@@ -35,12 +35,12 @@ namespace squawkbus::client
   {
     logging::info("on_startup");
 
-    auto user = std::string("johndoe");
-    auto data = std::vector(user.begin(), user.end());
-    auto msg = Authenticate("PLAIN", data);
+    // auto user = std::string("johndoe");
+    // auto data = std::vector(user.begin(), user.end());
+    auto msg = Authenticate("NONE", std::vector<char>());
     auto frame = msg.serialize();
     auto buf = std::vector<char>(frame);
-    logging::info(std::format("authenticating as {}", user));
+    // logging::info(std::format("authenticating as {}", user));
     poller.write(client_socket_->fd(), buf);
   }
 

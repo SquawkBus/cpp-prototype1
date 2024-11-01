@@ -14,11 +14,13 @@
 
 #include "cmd_line.hpp"
 #include "distributor.hpp"
+#include "authentication_manager.hpp"
 #include "authorization_manager.hpp"
 
 using namespace squawkbus::io;
 namespace logging = squawkbus::logging;
 
+using squawkbus::server::AuthenticationManager;
 using squawkbus::server::AuthorizationManager;
 using squawkbus::server::Distributor;
 using squawkbus::io::Endpoint;
@@ -50,10 +52,13 @@ std::shared_ptr<SslContext> make_ssl_context(const std::string& certfile, const 
 
 void start_server(
   const Endpoint& endpoint,
+  AuthenticationManager&& authentication_manager,
   AuthorizationManager&& authorization_manager,
   std::optional<std::shared_ptr<SslContext>> ssl_ctx)
 {
-  auto poll_client = std::make_shared<Distributor>(std::move(authorization_manager));
+  auto poll_client = std::make_shared<Distributor>(
+    std::move(authentication_manager),
+    std::move(authorization_manager));
   auto poller = Poller(poll_client);
   poller.add_handler(
     std::make_unique<TcpListenerPollHandler>(endpoint.port(), ssl_ctx),
@@ -83,11 +88,17 @@ int main(int argc, const char** argv)
       ssl_ctx = make_ssl_context(options.tls->certfile, options.tls->keyfile);
     }
 
+    auto authentication_manager = AuthenticationManager(options.password_file);
+
     auto authorization_manager = AuthorizationManager(
       options.authorizations_file,
       options.authorizations);
 
-    start_server(options.endpoint, std::move(authorization_manager), std::move(ssl_ctx));
+    start_server(
+      options.endpoint,
+      std::move(authentication_manager),
+      std::move(authorization_manager),
+      std::move(ssl_ctx));
   }
   catch(const std::exception& error)
   {

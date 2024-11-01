@@ -63,6 +63,8 @@ SOURCES = \
 	authorization_cache.cpp \
 	authorization_repository.cpp \
 	authorization_manager.cpp \
+	authentication_repository.cpp \
+	authentication_manager.cpp \
 	cmd_line.cpp
 
 OBJECTS = $(SOURCES:%.cpp=%.o)
@@ -82,6 +84,8 @@ server.o: \
 	server.cpp \
 	distributor.hpp \
 	cmd_line.hpp \
+	authentication_manager.hpp \
+	authentication_repository.cpp \
 	authorization_spec.hpp \
 	authorization_cache.hpp \
 	authorization_repository.hpp \
@@ -93,6 +97,8 @@ server.o: \
 distributor.o: \
 	distributor.cpp \
 	distributor.hpp \
+	authentication_manager.hpp \
+	authentication_repository.cpp \
 	authorization_spec.hpp \
 	authorization_cache.hpp \
 	authorization_repository.hpp \
@@ -167,6 +173,15 @@ authorization_manager.o: \
 	authorization_spec.hpp \
 	authorization_yaml.hpp \
 	role.hpp
+
+authentication_repository.o: \
+	authentication_repository.cpp \
+	authentication_repository.hpp
+
+authentication_manager.o: \
+	authentication_manager.cpp \
+	authentication_manager.hpp \
+	authentication_repository.cpp
 
 cmd_line.o: \
 	cmd_line.cpp \

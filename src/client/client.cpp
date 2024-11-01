@@ -59,7 +59,7 @@ std::shared_ptr<SslContext> make_ssl_context(std::optional<std::string> capath)
 int main(int argc, char** argv)
 {
   bool use_tls = false;
-  std::uint16_t port = 22000;
+  std::uint16_t port = 8558;
   std::string host = "localhost";
 
   popl::OptionParser op("options");
