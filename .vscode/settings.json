@@ -93,6 +93,7 @@
         "clientlen",
         "eputs",
         "feedbus",
+        "htpasswd",
         "Interactor",
         "interactors",
         "jetblack",
