@@ -26,8 +26,9 @@ namespace squawkbus::client
   using squawkbus::messages::MulticastData;
   using squawkbus::messages::DataPacket;
 
-  TopicClient::TopicClient(std::shared_ptr<TcpClientSocket> client_socket)
-    : client_socket_(client_socket)
+  TopicClient::TopicClient(std::shared_ptr<TcpClientSocket> client_socket, Authenticate&& authenticate)
+    : client_socket_(client_socket),
+      authenticate_(std::move(authenticate))
   {
   }
 

@@ -18,6 +18,8 @@
 #include "io/tcp_stream.hpp"
 #include "io/ssl_ctx.hpp"
 #include "logging/log.hpp"
+#include "serialization/frame_buffer.hpp"
+#include "serialization/frame_buffer_io.hpp"
 #include "utils/match.hpp"
 #include "utils/utils.hpp"
 
@@ -30,6 +32,9 @@ using namespace squawkbus::io;
 namespace logging = squawkbus::logging;
 using squawkbus::client::Options;
 using squawkbus::client::TopicClient;
+using squawkbus::client::AuthenticationMethod;
+using squawkbus::messages::Authenticate;
+using squawkbus::serialization::FrameBuffer;
 
 namespace
 {
@@ -81,7 +86,20 @@ int main(int argc, char** argv)
     client_socket->connect(options.host, options.port);
     client_socket->blocking(false);
 
-    auto client = std::make_shared<TopicClient>(client_socket);
+    Authenticate authenticate;
+    if (options.authentication_method == AuthenticationMethod::Htpasswd)
+    {
+      if (!options.username || !options.password)
+      {
+        std::cerr << "Must specify username and password`n";
+        exit(1);
+      }
+      authenticate.method = "htpasswd";
+      FrameBuffer frame;
+      frame << *options.username << *options.password;
+      authenticate.data = std::vector<char>(frame);
+    }
+    auto client = std::make_shared<TopicClient>(client_socket, std::move(authenticate));
     auto poller = Poller(client);
 
     if (!ssl_ctx)
