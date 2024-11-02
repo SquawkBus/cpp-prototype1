@@ -11,13 +11,14 @@ namespace squawkbus::messages
   enum class MessageType : char
   {
     AuthenticationRequest        = 1,
-    MulticastData                = 2,
-    UnicastData                  = 3,
-    ForwardedSubscriptionRequest = 4,
-    NotificationRequest          = 5,
-    SubscriptionRequest          = 6,
-    ForwardedMulticastData       = 7,
-    ForwardedUnicastData         = 8
+    AuthenticationResponse       = 2,
+    MulticastData                = 3,
+    UnicastData                  = 4,
+    ForwardedSubscriptionRequest = 5,
+    NotificationRequest          = 6,
+    SubscriptionRequest          = 7,
+    ForwardedMulticastData       = 8,
+    ForwardedUnicastData         = 9
   };
 
   inline std::string to_string(const MessageType& message_type)
@@ -26,6 +27,8 @@ namespace squawkbus::messages
     {
     case MessageType::AuthenticationRequest:
       return "AuthenticationRequest";
+    case MessageType::AuthenticationResponse:
+      return "AuthenticationResponse";
     case MessageType::MulticastData:
       return "MulticastData";
     case MessageType::UnicastData:

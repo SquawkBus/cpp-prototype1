@@ -25,6 +25,7 @@ namespace squawkbus::server
   using squawkbus::messages::Message;
   using squawkbus::messages::MessageType;
   using squawkbus::messages::AuthenticationRequest;
+  using squawkbus::messages::AuthenticationResponse;
 
   Interactor::Interactor(
     int fd,
@@ -84,6 +85,9 @@ namespace squawkbus::server
       log.error("authentication failed");
       poller_.close(fd_);
     }
+
+    std::shared_ptr<Message> response = std::make_shared<AuthenticationResponse>(true);
+    send(response);
   }
 
   std::string Interactor::str() const noexcept

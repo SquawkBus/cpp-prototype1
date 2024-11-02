@@ -89,6 +89,7 @@ namespace squawkbus::server
       return;
 
     case MessageType::AuthenticationRequest:
+    case MessageType::AuthenticationResponse:
     case MessageType::ForwardedSubscriptionRequest:
     case MessageType::ForwardedMulticastData:
     case MessageType::ForwardedUnicastData:
