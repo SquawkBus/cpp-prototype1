@@ -11,7 +11,7 @@
 
 namespace squawkbus::server
 {
-  using squawkbus::messages::Authenticate;
+  using squawkbus::messages::AuthenticationRequest;
 
   class AuthenticationManager
   {
@@ -31,11 +31,11 @@ namespace squawkbus::server
     }
 
     void load();
-    std::optional<std::string> authenticate(Authenticate&& message) const;
+    std::optional<std::string> authenticate(AuthenticationRequest&& message) const;
 
   private:
-    std::optional<std::string> authenticate_none(Authenticate& message) const;
-    std::optional<std::string> authenticate_htpasswd(Authenticate& message) const;
+    std::optional<std::string> authenticate_none(AuthenticationRequest& message) const;
+    std::optional<std::string> authenticate_htpasswd(AuthenticationRequest& message) const;
 
   };
 }

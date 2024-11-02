@@ -17,18 +17,20 @@ namespace squawkbus::client
   using squawkbus::io::PollClient;
   using squawkbus::io::TcpClientSocket;
   using squawkbus::serialization::FrameReader;
-  using squawkbus::messages::Authenticate;
+  using squawkbus::messages::AuthenticationRequest;
 
   class TopicClient : public PollClient
   {
   private:
     std::shared_ptr<TcpClientSocket> client_socket_;
     FrameReader reader_;
-    Authenticate authenticate_;
+    AuthenticationRequest authentication_request_;
     
 
   public:
-    TopicClient(std::shared_ptr<TcpClientSocket> client_socket, Authenticate&& authenticate);
+    TopicClient(
+      std::shared_ptr<TcpClientSocket> client_socket,
+      AuthenticationRequest&& authentication_request);
 
     void on_startup(Poller& poller) override;
     void on_interrupt(Poller& poller) override;

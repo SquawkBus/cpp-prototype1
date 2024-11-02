@@ -24,7 +24,7 @@ namespace squawkbus::server
   using squawkbus::serialization::FrameBuffer;
   using squawkbus::messages::Message;
   using squawkbus::messages::MessageType;
-  using squawkbus::messages::Authenticate;
+  using squawkbus::messages::AuthenticationRequest;
 
   Interactor::Interactor(
     int fd,
@@ -71,13 +71,13 @@ namespace squawkbus::server
 
   void Interactor::authenticate(Message* message)
   {
-    if (message->message_type != MessageType::Authenticate)
+    if (message->message_type != MessageType::AuthenticationRequest)
     {
       log.error("expected authenticate message");
       poller_.close(fd_);
     }
 
-    auto authenticate_message = *dynamic_cast<Authenticate*>(message);
+    auto authenticate_message = *dynamic_cast<AuthenticationRequest*>(message);
     user_ = authentication_manager_.authenticate(std::move(authenticate_message));
     if (user_ == std::nullopt)
     {

@@ -32,7 +32,7 @@ using namespace squawkbus::io;
 namespace logging = squawkbus::logging;
 using squawkbus::client::Options;
 using squawkbus::client::TopicClient;
-using squawkbus::messages::Authenticate;
+using squawkbus::messages::AuthenticationRequest;
 using squawkbus::serialization::FrameBuffer;
 
 namespace
@@ -85,19 +85,21 @@ int main(int argc, char** argv)
     client_socket->connect(options.host, options.port);
     client_socket->blocking(false);
 
-    Authenticate authenticate;
+    AuthenticationRequest authentication_request;
     if (!options.authentication)
     {
-      authenticate.method = "NONE";
+      authentication_request.method = "NONE";
     }
     else
     {
-      authenticate.method = "HTPASSWD";
+      authentication_request.method = "HTPASSWD";
       FrameBuffer frame;
       frame << options.authentication->username << options.authentication->password;
-      authenticate.data = std::vector<char>(frame);
+      authentication_request.data = std::vector<char>(frame);
     }
-    auto client = std::make_shared<TopicClient>(client_socket, std::move(authenticate));
+    auto client = std::make_shared<TopicClient>(
+      client_socket,
+      std::move(authentication_request));
     auto poller = Poller(client);
 
     if (!ssl_ctx)

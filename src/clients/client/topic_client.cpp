@@ -23,15 +23,17 @@ namespace squawkbus::client
   using squawkbus::io::PollClient;
   using squawkbus::io::TcpClientSocket;
   using squawkbus::messages::Message;
-  using squawkbus::messages::Authenticate;
+  using squawkbus::messages::AuthenticationRequest;
   using squawkbus::messages::NotificationRequest;
   using squawkbus::messages::SubscriptionRequest;
   using squawkbus::messages::MulticastData;
   using squawkbus::messages::DataPacket;
 
-  TopicClient::TopicClient(std::shared_ptr<TcpClientSocket> client_socket, Authenticate&& authenticate)
+  TopicClient::TopicClient(
+    std::shared_ptr<TcpClientSocket> client_socket,
+    AuthenticationRequest&& authenticate)
     : client_socket_(client_socket),
-      authenticate_(std::move(authenticate))
+      authentication_request_(std::move(authenticate))
   {
   }
 
@@ -39,7 +41,7 @@ namespace squawkbus::client
   {
     logging::info("on_startup");
 
-    auto frame = authenticate_.serialize();
+    auto frame = authentication_request_.serialize();
     auto buf = std::vector<char>(frame);
     poller.write(client_socket_->fd(), buf);
 

@@ -1,5 +1,5 @@
-#ifndef SQUAWKBUS_MESSAGES_AUTHENTICATE_DATA_HPP
-#define SQUAWKBUS_MESSAGES_AUTHENTICATE_DATA_HPP
+#ifndef SQUAWKBUS_MESSAGES_AUTHENTICATION_REQUEST_HPP
+#define SQUAWKBUS_MESSAGES_AUTHENTICATION_REQUEST_HPP
 
 #include <format>
 #include <memory>
@@ -17,28 +17,28 @@ namespace squawkbus::messages
 {
   using serialization::FrameBuffer;
 
-  class Authenticate : public Message
+  class AuthenticationRequest : public Message
   {
   public:
     std::string method;
     std::vector<char> data;
 
   public:
-    Authenticate() noexcept
-      : Message(MessageType::Authenticate)
+    AuthenticationRequest() noexcept
+      : Message(MessageType::AuthenticationRequest)
     {
     }
 
-    Authenticate(
+    AuthenticationRequest(
       const std::string &method,
       const std::vector<char> &data) noexcept
-      : Message(MessageType::Authenticate),
+      : Message(MessageType::AuthenticationRequest),
         method(method),
         data(data)
     {
     }
 
-    bool operator==(const Authenticate &other) const noexcept
+    bool operator==(const AuthenticationRequest &other) const noexcept
     {
       return
         Message::operator==(other) &&
@@ -48,13 +48,13 @@ namespace squawkbus::messages
 
     bool equals(const Message* other) const noexcept override
     {
-      return operator==(*dynamic_cast<const Authenticate*>(other));
+      return operator==(*dynamic_cast<const AuthenticationRequest*>(other));
     }
 
     std::string str() const override
     {
       return std::format(
-        "Authenticate(message_type={},data=\"{}\",data={})",
+        "AuthenticationRequest(message_type={},data=\"{}\",data={})",
         messages::to_string(message_type),
         method,
         ::to_string(data));
@@ -78,4 +78,4 @@ namespace squawkbus::messages
   };
 }
 
-#endif // SQUAWKBUS_MESSAGES_AUTHENTICATE_DATA_HPP
+#endif // SQUAWKBUS_MESSAGES_AUTHENTICATION_REQUEST_HPP

@@ -7,7 +7,7 @@
 
 #include "messages/_data_packet.hpp"
 #include "messages/_message.hpp"
-#include "messages/_authenticate.hpp"
+#include "messages/_authentication_request.hpp"
 #include "messages/_forwarded_multicast_data.hpp"
 #include "messages/_forwarded_subscription_request.hpp"
 #include "messages/_forwarded_unicast_data.hpp"
@@ -22,8 +22,8 @@ namespace squawkbus::messages
   {
     switch (message_type)
     {
-    case MessageType::Authenticate:
-      return std::make_shared<Authenticate>();
+    case MessageType::AuthenticationRequest:
+      return std::make_shared<AuthenticationRequest>();
 
     case MessageType::MulticastData:
       return std::make_shared<MulticastData>();

@@ -10,7 +10,7 @@ namespace squawkbus::messages
 {
   enum class MessageType : char
   {
-    Authenticate                 = 1,
+    AuthenticationRequest        = 1,
     MulticastData                = 2,
     UnicastData                  = 3,
     ForwardedSubscriptionRequest = 4,
@@ -24,8 +24,8 @@ namespace squawkbus::messages
   {
     switch (message_type)
     {
-    case MessageType::Authenticate:
-      return "Authenticate";
+    case MessageType::AuthenticationRequest:
+      return "AuthenticationRequest";
     case MessageType::MulticastData:
       return "MulticastData";
     case MessageType::UnicastData:

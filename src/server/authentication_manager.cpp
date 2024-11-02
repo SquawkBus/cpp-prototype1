@@ -23,7 +23,7 @@ namespace squawkbus::server
     auto log = logging::logger("squawkbus");
   }
 
-  using squawkbus::messages::Authenticate;
+  using squawkbus::messages::AuthenticationRequest;
   using squawkbus::serialization::FrameBuffer;
   using squawkbus::serialization::FrameReader;
 
@@ -60,7 +60,7 @@ namespace squawkbus::server
     repository_ = AuthenticationRepository(std::move(entries));
   }
 
-  std::optional<std::string> AuthenticationManager::authenticate(Authenticate&& message) const
+  std::optional<std::string> AuthenticationManager::authenticate(AuthenticationRequest&& message) const
   {
     log.debug(std::format("Authenticating \"{}\"", message.method));
 
@@ -78,12 +78,12 @@ namespace squawkbus::server
     }
   }
 
-  std::optional<std::string> AuthenticationManager::authenticate_none(Authenticate& message) const
+  std::optional<std::string> AuthenticationManager::authenticate_none(AuthenticationRequest& message) const
   {
       return "nobody";
   }
 
-  std::optional<std::string> AuthenticationManager::authenticate_htpasswd(Authenticate& message) const
+  std::optional<std::string> AuthenticationManager::authenticate_htpasswd(AuthenticationRequest& message) const
   {
     auto reader = FrameReader();
     reader.write(std::move(message.data));

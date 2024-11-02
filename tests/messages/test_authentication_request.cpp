@@ -7,11 +7,11 @@
 #include "catch2/catch.hpp"
 
 using squawkbus::messages::Message;
-using squawkbus::messages::Authenticate;
+using squawkbus::messages::AuthenticationRequest;
 
 TEST_CASE("smoke test")
 {
-    std::shared_ptr<Message> m0 = std::make_shared<Authenticate>(
+    std::shared_ptr<Message> m0 = std::make_shared<AuthenticationRequest>(
         "PLAIN",
         std::vector {'f', 'r', 'e', 'd'}
     );

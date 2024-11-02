@@ -10,7 +10,7 @@ CXXFLAGS = -g -std=c++23 -Wall ${INCLUDES}
 LDLIBS = ${LIBS} -lyaml-cpp -lssl -lcrypto -luuid
 
 MESSAGE_HEADERS = \
-	${SRC_DIR}/messages/_authenticate.hpp \
+	${SRC_DIR}/messages/_authentication_request.hpp \
 	${SRC_DIR}/messages/_data_packet.hpp \
 	${SRC_DIR}/messages/_forwarded_multicast_data.hpp \
 	${SRC_DIR}/messages/_forwarded_subscription_request.hpp \
