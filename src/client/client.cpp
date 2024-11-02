@@ -23,10 +23,12 @@
 
 #include "popl.hpp"
 
+#include "options.hpp"
 #include "topic_client.hpp"
 
 using namespace squawkbus::io;
 namespace logging = squawkbus::logging;
+using squawkbus::client::Options;
 using squawkbus::client::TopicClient;
 
 namespace
@@ -58,50 +60,25 @@ std::shared_ptr<SslContext> make_ssl_context(std::optional<std::string> capath)
 
 int main(int argc, char** argv)
 {
-  bool use_tls = false;
-  std::uint16_t port = 8558;
-  std::string host = "localhost";
-
-  popl::OptionParser op("options");
-  op.add<popl::Switch>("s", "ssl", "Connect with TLS", &use_tls);
-  auto help_option = op.add<popl::Switch>("", "help", "produce help message");
-  op.add<popl::Value<decltype(port)>>("p", "port", "port number", port, &port);
-  op.add<popl::Value<decltype(host)>>("h", "host", "host name or ip address (use fqdn for tls)", host, &host);
-  auto capath_option = op.add<popl::Value<std::string>>("", "capath", "path to certificate authority bundle file");
+  auto options = Options::parse(argc, argv);
 
   try
   {
-    op.parse(argc, argv);
-
-    if (help_option->is_set())
-    {
-      if (help_option->count() == 1)
-    		print_line(stderr, op.help());
-	    else if (help_option->count() == 2)
-		    print_line(stderr, op.help(popl::Attribute::advanced));
-	    else
-		    print_line(stderr, op.help(popl::Attribute::expert));
-      exit(1);
-    }
-
     std::optional<std::shared_ptr<SslContext>> ssl_ctx;
     
-    if (use_tls)
+    if (options.tls)
     {
-      std::optional<std::string> capath;
-      if (capath_option->is_set())
-        capath = capath_option->value();
-      ssl_ctx = make_ssl_context(capath);
+      ssl_ctx = make_ssl_context(options.capath);
     }
 
     print_line(std::format(
       "connecting to host {} on port {}{}.",
-      host,
-      port,
-      (use_tls ? " using tls" : "")));
+      options.host,
+      options.port,
+      (options.tls ? " using tls" : "")));
 
     auto client_socket = std::make_shared<TcpClientSocket>();
-    client_socket->connect(host, port);
+    client_socket->connect(options.host, options.port);
     client_socket->blocking(false);
 
     auto client = std::make_shared<TopicClient>(client_socket);
@@ -111,15 +88,15 @@ int main(int argc, char** argv)
     {
       poller.add_handler(
         std::make_unique<TcpSocketPollHandler>(client_socket, 8096, 8096),
-        host,
-        port);
+        options.host,
+        options.port);
     }
     else
     {
       poller.add_handler(
-        std::make_unique<TcpSocketPollHandler>(client_socket, *ssl_ctx, host, 8096, 8096),
-        host,
-        port);
+        std::make_unique<TcpSocketPollHandler>(client_socket, *ssl_ctx, options.host, 8096, 8096),
+        options.host,
+        options.port);
     }
 
     auto console_input = std::make_shared<File>(STDIN_FILENO, O_RDONLY);

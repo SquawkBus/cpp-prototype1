@@ -51,18 +51,39 @@ HEADERS = \
 	${LOGGING_HEADERS} \
 	${UTIL_HEADERS}
 
+SOURCES = \
+	client.cpp \
+	topic_client.cpp \
+	options.cpp
+
+OBJECTS = $(SOURCES:%.cpp=%.o)
+
+EXECUTABLE = client
+
 .PHONEY: default
 default: all
 
 .PHONEY: all
-all: client
+all: ${EXECUTABLE}
 
-client: client.o topic_client.o
-	$(LINK.cc) client.o topic_client.o $(LOADLIBES) $(LDLIBS) -o $@
+${EXECUTABLE}: ${OBJECTS}
+	$(LINK.cc) ${OBJECTS} $(LOADLIBES) $(LDLIBS) -o $@
 
-client.o: client.cpp $(HEADERS)
-topic_client.o: topic_client.cpp topic_client.hpp $(HEADERS)
+client.o: \
+	client.cpp \
+	options.hpp \
+	$(HEADERS)
+
+options.o: \
+	options.cpp \
+	options.hpp \
+	$(HEADERS)
+
+topic_client.o: \
+	topic_client.cpp \
+	topic_client.hpp \
+	$(HEADERS)
 
 .PHONY: clean
 clean:
-	rm -f client.o topic_client.o utils.o client
+	rm -f ${OBJECTS} ${EXECUTABLE}
