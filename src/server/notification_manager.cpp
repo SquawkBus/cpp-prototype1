@@ -25,13 +25,13 @@ namespace squawkbus::server
     log.debug(
       std::format(
         "on_subscription: {} ({})",
-        request.topic_pattern(),
-        (request.is_add() ? "<true>" : "<false>")));
+        request.topic_pattern,
+        (request.is_add ? "<true>" : "<false>")));
 
-    if (request.is_add())
-      add_listener(listener, request.topic_pattern(), subscription_manager);
+    if (request.is_add)
+      add_listener(listener, request.topic_pattern, subscription_manager);
     else
-      remove_listener(listener, request.topic_pattern(), subscription_manager);
+      remove_listener(listener, request.topic_pattern, subscription_manager);
   }
 
   void NotificationManager::add_listener(

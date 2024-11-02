@@ -54,10 +54,10 @@ namespace squawkbus::server
     const UnicastData& request,
     std::map<std::string, Interactor*> interactors)
   {
-    auto i_subscriber = interactors.find(request.client_id());
+    auto i_subscriber = interactors.find(request.client_id);
     if (i_subscriber == interactors.end())
     {
-      log.info(std::format("no interactor for {}", request.client_id()));
+      log.info(std::format("no interactor for {}", request.client_id));
       return;
     }
 
@@ -65,12 +65,12 @@ namespace squawkbus::server
 
     auto publisher_entitlements = authorization_manager_.entitlements(
       publisher->user(),
-      request.topic(),
+      request.topic,
       Role::Publisher
     );
     auto receiver_entitlements = authorization_manager_.entitlements(
       receiver->user(),
-      request.topic(),
+      request.topic,
       Role::Subscriber
     );
     auto entitlements = intersection(publisher_entitlements, receiver_entitlements);
@@ -82,23 +82,23 @@ namespace squawkbus::server
           "no entitlements from {} to {} for {}",
           publisher->user(),
           receiver->user(),
-          request.topic()
+          request.topic
         )
       );
       return;
     }
 
     auto authorized_data_packets = get_authorized_data(
-      request.data_packets(),
+      request.data_packets,
       entitlements);
 
-    add_publisher(publisher, request.topic());
+    add_publisher(publisher, request.topic);
 
     auto response = std::make_shared<ForwardedUnicastData>(
       publisher->user(),
       publisher->host(),
-      request.client_id(),
-      request.topic(),
+      request.client_id,
+      request.topic,
       authorized_data_packets
     );
     receiver->send(response);
@@ -109,9 +109,9 @@ namespace squawkbus::server
     const MulticastData& request,
     const SubscriptionManager& subscription_manager)
   {
-    add_publisher(publisher, request.topic());
+    add_publisher(publisher, request.topic);
 
-    auto subscribers = subscription_manager.find_subscribers(request.topic());
+    auto subscribers = subscription_manager.find_subscribers(request.topic);
     if (subscribers.empty())
     {
       return;
@@ -119,7 +119,7 @@ namespace squawkbus::server
 
     auto publisher_entitlements = authorization_manager_.entitlements(
       publisher->user(),
-      request.topic(),
+      request.topic,
       Role::Publisher
     );
 
@@ -129,7 +129,7 @@ namespace squawkbus::server
     {
       auto subscriber_entitlements = authorization_manager_.entitlements(
         subscriber->user(),
-        request.topic(),
+        request.topic,
         Role::Subscriber
       );
       auto entitlements = intersection(publisher_entitlements, subscriber_entitlements);
@@ -141,20 +141,20 @@ namespace squawkbus::server
             "no entitlements from {} to {} for {}",
             publisher->user(),
             subscriber->user(),
-            request.topic()
+            request.topic
           )
         );
         continue;
       }
 
       auto authorized_data_packets = get_authorized_data(
-        request.data_packets(),
+        request.data_packets,
         entitlements);
 
       auto response = std::make_shared<ForwardedMulticastData>(
         publisher->user(),
         publisher->host(),
-        request.topic(),
+        request.topic,
         authorized_data_packets
       );
 
@@ -164,7 +164,7 @@ namespace squawkbus::server
     }
 
     if (has_published)
-      add_publisher(publisher, request.topic());
+      add_publisher(publisher, request.topic);
   }
 
   void PublisherManager::on_interactor_closed(

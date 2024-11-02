@@ -19,9 +19,9 @@ namespace squawkbus::messages
 
   class MulticastData : public Message
   {
-  private:
-    std::string topic_;
-    std::vector<DataPacket> data_packets_;
+  public:
+    std::string topic;
+    std::vector<DataPacket> data_packets;
 
   public:
     MulticastData() noexcept
@@ -33,20 +33,17 @@ namespace squawkbus::messages
       const std::string &topic,
       const std::vector<DataPacket> &data_packets) noexcept
       : Message(MessageType::MulticastData),
-        topic_(topic),
-        data_packets_(data_packets)
+        topic(topic),
+        data_packets(data_packets)
     {
     }
-
-    const std::string& topic() const noexcept { return topic_; }
-    const std::vector<DataPacket>& data_packets() const noexcept { return data_packets_; }
 
     bool operator==(const MulticastData &other) const noexcept
     {
       return
         Message::operator==(other) &&
-        topic_ == other.topic_ &&
-        data_packets_ == other.data_packets_;
+        topic == other.topic &&
+        data_packets == other.data_packets;
     }
 
     bool equals(const Message* other) const noexcept override
@@ -58,9 +55,9 @@ namespace squawkbus::messages
     {
       return std::format(
         "MulticastData(message_type={},topic=\"{}\",data_packets={})",
-        messages::to_string(message_type_),
-        topic_,
-        ::to_string(data_packets_));
+        messages::to_string(message_type),
+        topic,
+        ::to_string(data_packets));
     }
 
   protected:
@@ -68,15 +65,15 @@ namespace squawkbus::messages
     void serialize_body(FrameBuffer &frame) const override
     {
       frame
-        << topic_
-        << data_packets_;
+        << topic
+        << data_packets;
     }
 
     void deserialize_body(FrameBuffer &frame) override
     {
       frame
-        >> topic_
-        >> data_packets_;
+        >> topic
+        >> data_packets;
     }
   };
 }

@@ -19,10 +19,10 @@ namespace squawkbus::messages
 
   class UnicastData : public Message
   {
-  private:
-    std::string client_id_;
-    std::string topic_;
-    std::vector<DataPacket> data_packets_;
+  public:
+    std::string client_id;
+    std::string topic;
+    std::vector<DataPacket> data_packets;
 
   public:
     UnicastData() noexcept
@@ -35,23 +35,19 @@ namespace squawkbus::messages
       const std::string &topic,
       const std::vector<DataPacket>& data_packets) noexcept
       : Message(MessageType::UnicastData),
-        client_id_(client_id),
-        topic_(topic),
-        data_packets_(data_packets)
+        client_id(client_id),
+        topic(topic),
+        data_packets(data_packets)
     {
     }
-
-    const std::string& client_id() const noexcept { return client_id_; }
-    const std::string& topic() const noexcept { return topic_; }
-    const std::vector<DataPacket>& data_packets() const noexcept { return data_packets_; }
 
     bool operator==(const UnicastData &other) const noexcept
     {
       return
         Message::operator==(other) &&
-        client_id_ == other.client_id_ &&
-        topic_ == other.topic_ &&
-        data_packets_ == other.data_packets_;
+        client_id == other.client_id &&
+        topic == other.topic &&
+        data_packets == other.data_packets;
     }
 
     bool equals(const Message* other) const noexcept override
@@ -63,10 +59,10 @@ namespace squawkbus::messages
     {
       return std::format(
         "UnicastData(message_type={},client_id=\"{}\",topic=\"{}\",data_packets={})",
-        messages::to_string(message_type_),
-        client_id_,
-        topic_,
-        ::to_string(data_packets_));
+        messages::to_string(message_type),
+        client_id,
+        topic,
+        ::to_string(data_packets));
     }
 
   protected:
@@ -74,17 +70,17 @@ namespace squawkbus::messages
     void serialize_body(FrameBuffer &frame) const override
     {
       frame
-        << client_id_
-        << topic_
-        << data_packets_;
+        << client_id
+        << topic
+        << data_packets;
     }
 
     void deserialize_body(FrameBuffer &frame) override
     {
       frame
-        >> client_id_
-        >> topic_
-        >> data_packets_;
+        >> client_id
+        >> topic
+        >> data_packets;
     }
   };
 }

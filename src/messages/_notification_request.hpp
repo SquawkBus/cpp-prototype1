@@ -17,9 +17,9 @@ namespace squawkbus::messages
 
   class NotificationRequest : public Message
   {
-  private:
-    std::string topic_pattern_;
-    bool is_add_;
+  public:
+    std::string topic_pattern;
+    bool is_add;
 
   public:
     NotificationRequest() noexcept
@@ -31,20 +31,17 @@ namespace squawkbus::messages
       const std::string &topic_pattern,
       bool is_add) noexcept
       : Message(MessageType::NotificationRequest),
-        topic_pattern_(topic_pattern),
-        is_add_(is_add)
+        topic_pattern(topic_pattern),
+        is_add(is_add)
     {
     }
-
-    const std::string& topic_pattern() const noexcept { return topic_pattern_; }
-    bool is_add() const noexcept { return is_add_; }
 
     bool operator==(const NotificationRequest &other) const noexcept
     {
       return
         Message::operator==(other) &&
-        topic_pattern_ == other.topic_pattern_ &&
-        is_add_ == other.is_add_;
+        topic_pattern == other.topic_pattern &&
+        is_add == other.is_add;
     }
 
     bool equals(const Message* other) const noexcept override
@@ -56,9 +53,9 @@ namespace squawkbus::messages
     {
       return std::format(
         "NotificationRequest(message_type={},topic_pattern=\"{}\",is_add={})",
-        messages::to_string(message_type_),
-        topic_pattern_,
-        (is_add_ ? "<true>" : "<false>"));
+        messages::to_string(message_type),
+        topic_pattern,
+        (is_add ? "<true>" : "<false>"));
     }
 
   protected:
@@ -66,15 +63,15 @@ namespace squawkbus::messages
     void serialize_body(FrameBuffer &frame) const override
     {
       frame
-        << topic_pattern_
-        << is_add_;
+        << topic_pattern
+        << is_add;
     }
 
     void deserialize_body(FrameBuffer &frame) override
     {
       frame
-        >> topic_pattern_
-        >> is_add_;
+        >> topic_pattern
+        >> is_add;
     }
   };
 }

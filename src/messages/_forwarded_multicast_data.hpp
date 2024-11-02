@@ -25,6 +25,7 @@ namespace squawkbus::messages
     std::string topic;
     std::vector<DataPacket> data_packets;
 
+  public:
     ForwardedMulticastData() noexcept
       : Message(MessageType::ForwardedMulticastData)
     {
@@ -61,7 +62,7 @@ namespace squawkbus::messages
     {
       return std::format(
         "ForwardedMulticastData(message_type={},user=\"{}\",host=\"{}\",topic=\"{}\",data_packets={})",
-        messages::to_string(message_type_),
+        messages::to_string(message_type),
         user,
         host,
         topic,

@@ -17,10 +17,10 @@ namespace squawkbus::messages
   
   class DataPacket
   {
-  private:
-    std::int32_t entitlement_;
-    std::string content_type_;
-    std::vector<char> data_;
+  public:
+    std::int32_t entitlement;
+    std::string content_type;
+    std::vector<char> data;
 
   public:
     DataPacket() noexcept
@@ -31,9 +31,9 @@ namespace squawkbus::messages
       const std::int32_t& entitlement,
       const std::string& content_type,
       const std::vector<char>& data) noexcept
-      : entitlement_(entitlement),
-        content_type_(content_type),
-        data_(data)
+      : entitlement(entitlement),
+        content_type(content_type),
+        data(data)
     {
     }
 
@@ -41,45 +41,41 @@ namespace squawkbus::messages
       std::int32_t&& entitlement,
       std::string&& content_type,
       std::vector<char>&& data) noexcept
-      : entitlement_(entitlement),
-        content_type_(std::move(content_type)),
-        data_(std::move(data))
+      : entitlement(entitlement),
+        content_type(std::move(content_type)),
+        data(std::move(data))
     {
     }
 
-    std::int32_t entitlement() const noexcept { return entitlement_; }
-    const std::string& content_type() const noexcept { return content_type_; }
-    const std::vector<char>& data() const noexcept { return data_; }
-
     bool is_authorized(const std::set<std::int32_t> &granted_entitlements) const noexcept
     {
-      return granted_entitlements.contains(entitlement_);
+      return granted_entitlements.contains(entitlement);
     }
 
     bool operator==(const DataPacket& other) const noexcept
     {
       return
-        entitlement_ == other.entitlement_ &&
-        content_type_ == other.content_type_ &&
-        data_ == other.data_;
+        entitlement == other.entitlement &&
+        content_type == other.content_type &&
+        data == other.data;
     }
 
     FrameBuffer& serialize(FrameBuffer& frame) const
     {
       return
         frame
-          << entitlement_
-          << content_type_
-          << data_;
+          << entitlement
+          << content_type
+          << data;
     }
 
     FrameBuffer& deserialize(FrameBuffer& frame)
     {
       return
         frame
-          >> entitlement_
-          >> content_type_
-          >> data_;
+          >> entitlement
+          >> content_type
+          >> data;
     }
   };
 
@@ -87,9 +83,9 @@ namespace squawkbus::messages
   {
     return os
       << "DataPacket"
-      << "(entitlement=" << d.entitlement()
-      << ",content_type=" << d.content_type()
-      << ",data=" << ::to_string(d.data())
+      << "(entitlement=" << d.entitlement
+      << ",content_type=" << d.content_type
+      << ",data=" << ::to_string(d.data)
       << ")" ;
   }
 

@@ -21,10 +21,10 @@ namespace squawkbus::server
     const SubscriptionRequest& request,
     const NotificationManager& notification_manager)
   {
-    if (request.is_add())
-      add_subscription(subscriber, request.topic(), notification_manager);
+    if (request.is_add)
+      add_subscription(subscriber, request.topic, notification_manager);
     else
-      remove_subscription(subscriber, request.topic(), notification_manager);
+      remove_subscription(subscriber, request.topic, notification_manager);
   }
 
   void SubscriptionManager::on_interactor_closed(Interactor* subscriber)

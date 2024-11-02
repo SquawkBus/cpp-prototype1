@@ -71,7 +71,7 @@ namespace squawkbus::server
 
   void Interactor::authenticate(Message* message)
   {
-    if (message->message_type() != MessageType::Authenticate)
+    if (message->message_type != MessageType::Authenticate)
       throw std::runtime_error("expected authenticate message");
 
     auto authenticate_message = *dynamic_cast<Authenticate*>(message);

@@ -26,6 +26,7 @@ namespace squawkbus::messages
     std::string topic;
     std::vector<DataPacket> data_packets;
 
+  public:
     ForwardedUnicastData() noexcept
       : Message(MessageType::ForwardedUnicastData)
     {
@@ -65,7 +66,7 @@ namespace squawkbus::messages
     {
       return std::format(
         "ForwardedUnicastData(message_type={},user=\"{}\",host=\"{}\",client_id=\"{}\",topic=\"{}\",data_packets={})",
-        messages::to_string(message_type_),
+        messages::to_string(message_type),
         user,
         host,
         client_id,

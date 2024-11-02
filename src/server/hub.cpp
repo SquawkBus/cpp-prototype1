@@ -51,9 +51,12 @@ namespace squawkbus::server
 
   void Hub::on_message(Interactor* interactor, const Message* message)
   {
-    log.debug(std::format("received {} message from {}.", to_string(message->message_type()), interactor->id()));
+    log.debug(std::format(
+      "received {} message from {}.",
+      to_string(message->message_type),
+      interactor->id()));
 
-    switch (message->message_type())
+    switch (message->message_type)
     {
     case MessageType::SubscriptionRequest:
       subscription_manager_.on_subscription(

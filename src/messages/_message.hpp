@@ -11,29 +11,27 @@ namespace squawkbus::messages
 {
   class Message
   {
-  protected:
-    MessageType message_type_;
+  public:
+    MessageType message_type;
 
   public:
     Message(MessageType message_type) noexcept
-      : message_type_(message_type)
+      : message_type(message_type)
     {
     }
     virtual ~Message() noexcept
     {
     }
 
-    MessageType message_type() const noexcept { return message_type_; }
-
     bool operator==(const Message& other) const noexcept
     {
-      return message_type_ == other.message_type_;
+      return message_type == other.message_type;
     }
 
     serialization::FrameBuffer serialize() const
     {
       serialization::FrameBuffer frame;
-      frame << message_type_;
+      frame << message_type;
       serialize_body(frame);
       return frame;
     }

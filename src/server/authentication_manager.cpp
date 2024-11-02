@@ -60,13 +60,13 @@ namespace squawkbus::server
 
   std::optional<std::string> AuthenticationManager::authenticate(Authenticate&& message) const
   {
-    log.debug(std::format("Authenticating \"{}\"", message.method()));
+    log.debug(std::format("Authenticating \"{}\"", message.method));
 
-    if (message.method() == "NONE")
+    if (message.method == "NONE")
     {
       return authenticate_none(message);
     }
-    else if (message.method() == "HTPASSWD")
+    else if (message.method == "HTPASSWD")
     {
       return authenticate_htpasswd(message);
     }
@@ -83,7 +83,7 @@ namespace squawkbus::server
 
   std::optional<std::string> AuthenticationManager::authenticate_htpasswd(Authenticate& message) const
   {
-      auto frame = FrameBuffer::from(std::move(message.data()));
+      auto frame = FrameBuffer::from(std::move(message.data));
       std::string username, password;
       frame >> username >> password;
       if (!repository_.authenticate(username, password))

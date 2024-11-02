@@ -19,9 +19,9 @@ namespace squawkbus::messages
 
   class Authenticate : public Message
   {
-  private:
-    std::string method_;
-    std::vector<char> data_;
+  public:
+    std::string method;
+    std::vector<char> data;
 
   public:
     Authenticate() noexcept
@@ -33,23 +33,17 @@ namespace squawkbus::messages
       const std::string &method,
       const std::vector<char> &data) noexcept
       : Message(MessageType::Authenticate),
-        method_(method),
-        data_(data)
+        method(method),
+        data(data)
     {
     }
-
-    const std::string& method() const noexcept { return method_; }
-    const std::vector<char>& data() const noexcept { return data_; }
-
-    std::string& method() noexcept { return method_; }
-    std::vector<char>& data() noexcept { return data_; }
 
     bool operator==(const Authenticate &other) const noexcept
     {
       return
         Message::operator==(other) &&
-        method_ == other.method_ &&
-        data_ == other.data_;
+        method == other.method &&
+        data == other.data;
     }
 
     bool equals(const Message* other) const noexcept override
@@ -61,9 +55,9 @@ namespace squawkbus::messages
     {
       return std::format(
         "Authenticate(message_type={},data=\"{}\",data={})",
-        messages::to_string(message_type_),
-        method_,
-        ::to_string(data_));
+        messages::to_string(message_type),
+        method,
+        ::to_string(data));
     }
 
     protected:
@@ -71,15 +65,15 @@ namespace squawkbus::messages
       void serialize_body(FrameBuffer &frame) const override
       {
         frame
-          << method_
-          << data_;
+          << method
+          << data;
       }
 
       void deserialize_body(FrameBuffer &frame) override
       {
         frame
-          >> method_
-          >> data_;
+          >> method
+          >> data;
       }
   };
 }
