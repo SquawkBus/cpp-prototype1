@@ -7,10 +7,10 @@
 
 namespace squawkbus::client
 {
-  enum class AuthenticationMethod : int
+  struct AuthenticationOption
   {
-    None = 0,
-    Htpasswd
+    std::string username;
+    std::string password;
   };
 
   struct Options
@@ -19,9 +19,7 @@ namespace squawkbus::client
     std::uint16_t port;
     bool tls;
     std::optional<std::string> capath;
-    AuthenticationMethod authentication_method;
-    std::optional<std::string> username;
-    std::optional<std::string> password;
+    std::optional<AuthenticationOption> authentication;
 
     static std::string usage(const std::string& progname);
     static Options parse(int argc, char** argv);

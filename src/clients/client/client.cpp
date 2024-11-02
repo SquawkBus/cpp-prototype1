@@ -32,7 +32,6 @@ using namespace squawkbus::io;
 namespace logging = squawkbus::logging;
 using squawkbus::client::Options;
 using squawkbus::client::TopicClient;
-using squawkbus::client::AuthenticationMethod;
 using squawkbus::messages::Authenticate;
 using squawkbus::serialization::FrameBuffer;
 
@@ -87,16 +86,15 @@ int main(int argc, char** argv)
     client_socket->blocking(false);
 
     Authenticate authenticate;
-    if (options.authentication_method == AuthenticationMethod::Htpasswd)
+    if (!options.authentication)
     {
-      if (!options.username || !options.password)
-      {
-        std::cerr << "Must specify username and password`n";
-        exit(1);
-      }
-      authenticate.method = "htpasswd";
+      authenticate.method = "NONE";
+    }
+    else
+    {
+      authenticate.method = "HTPASSWD";
       FrameBuffer frame;
-      frame << *options.username << *options.password;
+      frame << options.authentication->username << options.authentication->password;
       authenticate.data = std::vector<char>(frame);
     }
     auto client = std::make_shared<TopicClient>(client_socket, std::move(authenticate));

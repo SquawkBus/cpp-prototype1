@@ -20,9 +20,7 @@ namespace squawkbus::client
       << "\t" << "--port <port>" << "\n"
       << "\t" << "--tls" << "\n"
       << "\t" << "[--capath <file>]" << "\n"
-      << "\t" << "[--authentication-method <none | htpasswd>]" << "\n"
-      << "\t" << "[--username <username>]" << "\n"
-      << "\t" << "[--password <password>]" << "\n"
+      << "\t" << "[--authentication <username> <password>]" << "\n"
       ;
     return ss.str();
   }
@@ -69,33 +67,14 @@ namespace squawkbus::client
             throw std::runtime_error(std::format("{} requires 1 arg", arg));
           options.capath = argv[argi++];
         }
-        else if (arg == "--authentication-method")
+        else if (arg == "--authentication")
         {
-          if (argc - argi < 1)
-            throw std::runtime_error(std::format("{} requires 1 arg", arg));
-          arg = std::string(argv[argi++]);
-          if (arg == "none")
-            options.authentication_method = AuthenticationMethod::None;
-          else if (arg == "htpasswd")
-            options.authentication_method = AuthenticationMethod::Htpasswd;
-          else
-            throw std::runtime_error(std::format("invalid argument {}", arg));
-        }
-        else if (arg == "--username")
-        {
-          if (options.username != std::nullopt)
-            throw std::runtime_error(std::format("duplicate arg {}", arg));
-          if (argc - argi < 1)
-            throw std::runtime_error(std::format("{} requires 1 arg", arg));
-          options.username = argv[argi++];
-        }
-        else if (arg == "--password")
-        {
-          if (options.password != std::nullopt)
-            throw std::runtime_error(std::format("duplicate arg {}", arg));
-          if (argc - argi < 1)
-            throw std::runtime_error(std::format("{} requires 1 arg", arg));
-          options.password = argv[argi++];
+          if (argc - argi < 2)
+            throw std::runtime_error(std::format("{} requires 2 args", arg));
+          AuthenticationOption authentication;
+          authentication.username = std::string(argv[argi++]);
+          authentication.password = std::string(argv[argi++]);
+          options.authentication = authentication;
         }
         else
         {
