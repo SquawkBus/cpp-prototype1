@@ -65,7 +65,7 @@ SOURCES = \
 	authorization_manager.cpp \
 	authentication_repository.cpp \
 	authentication_manager.cpp \
-	cmd_line.cpp
+	options.cpp
 
 OBJECTS = $(SOURCES:%.cpp=%.o)
 
@@ -83,7 +83,7 @@ ${EXECUTABLE}: $(OBJECTS)
 server.o: \
 	server.cpp \
 	distributor.hpp \
-	cmd_line.hpp \
+	options.hpp \
 	authentication_manager.hpp \
 	authentication_repository.cpp \
 	authorization_spec.hpp \
@@ -183,9 +183,9 @@ authentication_manager.o: \
 	authentication_manager.hpp \
 	authentication_repository.cpp
 
-cmd_line.o: \
-	cmd_line.cpp \
-	cmd_line.hpp \
+options.o: \
+	options.cpp \
+	options.hpp \
 	authorization_spec.hpp \
 	role.hpp \
 	${IO_HEADERS}

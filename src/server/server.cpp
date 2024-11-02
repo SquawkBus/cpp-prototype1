@@ -12,7 +12,7 @@
 #include "logging/log.hpp"
 #include "utils/utils.hpp"
 
-#include "cmd_line.hpp"
+#include "options.hpp"
 #include "distributor.hpp"
 #include "authentication_manager.hpp"
 #include "authorization_manager.hpp"

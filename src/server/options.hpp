@@ -1,5 +1,5 @@
-#ifndef SQUAWKBUS_SERVER_CMD_LINE_HPP
-#define SQUAWKBUS_SERVER_CMD_LINE_HPP
+#ifndef SQUAWKBUS_SERVER_OPTIONS_HPP
+#define SQUAWKBUS_SERVER_OPTIONS_HPP
 
 #include <filesystem>
 #include <format>
@@ -36,4 +36,4 @@ namespace squawkbus::server
   };
 }
 
-#endif // SQUAWKBUS_SERVER_CMD_LINE_HPP
+#endif // SQUAWKBUS_SERVER_OPTIONS_HPP
