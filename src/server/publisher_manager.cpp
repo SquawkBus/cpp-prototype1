@@ -92,6 +92,20 @@ namespace squawkbus::server
       request.data_packets,
       entitlements);
 
+    // Allow the message if the publisher sent no packets.
+    if (!request.data_packets.empty() && authorized_data_packets.empty())
+    {
+      log.debug(
+        std::format(
+          "no entitled data from {} to {} for {}",
+          publisher->user(),
+          receiver->user(),
+          request.topic
+        )
+      );
+      return;
+    }
+
     add_publisher(publisher, request.topic);
 
     auto response = std::make_shared<ForwardedUnicastData>(
@@ -150,6 +164,20 @@ namespace squawkbus::server
       auto authorized_data_packets = get_authorized_data(
         request.data_packets,
         entitlements);
+
+      // Allow the message if the publisher sent no packets.
+      if (!request.data_packets.empty() && authorized_data_packets.empty())
+      {
+        log.debug(
+          std::format(
+            "no entitled data from {} to {} for {}",
+            publisher->user(),
+            subscriber->user(),
+            request.topic
+          )
+        );
+        continue;
+      }
 
       auto response = std::make_shared<ForwardedMulticastData>(
         publisher->user(),
