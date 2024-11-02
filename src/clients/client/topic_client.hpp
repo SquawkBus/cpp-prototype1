@@ -40,6 +40,7 @@ namespace squawkbus::client
   private:
     void handle_message(Poller& poller, std::vector<char> buf);
     void handle_command(Poller& poller, std::vector<char> buf);
+    void prompt() const;
   };
 
 }

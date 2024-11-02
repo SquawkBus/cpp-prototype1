@@ -1,7 +1,9 @@
 #include <cstdio>
 #include <format>
+#include <iomanip>
 #include <memory>
 #include <span>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -22,6 +24,7 @@ namespace squawkbus::client
   using squawkbus::io::TcpClientSocket;
   using squawkbus::messages::Message;
   using squawkbus::messages::Authenticate;
+  using squawkbus::messages::NotificationRequest;
   using squawkbus::messages::SubscriptionRequest;
   using squawkbus::messages::MulticastData;
   using squawkbus::messages::DataPacket;
@@ -39,6 +42,8 @@ namespace squawkbus::client
     auto frame = authenticate_.serialize();
     auto buf = std::vector<char>(frame);
     poller.write(client_socket_->fd(), buf);
+
+    prompt();
   }
 
   void TopicClient::on_interrupt(Poller& poller)
@@ -84,42 +89,65 @@ namespace squawkbus::client
     auto line = std::string(buf.begin(), buf.end());
     logging::info(std::format("on_read: received {}", line));
 
-    auto words = split(line, " ");
-    for (auto& word : words)
-      trim(word);
+    auto ss = std::stringstream(line);
 
-    if (words.size() < 1)
-      return;
-
-    auto command = words[0];
+    std::string command;
+    ss >> command;
 
     if (command == "CLOSE")
     {
       poller.close(client_socket_->fd());
     }
-    else if (words.size() == 2 && command == "SUBSCRIBE")
+    else if (command == "SUBSCRIBE")
     {
-      auto topic_pattern = words[1];
-      auto message = SubscriptionRequest(topic_pattern, true);
+      std::string topic;
+      ss >> topic;
+      auto message = SubscriptionRequest(topic, true);
       auto frame = message.serialize();
       auto response = std::vector<char>(frame);
       poller.write(client_socket_->fd(), response);
     }
-    else if (words.size() == 2 && command == "UNSUBSCRIBE")
+    else if (command == "UNSUBSCRIBE")
     {
-      auto topic_pattern = words[1];
-      auto message = SubscriptionRequest(topic_pattern, false);
+      std::string topic;
+      ss >> topic;
+      auto message = SubscriptionRequest(topic, false);
       auto frame = message.serialize();
       auto response = std::vector<char>(frame);
       poller.write(client_socket_->fd(), response);
     }
-    else if (words.size() == 3 && command == "PUBLISH")
+    else if (command == "LISTEN")
     {
-      auto topic = words[1];
-      auto content = words[2];
+      std::string topic;
+      ss >> topic;
+      auto message = NotificationRequest(topic, true);
+      auto frame = message.serialize();
+      auto response = std::vector<char>(frame);
+      poller.write(client_socket_->fd(), response);
+    }
+    else if (command == "UNLISTEN")
+    {
+      std::string topic;
+      ss >> topic;
+      auto message = NotificationRequest(topic, false);
+      auto frame = message.serialize();
+      auto response = std::vector<char>(frame);
+      poller.write(client_socket_->fd(), response);
+    }
+    else if (command == "PUBLISH")
+    {
+      std::string topic, content, content_type;
+      int entitlement = 0;
+      ss
+        >> std::quoted(topic)
+        >> std::quoted(content)
+        >> std::quoted(content_type)
+        >> entitlement;
+      if (content_type.empty())
+        content_type = "text/plain";
       auto data_packet = DataPacket(
-        0,
-        "text/plain",
+        entitlement,
+        content_type,
         std::vector<char>(content.begin(), content.end()));
       auto message = MulticastData(topic, { data_packet });
       auto frame = message.serialize();
@@ -129,8 +157,7 @@ namespace squawkbus::client
     else
     {
       auto msg = std::format("unknown command: {}", command);
-      auto response = std::vector<char>(msg.begin(), msg.end());
-      poller.write(STDOUT_FILENO, response);
+      std::puts(msg.c_str());
     }
   }
 
@@ -145,6 +172,22 @@ namespace squawkbus::client
       auto text = std::format("on_message: {}", message->str());
       std::puts(text.c_str());
     }
+
+    prompt();
+  }
+
+  void TopicClient::prompt() const
+  {
+    std::stringstream ss;
+    ss
+      << "Usage: <PUBLISH | SUBSCRIBE | UNSUBSCRIBE | LISTEN | UNLISTEN> <options...>\n"
+      << "PUBLISH <topic> <content> [<content-type> [<entitlement>]]\n"
+      << "SUBSCRIBE <topic>\n"
+      << "UNSUBSCRIBE <topic>\n"
+      << "LISTEN <regex>\n"
+      << "UNLISTEN <regex>\n"
+      ;
+    std::fputs(ss.str().c_str(), stdout);
   }
 
 }
