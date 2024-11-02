@@ -1,4 +1,4 @@
-ROOT_DIR=../..
+ROOT_DIR=../../..
 SRC_DIR=${ROOT_DIR}/src
 EXT_DIR=${ROOT_DIR}/externals
 

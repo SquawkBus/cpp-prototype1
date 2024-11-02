@@ -1,9 +1,9 @@
 .PHONY: all clean
 
 all:
-	cd client && make all
+	cd clients && make all
 	cd server && make all
 
 clean:
-	cd client && make clean
+	cd clients && make clean
 	cd server && make clean
