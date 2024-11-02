@@ -4,10 +4,13 @@
 #define CATCH_CONFIG_MAIN
 #include "catch2/catch.hpp"
 
+#include <utility>
+
 using squawkbus::serialization::FrameBuffer;
 using squawkbus::messages::DataPacket;
 
-TEST_CASE("smoke test") {
+TEST_CASE("smoke test")
+{
     auto dp = DataPacket(
         static_cast<std::int32_t>(1),
         std::string("text/plain"),
@@ -19,7 +22,8 @@ TEST_CASE("smoke test") {
     REQUIRE_FALSE(dp.is_authorized(user_entitlements_fail));
 }
 
-TEST_CASE("frames") {
+TEST_CASE("frames")
+{
     FrameBuffer frame;
 
     auto dp1 = DataPacket(
@@ -39,4 +43,24 @@ TEST_CASE("frames") {
     frame << data_packets_in;
     frame >> data_packets_out;
     REQUIRE(data_packets_in == data_packets_out);
+}
+
+TEST_CASE("should move")
+{
+    auto dp1 = DataPacket(
+        static_cast<std::int32_t>(9),
+        std::string("text/plain"),
+        std::vector { 'H', 'e', 'l', 'l', 'o' }
+    );
+    REQUIRE(dp1.content_type == "text/plain");
+    REQUIRE(dp1.entitlement == 9);
+    REQUIRE(dp1.data == std::vector { 'H', 'e', 'l', 'l', 'o' });
+
+    auto dp2 = std::move(dp1);
+    REQUIRE(dp1.content_type.empty());
+    REQUIRE(dp2.content_type == "text/plain");
+    REQUIRE(dp1.entitlement == 9); // int is not moved.
+    REQUIRE(dp2.entitlement == 9);
+    REQUIRE(dp1.data.empty());
+    REQUIRE(dp2.data == std::vector { 'H', 'e', 'l', 'l', 'o' });
 }
