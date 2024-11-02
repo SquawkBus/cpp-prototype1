@@ -72,12 +72,18 @@ namespace squawkbus::server
   void Interactor::authenticate(Message* message)
   {
     if (message->message_type != MessageType::Authenticate)
-      throw std::runtime_error("expected authenticate message");
+    {
+      log.error("expected authenticate message");
+      poller_.close(fd_);
+    }
 
     auto authenticate_message = *dynamic_cast<Authenticate*>(message);
     user_ = authentication_manager_.authenticate(std::move(authenticate_message));
     if (user_ == std::nullopt)
-      throw std::runtime_error("authentication failed");
+    {
+      log.error("authentication failed");
+      poller_.close(fd_);
+    }
   }
 
   std::string Interactor::str() const noexcept

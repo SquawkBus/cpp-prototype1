@@ -32,11 +32,66 @@
             ]
         },
         {
+            "name": "TopicBus:Plain:Server htpasswd",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/server/squawkbus",
+            "args": [
+                "--password-file", "${workspaceFolder}/etc/htpasswd.dat"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [
+                { "name": "LOGGER_LEVEL", "value": "INFO" },
+                { "name": "LOGGER_LEVEL_squawkbus", "value": "TRACE" }
+            ],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
             "name": "TopicBus:Plain:Client",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/src/client/client",
+            "program": "${workspaceFolder}/src/clients/client/client",
             "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "TopicBus:Plain:Client tom",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/clients/client/client",
+            "args": [
+                "--authentication", "tom", "tom"
+            ],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],
@@ -90,7 +145,7 @@
             "name": "TopicBus:TLS:Client",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/src/client/client",
+            "program": "${workspaceFolder}/src/clients/client/client",
             "args": [
                 "--ssl",
                 "--host", "beast.jetblack.net",

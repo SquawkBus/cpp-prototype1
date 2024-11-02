@@ -38,7 +38,12 @@ namespace squawkbus::server
       {
         auto arg = std::string(argv[argi++]);
 
-        if (arg == "--endpoint")
+        if (arg == "--help")
+        {
+          std::cerr << usage(argv[0]);
+          exit(0);
+        }
+        else if (arg == "--endpoint")
         {
           if (!options.endpoint.empty())
             throw std::runtime_error(std::format("duplicate argument {}", arg));

@@ -82,6 +82,11 @@ namespace squawkbus::client
         }
       }
 
+      if (options.port == 0)
+        options.port = 8558;
+      if (options.host.empty())
+        options.host = "localhost";
+
       return options;
     }
     catch(const std::exception& e)

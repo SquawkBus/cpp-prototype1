@@ -10,6 +10,7 @@
 
 #include "logging/log.hpp"
 
+#include "serialization/frame_reader.hpp"
 #include "serialization/frame_buffer.hpp"
 #include "serialization/frame_buffer_io.hpp"
 
@@ -24,6 +25,7 @@ namespace squawkbus::server
 
   using squawkbus::messages::Authenticate;
   using squawkbus::serialization::FrameBuffer;
+  using squawkbus::serialization::FrameReader;
 
   void AuthenticationManager::load()
   {
@@ -83,13 +85,20 @@ namespace squawkbus::server
 
   std::optional<std::string> AuthenticationManager::authenticate_htpasswd(Authenticate& message) const
   {
-      auto frame = FrameBuffer::from(std::move(message.data));
-      std::string username, password;
-      frame >> username >> password;
-      if (!repository_.authenticate(username, password))
-        return std::nullopt;
+    auto reader = FrameReader();
+    reader.write(std::move(message.data));
+    if (!reader.has_frame())
+    {
+      log.error("invalid authentication data");
+      return std::nullopt;
+    }
+    auto frame = reader.read();
+    std::string username, password;
+    frame >> username >> password;
+    if (!repository_.authenticate(username, password))
+      return std::nullopt;
 
-      return username;
+    return username;
   }
 
 }

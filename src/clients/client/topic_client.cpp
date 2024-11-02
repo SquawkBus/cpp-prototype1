@@ -36,12 +36,8 @@ namespace squawkbus::client
   {
     logging::info("on_startup");
 
-    // auto user = std::string("johndoe");
-    // auto data = std::vector(user.begin(), user.end());
-    auto msg = Authenticate("NONE", std::vector<char>());
-    auto frame = msg.serialize();
+    auto frame = authenticate_.serialize();
     auto buf = std::vector<char>(frame);
-    // logging::info(std::format("authenticating as {}", user));
     poller.write(client_socket_->fd(), buf);
   }
 
@@ -58,6 +54,7 @@ namespace squawkbus::client
   void TopicClient::on_close(Poller& poller, int fd)
   {
     logging::info(std::format("on_close: {}", fd));
+    exit(0);
   }
 
   void TopicClient::on_read(Poller& poller, int fd, std::vector<std::vector<char>>&& bufs)

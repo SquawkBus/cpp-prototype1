@@ -19,9 +19,9 @@ namespace squawkbus::server
     auto log = logging::logger("squawkbus");
   }
 
-  void AuthorizationManager::reload()
+  void AuthorizationManager::load()
   {
-    log.info("Reloading authorizations");
+    log.info("Loading authorizations");
     repository_ = AuthorizationRepository::make(path_, cmd_line_specs_);
   }
 }

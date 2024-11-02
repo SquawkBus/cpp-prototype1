@@ -16,8 +16,8 @@ namespace squawkbus::client
   struct Options
   {
     std::string host;
-    std::uint16_t port;
-    bool tls;
+    std::uint16_t port = 0;
+    bool tls = false;
     std::optional<std::string> capath;
     std::optional<AuthenticationOption> authentication;
 

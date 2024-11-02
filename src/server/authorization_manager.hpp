@@ -32,7 +32,7 @@ namespace squawkbus::server
     {
     }
 
-    void reload();
+    void load();
 
     const std::set<std::int32_t>& entitlements(
       const std::string& user,
