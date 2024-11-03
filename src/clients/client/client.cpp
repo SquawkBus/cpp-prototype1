@@ -31,6 +31,7 @@
 using namespace squawkbus::io;
 namespace logging = squawkbus::logging;
 using squawkbus::client::Options;
+using squawkbus::client::AuthenticationOption;
 using squawkbus::client::TopicClient;
 using squawkbus::messages::AuthenticationRequest;
 using squawkbus::serialization::FrameBuffer;
@@ -40,8 +41,13 @@ namespace
   volatile std::sig_atomic_t last_signal = 0;
 }
 
-std::shared_ptr<SslContext> make_ssl_context(std::optional<std::string> capath)
+std::optional<std::shared_ptr<SslContext>> make_ssl_context(
+  bool tls,
+  std::optional<std::string> capath)
 {
+  if (!tls)
+    return std::nullopt;
+
   print_line("making ssl client context");
   auto ctx = std::make_shared<SslClientContext>();
   ctx->min_proto_version(TLS1_2_VERSION);
@@ -61,6 +67,27 @@ std::shared_ptr<SslContext> make_ssl_context(std::optional<std::string> capath)
   return ctx;
 }
 
+AuthenticationRequest make_authentication_request(
+  const std::optional<AuthenticationOption>& authentication_option)
+{
+  AuthenticationRequest authentication_request;
+
+  if (!authentication_option)
+  {
+    authentication_request.method = "NONE";
+  }
+  else
+  {
+    authentication_request.method = "HTPASSWD";
+    FrameBuffer frame;
+    frame
+      << authentication_option->username
+      << authentication_option->password;
+    authentication_request.data = std::vector<char>(frame);
+  }
+
+  return authentication_request;
+}
 
 int main(int argc, char** argv)
 {
@@ -68,12 +95,7 @@ int main(int argc, char** argv)
 
   try
   {
-    std::optional<std::shared_ptr<SslContext>> ssl_ctx;
-    
-    if (options.tls)
-    {
-      ssl_ctx = make_ssl_context(options.capath);
-    }
+    auto ssl_ctx = make_ssl_context(options.tls, options.capath);
 
     print_line(std::format(
       "connecting to host {} on port {}{}.",
@@ -85,21 +107,12 @@ int main(int argc, char** argv)
     client_socket->connect(options.host, options.port);
     client_socket->blocking(false);
 
-    AuthenticationRequest authentication_request;
-    if (!options.authentication)
-    {
-      authentication_request.method = "NONE";
-    }
-    else
-    {
-      authentication_request.method = "HTPASSWD";
-      FrameBuffer frame;
-      frame << options.authentication->username << options.authentication->password;
-      authentication_request.data = std::vector<char>(frame);
-    }
+    auto authentication_request = make_authentication_request(options.authentication);
+
     auto client = std::make_shared<TopicClient>(
       client_socket,
       std::move(authentication_request));
+      
     auto poller = Poller(client);
 
     if (!ssl_ctx)
