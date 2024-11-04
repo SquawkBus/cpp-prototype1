@@ -115,20 +115,14 @@ int main(int argc, char** argv)
       
     auto poller = Poller(client);
 
-    if (!ssl_ctx)
-    {
-      poller.add_handler(
-        std::make_unique<TcpSocketPollHandler>(client_socket, 8096, 8096),
-        options.host,
-        options.port);
-    }
-    else
-    {
-      poller.add_handler(
-        std::make_unique<TcpSocketPollHandler>(client_socket, *ssl_ctx, options.host, 8096, 8096),
-        options.host,
-        options.port);
-    }
+    auto handler = ssl_ctx
+      ? std::make_unique<TcpSocketPollHandler>(client_socket, *ssl_ctx, options.host, 8096, 8096)
+      : std::make_unique<TcpSocketPollHandler>(client_socket, 8096, 8096);
+
+    poller.add_handler(
+      std::move(handler),
+      options.host,
+      options.port);
 
     auto console_input = std::make_shared<File>(STDIN_FILENO, O_RDONLY);
     console_input->blocking(false);
