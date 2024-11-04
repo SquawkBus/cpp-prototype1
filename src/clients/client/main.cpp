@@ -15,10 +15,8 @@
 #include "io/file_poll_handler.hpp"
 #include "io/tcp_client_socket.hpp"
 #include "io/tcp_socket_poll_handler.hpp"
-#include "io/tcp_stream.hpp"
 #include "io/ssl_ctx.hpp"
 #include "logging/log.hpp"
-#include "utils/match.hpp"
 #include "utils/utils.hpp"
 
 #include "options.hpp"

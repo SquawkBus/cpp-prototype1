@@ -52,7 +52,7 @@ HEADERS = \
 	${UTIL_HEADERS}
 
 SOURCES = \
-	client.cpp \
+	main.cpp \
 	topic_client.cpp \
 	options.cpp
 
@@ -69,8 +69,8 @@ all: ${EXECUTABLE}
 ${EXECUTABLE}: ${OBJECTS}
 	$(LINK.cc) ${OBJECTS} $(LOADLIBES) $(LDLIBS) -o $@
 
-client.o: \
-	client.cpp \
+main.o: \
+	main.cpp \
 	options.hpp \
 	$(HEADERS)
 
