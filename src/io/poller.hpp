@@ -37,10 +37,10 @@ namespace squawkbus::io
     virtual ~PollClient() {}
     virtual void on_startup(Poller& poller) = 0;
     virtual void on_interrupt(Poller& poller) = 0;
-    virtual void on_open(Poller& poller, PollHandler* handler, const std::string& host, std::uint16_t port) = 0;
-    virtual void on_close(Poller& poller, PollHandler* handler) = 0;
-    virtual void on_read(Poller& poller, PollHandler* handler, std::vector<std::vector<char>>&& bufs) = 0;
-    virtual void on_error(Poller& poller, PollHandler* handler, std::exception error) = 0;
+    virtual void on_open(Poller& poller, int fd, const std::string& host, std::uint16_t port) = 0;
+    virtual void on_close(Poller& poller, int fd) = 0;
+    virtual void on_read(Poller& poller, int fd, std::vector<std::vector<char>>&& bufs) = 0;
+    virtual void on_error(Poller& poller, int fd, std::exception error) = 0;
   };
 
   class Poller
@@ -66,7 +66,7 @@ namespace squawkbus::io
       bool is_listener = handler->is_listener();
       handlers_[fd] = std::move(handler);
       if (!is_listener)
-        client_->on_open(*this, handlers_[fd].get(), host, port);
+        client_->on_open(*this, fd, host, port);
     }
 
     void write(int fd, const std::vector<char>& buf) noexcept
@@ -167,14 +167,14 @@ namespace squawkbus::io
 
         if (!bufs.empty())
         {
-          client_->on_read(*this, handler, std::move(bufs));
+          client_->on_read(*this, handler->fd(), std::move(bufs));
         }
 
         return can_continue;
       }
       catch(const std::exception& error)
       {
-        client_->on_error(*this, handler, error);
+        client_->on_error(*this, handler->fd(), error);
         return false;
       }
     }
@@ -189,7 +189,7 @@ namespace squawkbus::io
       }
       catch(const std::exception& error)
       {
-        client_->on_error(*this, handler, error);
+        client_->on_error(*this, handler->fd(), error);
         return false;
       }
     }
@@ -244,7 +244,7 @@ namespace squawkbus::io
         auto handler = std::move(handlers_[fd]);
         handlers_.erase(fd);
         if (!handler->is_listener())
-          client_->on_close(*this, handler.get());
+          client_->on_close(*this, fd);
       }
     }
   };

@@ -27,18 +27,18 @@ namespace squawkbus::server
       hub_.on_startup();
   }
 
-  void Distributor::on_open(Poller& poller, PollHandler* handler, const std::string& host, std::uint16_t port)
+  void Distributor::on_open(Poller& poller, int fd, const std::string& host, std::uint16_t port)
   {
-      auto interactor = std::make_shared<Interactor>(handler->fd(), poller, authentication_manager_, hub_, host, port);
+      auto interactor = std::make_shared<Interactor>(fd, poller, authentication_manager_, hub_, host, port);
       log.info(std::format("Created interactor {}", interactor->str()));
-      interactors_.insert({handler->fd(), interactor});
+      interactors_.insert({fd, interactor});
   }
 
-  void Distributor::on_close(Poller& poller, PollHandler* handler)
+  void Distributor::on_close(Poller& poller, int fd)
   {
-    log.debug(std::format("Closing: fd={}", handler->fd()));
+    log.debug(std::format("Closing: fd={}", fd));
 
-    auto i_interactor = interactors_.find(handler->fd());
+    auto i_interactor = interactors_.find(fd);
     if (i_interactor == interactors_.end())
       return;
 
@@ -46,11 +46,11 @@ namespace squawkbus::server
     interactors_.erase(i_interactor);
   }
 
-  void Distributor::on_read(Poller& poller, PollHandler* handler, std::vector<std::vector<char>>&& bufs)
+  void Distributor::on_read(Poller& poller, int fd, std::vector<std::vector<char>>&& bufs)
   {
-    log.trace(std::format("on_read: {}", handler->fd()));
+    log.trace(std::format("on_read: {}", fd));
 
-    auto i_interactor = interactors_.find(handler->fd());
+    auto i_interactor = interactors_.find(fd);
     if (i_interactor == interactors_.end())
       return;
 
@@ -58,9 +58,9 @@ namespace squawkbus::server
       i_interactor->second->receive(std::move(buf));
   }
 
-  void Distributor::on_error(Poller& poller, PollHandler* handler, std::exception error)
+  void Distributor::on_error(Poller& poller, int fd, std::exception error)
   {
-    log.info(std::format("on_error: {}, {}", handler->fd(), error.what()));
+    log.info(std::format("on_error: {}, {}", fd, error.what()));
   }
 
 }

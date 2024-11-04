@@ -21,7 +21,6 @@ namespace squawkbus::client
 {
   using squawkbus::io::Poller;
   using squawkbus::io::PollClient;
-  using squawkbus::io::PollHandler;
   using squawkbus::io::TcpClientSocket;
   using squawkbus::messages::Message;
   using squawkbus::messages::AuthenticationRequest;
@@ -54,37 +53,37 @@ namespace squawkbus::client
     logging::info("on_interrupt");
   }
 
-  void TopicClient::on_open(Poller& poller, PollHandler* handler, const std::string& host, std::uint16_t port)
+  void TopicClient::on_open(Poller& poller, int fd, const std::string& host, std::uint16_t port)
   {
-    logging::info(std::format("on_open: {} ({}:{})", handler->fd(), host, port));
+    logging::info(std::format("on_open: {} ({}:{})", fd, host, port));
   }
 
-  void TopicClient::on_close(Poller& poller, PollHandler* handler)
+  void TopicClient::on_close(Poller& poller, int fd)
   {
-    logging::info(std::format("on_close: {}", handler->fd()));
+    logging::info(std::format("on_close: {}", fd));
     exit(0);
   }
 
-  void TopicClient::on_read(Poller& poller, PollHandler* handler, std::vector<std::vector<char>>&& bufs)
+  void TopicClient::on_read(Poller& poller, int fd, std::vector<std::vector<char>>&& bufs)
   {
-    logging::info(std::format("on_read: {}", handler->fd()));
+    logging::info(std::format("on_read: {}", fd));
 
     for (auto& buf : bufs)
     {
-      if (handler->fd() == STDIN_FILENO)
+      if (fd == STDIN_FILENO)
       {
         handle_command(poller, buf);
       }
-      else if (handler->fd() == client_socket_->fd())
+      else if (fd == client_socket_->fd())
       {
         handle_message(poller, buf);
       }
     }
   }
 
-  void TopicClient::on_error(Poller& poller, PollHandler* handler, std::exception error)
+  void TopicClient::on_error(Poller& poller, int fd, std::exception error)
   {
-    logging::info(std::format("on_error: {} - {}", handler->fd(), error.what()));
+    logging::info(std::format("on_error: {} - {}", fd, error.what()));
   }
 
   void TopicClient::handle_command(Poller& poller, std::vector<char> buf)
