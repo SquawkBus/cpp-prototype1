@@ -8,7 +8,7 @@
 namespace squawkbus::io
 {
 
-  std::string openssl_strerror()
+  inline std::string openssl_strerror()
   {
     std::string str;
     auto error = ERR_get_error();
