@@ -8,8 +8,18 @@
 #include <string>
 #include <sstream>
 
+#include "logging/log.hpp"
+
+#include "serialization/frame_buffer.hpp"
+#include "serialization/frame_buffer_io.hpp"
+
 namespace squawkbus::client
 {
+  using squawkbus::io::SslContext;
+  using squawkbus::io::SslClientContext;
+  using squawkbus::messages::AuthenticationRequest;
+  using squawkbus::serialization::FrameBuffer;
+
   std::string Options::usage(const std::string& progname)
   {
     std::stringstream ss;
@@ -95,5 +105,52 @@ namespace squawkbus::client
       std::cerr << usage(argv[0]);
       exit(1);
     }    
+  }
+
+  std::optional<std::shared_ptr<SslContext>> Options::make_ssl_context() const
+  {
+    if (!tls)
+      return std::nullopt;
+
+    logging::debug("Creating ssl context");
+
+    auto ctx = std::make_shared<SslClientContext>();
+    ctx->min_proto_version(TLS1_2_VERSION);
+    if (capath)
+    {
+      logging::debug(std::format("Adding verify locations \"{}\"", *capath));
+      ctx->load_verify_locations(*capath);
+    }
+    else
+    {
+      logging::debug("setting default verify paths");
+      ctx->set_default_verify_paths();
+    }
+
+    logging::debug("require ssl verification");
+    ctx->verify();
+
+    return ctx;
+  }
+
+  AuthenticationRequest Options::make_authentication_request() const
+  {
+    AuthenticationRequest authentication_request;
+
+    if (!authentication)
+    {
+      authentication_request.method = "NONE";
+    }
+    else
+    {
+      authentication_request.method = "HTPASSWD";
+      FrameBuffer frame;
+      frame
+        << authentication->username
+        << authentication->password;
+      authentication_request.data = std::vector<char>(frame);
+    }
+
+    return authentication_request;
   }
 }

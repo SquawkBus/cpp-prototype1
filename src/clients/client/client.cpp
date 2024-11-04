@@ -18,12 +18,8 @@
 #include "io/tcp_stream.hpp"
 #include "io/ssl_ctx.hpp"
 #include "logging/log.hpp"
-#include "serialization/frame_buffer.hpp"
-#include "serialization/frame_buffer_io.hpp"
 #include "utils/match.hpp"
 #include "utils/utils.hpp"
-
-#include "popl.hpp"
 
 #include "options.hpp"
 #include "topic_client.hpp"
@@ -31,62 +27,11 @@
 using namespace squawkbus::io;
 namespace logging = squawkbus::logging;
 using squawkbus::client::Options;
-using squawkbus::client::AuthenticationOption;
 using squawkbus::client::TopicClient;
-using squawkbus::messages::AuthenticationRequest;
-using squawkbus::serialization::FrameBuffer;
 
 namespace
 {
   volatile std::sig_atomic_t last_signal = 0;
-}
-
-std::optional<std::shared_ptr<SslContext>> make_ssl_context(
-  bool tls,
-  std::optional<std::string> capath)
-{
-  if (!tls)
-    return std::nullopt;
-
-  print_line("making ssl client context");
-  auto ctx = std::make_shared<SslClientContext>();
-  ctx->min_proto_version(TLS1_2_VERSION);
-  if (capath.has_value())
-  {
-    print_line(std::format("Adding verify locations \"{}\"", capath.value()));
-    ctx->load_verify_locations(capath.value());
-  }
-  else
-  {
-    print_line("setting default verify paths");
-    ctx->set_default_verify_paths();
-  }
-  print_line("require ssl verification");
-  ctx->verify();
-
-  return ctx;
-}
-
-AuthenticationRequest make_authentication_request(
-  const std::optional<AuthenticationOption>& authentication_option)
-{
-  AuthenticationRequest authentication_request;
-
-  if (!authentication_option)
-  {
-    authentication_request.method = "NONE";
-  }
-  else
-  {
-    authentication_request.method = "HTPASSWD";
-    FrameBuffer frame;
-    frame
-      << authentication_option->username
-      << authentication_option->password;
-    authentication_request.data = std::vector<char>(frame);
-  }
-
-  return authentication_request;
 }
 
 int main(int argc, char** argv)
@@ -95,7 +40,7 @@ int main(int argc, char** argv)
 
   try
   {
-    auto ssl_ctx = make_ssl_context(options.tls, options.capath);
+    auto ssl_ctx = options.make_ssl_context();
 
     print_line(std::format(
       "connecting to host {} on port {}{}.",
@@ -107,7 +52,7 @@ int main(int argc, char** argv)
     client_socket->connect(options.host, options.port);
     client_socket->blocking(false);
 
-    auto authentication_request = make_authentication_request(options.authentication);
+    auto authentication_request = options.make_authentication_request();
 
     auto client = std::make_shared<TopicClient>(
       client_socket,
