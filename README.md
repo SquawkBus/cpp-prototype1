@@ -14,6 +14,7 @@ I installed clang (18)
 I installed
 ```bash
 sudo apt update
+sudo apt install g++-14
 sudo apt install clang
 sudo apt install uuid-dev
 sudo apt install libyaml-cpp-dev
