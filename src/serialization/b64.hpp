@@ -1,12 +1,14 @@
 #ifndef SQUAWKBUS_SERIALIZATION_B64_HPP
 #define SQUAWKBUS_SERIALIZATION_B64_HPP
 
+#include <stdexcept>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace squawkbus::serialization
 {
-  static std::string base64_encode(const std::vector<unsigned char> &in) {
+  inline std::string base64_encode(const std::vector<unsigned char> &in) {
 
       std::string out;
 
@@ -26,7 +28,7 @@ namespace squawkbus::serialization
       return out;
   }
 
-  static std::vector<unsigned char> base64_decode(const std::string &in) {
+  inline std::vector<unsigned char> base64_decode(const std::string &in) {
 
       std::vector<unsigned char> out;
 

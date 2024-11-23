@@ -1,3 +1,4 @@
 test_b64
+test_basic_token
 test_frame_buffer
 test_network_bytes

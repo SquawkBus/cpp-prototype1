@@ -7,16 +7,25 @@ CXXFLAGS=${INCLUDES} -std=c++23 -g
 
 .PHONY: all clean test
 
-all: test_b64 test_frame_buffer test_network_bytes
+all: \
+	test_b64 \
+	test_basic_token \
+	test_frame_buffer \
+	test_network_bytes
 
 test: all
 	./test_b64 -s
+	./test_basic_token -s
 	./test_frame_buffer -s
 	./test_network_bytes -s
 
 test_b64: test_b64.o
 	$(LINK.cc) $^ $(LOADLIBES) $(LDLIBS) -o $@
 test_b64.o: test_b64.cpp ${SRC_DIR}/serialization/b64.hpp
+
+test_basic_token: test_basic_token.o
+	$(LINK.cc) $^ $(LOADLIBES) $(LDLIBS) -o $@
+test_basic_token.o: test_basic_token.cpp ${SRC_DIR}/serialization/basic_token.hpp
 
 test_frame_buffer: test_frame_buffer.o
 	$(LINK.cc) $^ $(LOADLIBES) $(LDLIBS) -o $@
@@ -28,5 +37,6 @@ test_network_bytes.o: test_network_bytes.cpp ${SRC_DIR}/serialization/network_by
 
 clean:
 	rm -f test_b64.o test_b64
+	rm -f test_basic_token.o test_basic_token
 	rm -f test_frame_buffer.o test_frame_buffer
 	rm -f test_network_bytes.o test_network_bytes
