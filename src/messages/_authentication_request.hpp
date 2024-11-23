@@ -21,7 +21,7 @@ namespace squawkbus::messages
   {
   public:
     std::string method;
-    std::vector<char> data;
+    std::string data;
 
   public:
     AuthenticationRequest() noexcept
@@ -31,7 +31,7 @@ namespace squawkbus::messages
 
     AuthenticationRequest(
       const std::string &method,
-      const std::vector<char> &data) noexcept
+      const std::string &data) noexcept
       : Message(MessageType::AuthenticationRequest),
         method(method),
         data(data)
@@ -54,10 +54,10 @@ namespace squawkbus::messages
     std::string str() const override
     {
       return std::format(
-        "AuthenticationRequest(message_type={},data=\"{}\",data={})",
+        "AuthenticationRequest(message_type={},method=\"{}\",data={})",
         messages::to_string(message_type),
         method,
-        ::to_string(data));
+        data);
     }
 
     protected:

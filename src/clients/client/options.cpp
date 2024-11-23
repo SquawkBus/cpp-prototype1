@@ -141,15 +141,13 @@ namespace squawkbus::client
 
     if (!authentication)
     {
-      authentication_request.method = "NONE";
+      authentication_request.method = "none";
     }
     else
     {
-      authentication_request.method = "HTPASSWD";
+      authentication_request.method = "basic";
       auto token = encode_basic_token(authentication->username, authentication->password);
-      FrameBuffer frame;
-      frame << token;
-      authentication_request.data = std::vector<char>(frame);
+      authentication_request.data = token;
     }
 
     return authentication_request;

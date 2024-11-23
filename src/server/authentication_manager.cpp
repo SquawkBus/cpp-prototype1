@@ -66,13 +66,13 @@ namespace squawkbus::server
   {
     log.debug(std::format("Authenticating \"{}\"", message.method));
 
-    if (message.method == "NONE")
+    if (message.method == "none")
     {
       return authenticate_none(message);
     }
-    else if (message.method == "HTPASSWD")
+    else if (message.method == "basic")
     {
-      return authenticate_htpasswd(message);
+      return authenticate_basic(message);
     }
     else
     {
@@ -85,19 +85,9 @@ namespace squawkbus::server
       return "nobody";
   }
 
-  std::optional<std::string> AuthenticationManager::authenticate_htpasswd(AuthenticationRequest& message) const
+  std::optional<std::string> AuthenticationManager::authenticate_basic(AuthenticationRequest& message) const
   {
-    auto reader = FrameReader();
-    reader.write(std::move(message.data));
-    if (!reader.has_frame())
-    {
-      log.error("invalid authentication data");
-      return std::nullopt;
-    }
-    auto frame = reader.read();
-    std::string token;
-    frame >> token;
-    auto [username, password] = decode_basic_token(token);
+    auto [username, password] = decode_basic_token(message.data);
     if (!repository_.authenticate(username, password))
       return std::nullopt;
 

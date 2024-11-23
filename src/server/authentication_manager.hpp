@@ -35,7 +35,7 @@ namespace squawkbus::server
 
   private:
     std::optional<std::string> authenticate_none(AuthenticationRequest& message) const;
-    std::optional<std::string> authenticate_htpasswd(AuthenticationRequest& message) const;
+    std::optional<std::string> authenticate_basic(AuthenticationRequest& message) const;
 
   };
 }
