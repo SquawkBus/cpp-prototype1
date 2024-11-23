@@ -13,6 +13,7 @@
 #include "serialization/frame_reader.hpp"
 #include "serialization/frame_buffer.hpp"
 #include "serialization/frame_buffer_io.hpp"
+#include "serialization/basic_token.hpp"
 
 #include "messages/messages.hpp"
 
@@ -26,6 +27,7 @@ namespace squawkbus::server
   using squawkbus::messages::AuthenticationRequest;
   using squawkbus::serialization::FrameBuffer;
   using squawkbus::serialization::FrameReader;
+  using squawkbus::serialization::decode_basic_token;
 
   void AuthenticationManager::load()
   {
@@ -93,8 +95,9 @@ namespace squawkbus::server
       return std::nullopt;
     }
     auto frame = reader.read();
-    std::string username, password;
-    frame >> username >> password;
+    std::string token;
+    frame >> token;
+    auto [username, password] = decode_basic_token(token);
     if (!repository_.authenticate(username, password))
       return std::nullopt;
 

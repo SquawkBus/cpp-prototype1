@@ -12,6 +12,7 @@
 
 #include "serialization/frame_buffer.hpp"
 #include "serialization/frame_buffer_io.hpp"
+#include "serialization/basic_token.hpp"
 
 namespace squawkbus::client
 {
@@ -19,6 +20,7 @@ namespace squawkbus::client
   using squawkbus::io::SslClientContext;
   using squawkbus::messages::AuthenticationRequest;
   using squawkbus::serialization::FrameBuffer;
+  using squawkbus::serialization::encode_basic_token;
 
   std::string Options::usage(const std::string& progname)
   {
@@ -144,10 +146,9 @@ namespace squawkbus::client
     else
     {
       authentication_request.method = "HTPASSWD";
+      auto token = encode_basic_token(authentication->username, authentication->password);
       FrameBuffer frame;
-      frame
-        << authentication->username
-        << authentication->password;
+      frame << token;
       authentication_request.data = std::vector<char>(frame);
     }
 
