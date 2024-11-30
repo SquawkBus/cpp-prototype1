@@ -27,6 +27,16 @@ namespace squawkbus::logging {
   namespace
   {
     static const std::string root_logger_name = "root";
+    static const std::map<std::string, std::size_t> position_map = {
+        {"time", 0},
+        {"level", 1},
+        {"message", 2},
+        {"function", 3},
+        {"file", 4},
+        {"line", 5},
+    };
+    // static const std::string default_format_string = "{time:%Y-%m-%d %X} {level:7} {message} {function} ({file}, {line})";
+    static const std::string default_format_string = "{time:%Y-%m-%d %X} {level:8} {message}";
 
     inline std::string to_string(Level level)
     {
@@ -85,6 +95,82 @@ namespace squawkbus::logging {
       auto level_string = std::string(env_level);
       return parse_level_or(level_string, default_level);
     }
+
+    inline std::string env_format_string_or(const std::string& logger_name, const std::string& default_format_string)
+    {
+      // Check the environment variable "LOGGER_LEVEL" and "LOGGER_LEVEL_<name>".
+      auto base_env_name = std::string("LOGGER_FORMAT");
+      auto logger_env_name = std::format("{}_{}", base_env_name, logger_name);
+
+      auto env_format_string = std::getenv(logger_env_name.c_str());
+      if (env_format_string == nullptr)
+        env_format_string = std::getenv(base_env_name.c_str());
+
+      if (env_format_string == nullptr)
+        return default_format_string;
+      return std::string(env_format_string);
+    }
+
+    std::string make_format(const std::string& format_string, const std::map<std::string, std::size_t>& position_map)
+    {
+        auto position_format = std::string();
+
+        auto i = std::size_t {0};
+        while (i != std::string::npos && i < format_string.size())
+        {
+            auto start = format_string.find('{', i);
+            if (start == std::string::npos)
+            {
+                position_format += format_string.substr(i);
+                i = format_string.size();
+                continue;
+            }
+
+            // Skip the '{'.
+            if (++start >= format_string.size())
+                throw std::logic_error("invalid format: no closing bracket");
+
+            // Check for escaped "{{".
+            if (format_string.at(start) == '{')
+            {
+                position_format += format_string.substr(i, 1 + start - i);
+                i = start + 1;
+                continue;
+            }
+            // check for "{}"
+            if (format_string.at(start) == '}')
+                throw std::logic_error("invalid format: unnamed parameter");
+
+            auto end = format_string.find('}', start);
+            if (end == std::string::npos)
+                throw std::logic_error("invalid format: no closing bracket");
+
+            auto colon = format_string.substr(start, 1 + end - start).find(':');
+            auto name = (
+                colon == std::string::npos
+                ? format_string.substr(start, end - start)
+                : format_string.substr(start, colon));
+            
+            auto i_position = position_map.find(name);
+            if (i_position == position_map.end())
+                throw new std::logic_error(std::format("invalid format: bad name \"{}\"", name));
+            auto position = std::to_string(i_position->second);
+
+            position_format += format_string.substr(i, start - i);
+            position_format += position;
+            position_format += (
+                colon == std::string::npos
+                ? format_string.substr(end, 1)
+                : format_string.substr(start + colon, 1 + end - (start + colon)));
+
+            i = end + 1;
+        }
+
+        position_format += "\n";
+
+        return position_format;
+    }
+
   }
 
   struct LogRecord
@@ -101,7 +187,7 @@ namespace squawkbus::logging {
   public:
     virtual ~LogHandler() {}
 
-    virtual void emit(const LogRecord& log_record) = 0;
+    virtual void emit(const LogRecord& log_record, const std::string& format_string) = 0;
   };
 
   class StreamLogHandler : public LogHandler
@@ -114,17 +200,25 @@ namespace squawkbus::logging {
     {
     }
 
-    void emit(const LogRecord& log_record) override
+    void emit(const LogRecord& log_record, const std::string& format_string) override
     {
-        auto line = std::format(
-          "{:%Y-%m-%d %X} {:7} {} {} ({}, {})\n",
+      auto log_level = to_string(log_record.level);
+      auto function = std::string(log_record.loc.function_name());
+      auto file = std::string(log_record.loc.file_name());
+      auto line = log_record.loc.line();
+
+      auto formatted = std::vformat(
+        format_string,
+        std::make_format_args(
           log_record.time,
-          to_string(log_record.level),
+          log_level,
           log_record.msg,
-          log_record.loc.function_name(),
-          log_record.loc.file_name(),
-          log_record.loc.line());
-        fputs(line.c_str(), stream_);
+          function,
+          file,
+          line));
+
+
+        fputs(formatted.c_str(), stream_);
     }
   };
 
@@ -133,20 +227,27 @@ namespace squawkbus::logging {
   private:
     std::string name_;
     Level level_;
+    std::string format_string_;
     std::shared_ptr<LogHandler> log_handler_;
     std::mutex key_;
 
   public:
     Logger() {}
-    Logger(const std::string& name, Level level, std::shared_ptr<LogHandler> log_handler)
+    Logger(
+      const std::string& name,
+      Level level,
+      const std::string& format_string,
+      std::shared_ptr<LogHandler> log_handler)
       : name_(name),
       level_(level),
+      format_string_(make_format(format_string, position_map)),
       log_handler_(log_handler)
     {
     }
     Logger(const Logger& other)
       : name_(other.name_),
         level_(other.level_),
+        format_string_(other.format_string_),
         log_handler_(other.log_handler_)
     {
     }
@@ -154,6 +255,7 @@ namespace squawkbus::logging {
     {
       this->name_ = other.name_;
       this->level_ = other.level_;
+      this->format_string_ = other.format_string_;
       this->log_handler_ = other.log_handler_;
       return *this;
     }
@@ -162,6 +264,9 @@ namespace squawkbus::logging {
 
     Level level() const noexcept { return level_; }
     void level(Level level) noexcept { level_ = level; }
+
+    const std::string& format_string() const noexcept { return format_string_; }
+    void format_string(const std::string& format_string) noexcept { format_string_ = make_format(format_string, position_map); }
 
     void log(Level level, const std::string& message, std::source_location loc)
     {
@@ -179,7 +284,7 @@ namespace squawkbus::logging {
           .loc = loc,
           .msg = message
         };
-        log_handler_->emit(log_record);
+        log_handler_->emit(log_record, format_string_);
       }
     }
 
@@ -239,7 +344,8 @@ namespace squawkbus::logging {
         if (i == loggers_.end())
         {
           auto level = env_level_or(name, Level::INFO);
-          auto logger = Logger(name, level, std::make_shared<StreamLogHandler>(stderr));
+          auto format_string = env_format_string_or(name, default_format_string);
+          auto logger = Logger(name, level, format_string, std::make_shared<StreamLogHandler>(stderr));
           loggers_[name] = logger;
         }
         return loggers_[name];
