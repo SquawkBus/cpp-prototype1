@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "TopicBus:Plain:Server",
+            "name": "server",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/src/server/squawkbus",
@@ -32,7 +32,7 @@
             ]
         },
         {
-            "name": "TopicBus:Plain:Server htpasswd",
+            "name": "server+passwd",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/src/server/squawkbus",
@@ -61,7 +61,7 @@
             ]
         },
         {
-            "name": "TopicBus:Plain:Client",
+            "name": "client",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/src/clients/client/client",
@@ -85,7 +85,7 @@
             ]
         },
         {
-            "name": "TopicBus:Plain:Client tom",
+            "name": "client+tom",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/src/clients/client/client",
@@ -111,14 +111,15 @@
             ]
         },
         {
-            "name": "TopicBus:TLS:Server",
+            "name": "server+tls+passwd+auth(simple)",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/src/server/squawkbus",
             "args": [
                 "--tls", "${env:HOME}/.keys/server.crt", "${env:HOME}/.keys/server.key",
-                "--endpoint", "0.0.0.0:8080",
-                "--authorizations-file", "${workspaceFolder}/etc/authorizations-simple.yaml"
+                "--endpoint", "0.0.0.0:8558",
+                "--authorizations-file", "${workspaceFolder}/etc/authorizations-simple.yaml",
+                "--password-file", "${workspaceFolder}/etc/htpasswd.dat"
             ],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
@@ -142,14 +143,14 @@
             ]
         },
         {
-            "name": "TopicBus:TLS:Client",
+            "name": "client+tls",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/src/clients/client/client",
             "args": [
                 "--ssl",
                 "--host", "beast.jetblack.net",
-                "--port", "8080"
+                "--port", "8558"
             ],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
