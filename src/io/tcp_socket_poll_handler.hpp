@@ -103,10 +103,9 @@ namespace squawkbus::io
           stream_.read(read_bufsiz));
         }
       }
-      catch (...)
+      catch (const std::exception& error)
       {
         stream_.socket->is_open(false);
-        throw;
       }
 
       return stream_.socket->is_open();

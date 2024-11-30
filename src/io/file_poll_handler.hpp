@@ -81,10 +81,10 @@ namespace squawkbus::io
           stream_.read(read_bufsiz));
         }
       }
-      catch (...)
+      catch (const std::exception& error)
       {
         stream_.file->is_open(false);
-        throw;
+        throw error;
       }
       
 
@@ -131,10 +131,10 @@ namespace squawkbus::io
           stream_.write(buf));
         }
       }
-      catch (...)
+      catch (const std::exception& error)
       {
         stream_.file->is_open(false);
-        throw;
+        throw error;
       }
       
 
