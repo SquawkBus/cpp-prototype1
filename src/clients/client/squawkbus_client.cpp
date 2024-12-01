@@ -23,7 +23,9 @@ namespace squawkbus::client
   using squawkbus::io::PollClient;
   using squawkbus::io::TcpClientSocket;
   using squawkbus::messages::Message;
+  using squawkbus::messages::MessageType;
   using squawkbus::messages::AuthenticationRequest;
+  using squawkbus::messages::AuthenticationResponse;
   using squawkbus::messages::NotificationRequest;
   using squawkbus::messages::SubscriptionRequest;
   using squawkbus::messages::MulticastData;
@@ -39,34 +41,32 @@ namespace squawkbus::client
 
   void SquawkbusClient::on_startup(Poller& poller)
   {
-    logging::info("on_startup");
+    logging::debug("on_startup");
 
     auto frame = authentication_request_.serialize();
     auto buf = std::vector<char>(frame);
     poller.write(client_socket_->fd(), buf);
-
-    prompt();
   }
 
   void SquawkbusClient::on_interrupt(Poller& poller)
   {
-    logging::info("on_interrupt");
+    logging::debug("on_interrupt");
   }
 
   void SquawkbusClient::on_open(Poller& poller, int fd, const std::string& host, std::uint16_t port)
   {
-    logging::info(std::format("on_open: {} ({}:{})", fd, host, port));
+    logging::debug(std::format("on_open: {} ({}:{})", fd, host, port));
   }
 
   void SquawkbusClient::on_close(Poller& poller, int fd)
   {
-    logging::info(std::format("on_close: {}", fd));
+    logging::debug(std::format("on_close: {}", fd));
     exit(0);
   }
 
   void SquawkbusClient::on_read(Poller& poller, int fd, std::vector<std::vector<char>>&& bufs)
   {
-    logging::info(std::format("on_read: {}", fd));
+    logging::debug(std::format("on_read: {}", fd));
 
     for (auto& buf : bufs)
     {
@@ -83,13 +83,13 @@ namespace squawkbus::client
 
   void SquawkbusClient::on_error(Poller& poller, int fd, std::exception error)
   {
-    logging::info(std::format("on_error: {} - {}", fd, error.what()));
+    logging::error(std::format("on_error: {} - {}", fd, error.what()));
   }
 
   void SquawkbusClient::handle_command(Poller& poller, std::vector<char> buf)
   {
     auto line = std::string(buf.begin(), buf.end());
-    logging::info(std::format("on_read: received {}", line));
+    logging::debug(std::format("on_read: received {}", line));
 
     auto ss = std::stringstream(line);
 
@@ -171,11 +171,27 @@ namespace squawkbus::client
     {
       auto frame = reader_.read();
       auto message = Message::deserialize(frame);
-      auto text = std::format("on_message: {}", message->str());
-      std::puts(text.c_str());
-    }
 
-    prompt();
+      if (message->message_type == MessageType::AuthenticationResponse)
+      {
+        auto auth = std::static_pointer_cast<AuthenticationResponse>(message);
+        if (auth->is_authenticated)
+        {
+          std::puts("Authenticated");
+          prompt();
+        }
+        else
+        {
+          std::puts("Authentication failed");
+          exit(0);
+        }
+      }
+      else
+      {
+        auto text = std::format("Received: {}", message->str());
+        std::puts(text.c_str());
+      }
+    }
   }
 
   void SquawkbusClient::prompt() const

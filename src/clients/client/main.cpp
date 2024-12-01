@@ -41,7 +41,7 @@ int main(int argc, char** argv)
     auto ssl_ctx = options.make_ssl_context();
 
     print_line(std::format(
-      "connecting to host {} on port {}{}.",
+      "Connecting to host {} on port {}{}.",
       options.host,
       options.port,
       (options.tls ? " using tls" : "")));
@@ -69,7 +69,10 @@ int main(int argc, char** argv)
 
     auto console_input = std::make_shared<File>(STDIN_FILENO, O_RDONLY);
     console_input->blocking(false);
-    poller.add_handler(std::make_unique<FilePollHandler>(console_input, 1024, 1024), "localhost", 0);
+    poller.add_handler(
+      std::make_unique<FilePollHandler>(console_input, 1024, 1024),
+      "localhost",
+      0);
 
     poller.event_loop(last_signal);
   }

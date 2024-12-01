@@ -24,8 +24,7 @@ namespace squawkbus::client
   private:
     std::shared_ptr<TcpClientSocket> client_socket_;
     FrameReader reader_;
-    AuthenticationRequest authentication_request_;
-    
+    AuthenticationRequest authentication_request_;    
 
   public:
     SquawkbusClient(
