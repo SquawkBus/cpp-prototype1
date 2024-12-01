@@ -90,7 +90,10 @@ namespace squawkbus::server
 
   std::optional<std::string> AuthenticationManager::authenticate_none(AuthenticationRequest& message) const
   {
-      return "nobody";
+    if (password_file_)
+      return std::nullopt; // Not allowed if password file is provided.
+
+    return "nobody";
   }
 
   std::optional<std::string> AuthenticationManager::authenticate_basic(AuthenticationRequest& message) const
