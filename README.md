@@ -1,24 +1,8 @@
-# cpp-prototype1
+# squawkbus
 
-A C++ prototype for SquawkBus.
+A real time message bus.
 
 ## Things to do
 
 * Consider a heartbeat
 * Make task specific clients
-
-## Container
-
-I used ubuntu noble 24.04
-I installed clang (18)
-I installed
-```bash
-sudo apt update
-sudo apt install g++-14
-sudo apt install clang
-sudo apt install uuid-dev
-sudo apt install libyaml-cpp-dev
-sudo apt install gdb
-# for htpasswd utility
-sudo apt install apache2-utils
-```
