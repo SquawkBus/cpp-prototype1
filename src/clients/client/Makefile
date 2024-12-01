@@ -11,7 +11,7 @@ LDLIBS = ${LIBS} -lssl -lcrypto
 
 APPNAME = squawkbus-client
 OBJDIR = obj
-BINDIR = bin
+BINDIR = $(ROOT_DIR)/bin
 
 SRC = $(wildcard *.cpp)
 OBJ = $(SRC:%.cpp=$(OBJDIR)/%.o)
