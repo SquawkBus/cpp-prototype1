@@ -12,20 +12,19 @@ LDLIBS = ${LIBS} -lyaml-cpp -lssl -lcrypto -luuid
 
 # Makefile settings - Can be customized.
 APPNAME = squawkbus
-SRCDIR = .
 OBJDIR = obj
 BINDIR = bin
 
 ############## Do not change anything from here downwards! #############
-SRC = $(wildcard $(SRCDIR)/*.cpp)
-OBJ = $(SRC:$(SRCDIR)/%.cpp=$(OBJDIR)/%.o)
+SRC = $(wildcard *.cpp)
+OBJ = $(SRC:%.cpp=$(OBJDIR)/%.o)
 DEP = $(OBJ:$(OBJDIR)/%.o=$(OBJDIR)/%.d)
 APP = $(BINDIR)/$(APPNAME)
 
-$(OBJDIR)/%.d: $(SRCDIR)/%.cpp
+$(OBJDIR)/%.d: %.cpp
 	$(CPP) $(CXXFLAGS) $< -MM -MT $(@:%.d=%.o) > $@
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.cpp
+$(OBJDIR)/%.o: %.cpp
 	$(CXX) $(CXXFLAGS) -o $@ -c $<
 
 .PHONY: all
