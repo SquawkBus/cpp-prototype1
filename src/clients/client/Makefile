@@ -1,6 +1,7 @@
 ROOT_DIR=../../..
 SRC_DIR=${ROOT_DIR}/src
 EXT_DIR=${ROOT_DIR}/externals
+INSTALL_DIR=$(HOME)/.local/bin
 
 CXX = clang++
 INCLUDES = -I${SRC_DIR} -I${EXT_DIR} -I/opt/homebrew/include
@@ -8,7 +9,7 @@ LIBS = -L/opt/homebrew/lib
 CXXFLAGS = -g -std=c++23 -Wall ${INCLUDES}
 LDLIBS = ${LIBS} -lssl -lcrypto
 
-APPNAME = client
+APPNAME = squawkbus-client
 OBJDIR = obj
 BINDIR = bin
 
@@ -35,5 +36,13 @@ $(APP): $(OBJ)
 .PHONY: clean
 clean:
 	rm -f $(OBJ) $(DEP) $(APP)
+
+.PHONY: install
+install: $(APP)
+	cp $(APP) $(INSTALL_DIR)
+
+.PHONY: uninstall
+uninstall: $(APP)
+	rm -f $(INSTALL_DIR)/$(APPNAME)
 
 -include $(DEP)
