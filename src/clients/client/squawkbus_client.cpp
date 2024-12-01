@@ -14,7 +14,7 @@
 #include "utils/utils.hpp"
 #include "messages/messages.hpp"
 
-#include "topic_client.hpp"
+#include "squawkbus_client.hpp"
 #include "utils.hpp"
 
 namespace squawkbus::client
@@ -29,7 +29,7 @@ namespace squawkbus::client
   using squawkbus::messages::MulticastData;
   using squawkbus::messages::DataPacket;
 
-  TopicClient::TopicClient(
+  SquawkbusClient::SquawkbusClient(
     std::shared_ptr<TcpClientSocket> client_socket,
     AuthenticationRequest&& authenticate)
     : client_socket_(client_socket),
@@ -37,7 +37,7 @@ namespace squawkbus::client
   {
   }
 
-  void TopicClient::on_startup(Poller& poller)
+  void SquawkbusClient::on_startup(Poller& poller)
   {
     logging::info("on_startup");
 
@@ -48,23 +48,23 @@ namespace squawkbus::client
     prompt();
   }
 
-  void TopicClient::on_interrupt(Poller& poller)
+  void SquawkbusClient::on_interrupt(Poller& poller)
   {
     logging::info("on_interrupt");
   }
 
-  void TopicClient::on_open(Poller& poller, int fd, const std::string& host, std::uint16_t port)
+  void SquawkbusClient::on_open(Poller& poller, int fd, const std::string& host, std::uint16_t port)
   {
     logging::info(std::format("on_open: {} ({}:{})", fd, host, port));
   }
 
-  void TopicClient::on_close(Poller& poller, int fd)
+  void SquawkbusClient::on_close(Poller& poller, int fd)
   {
     logging::info(std::format("on_close: {}", fd));
     exit(0);
   }
 
-  void TopicClient::on_read(Poller& poller, int fd, std::vector<std::vector<char>>&& bufs)
+  void SquawkbusClient::on_read(Poller& poller, int fd, std::vector<std::vector<char>>&& bufs)
   {
     logging::info(std::format("on_read: {}", fd));
 
@@ -81,12 +81,12 @@ namespace squawkbus::client
     }
   }
 
-  void TopicClient::on_error(Poller& poller, int fd, std::exception error)
+  void SquawkbusClient::on_error(Poller& poller, int fd, std::exception error)
   {
     logging::info(std::format("on_error: {} - {}", fd, error.what()));
   }
 
-  void TopicClient::handle_command(Poller& poller, std::vector<char> buf)
+  void SquawkbusClient::handle_command(Poller& poller, std::vector<char> buf)
   {
     auto line = std::string(buf.begin(), buf.end());
     logging::info(std::format("on_read: received {}", line));
@@ -163,7 +163,7 @@ namespace squawkbus::client
     }
   }
 
-  void TopicClient::handle_message(Poller& poller, std::vector<char> buf)
+  void SquawkbusClient::handle_message(Poller& poller, std::vector<char> buf)
   {
     reader_.write(buf);
 
@@ -178,7 +178,7 @@ namespace squawkbus::client
     prompt();
   }
 
-  void TopicClient::prompt() const
+  void SquawkbusClient::prompt() const
   {
     std::stringstream ss;
     ss

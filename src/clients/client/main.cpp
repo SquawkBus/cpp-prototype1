@@ -20,12 +20,12 @@
 #include "utils/utils.hpp"
 
 #include "options.hpp"
-#include "topic_client.hpp"
+#include "squawkbus_client.hpp"
 
 using namespace squawkbus::io;
 namespace logging = squawkbus::logging;
 using squawkbus::client::Options;
-using squawkbus::client::TopicClient;
+using squawkbus::client::SquawkbusClient;
 
 namespace
 {
@@ -52,7 +52,7 @@ int main(int argc, char** argv)
 
     auto authentication_request = options.make_authentication_request();
 
-    auto client = std::make_shared<TopicClient>(
+    auto client = std::make_shared<SquawkbusClient>(
       client_socket,
       std::move(authentication_request));
       

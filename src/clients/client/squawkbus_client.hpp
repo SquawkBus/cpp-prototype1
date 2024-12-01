@@ -19,7 +19,7 @@ namespace squawkbus::client
   using squawkbus::serialization::FrameReader;
   using squawkbus::messages::AuthenticationRequest;
 
-  class TopicClient : public PollClient
+  class SquawkbusClient : public PollClient
   {
   private:
     std::shared_ptr<TcpClientSocket> client_socket_;
@@ -28,7 +28,7 @@ namespace squawkbus::client
     
 
   public:
-    TopicClient(
+    SquawkbusClient(
       std::shared_ptr<TcpClientSocket> client_socket,
       AuthenticationRequest&& authentication_request);
 
