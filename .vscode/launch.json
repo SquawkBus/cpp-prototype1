@@ -125,7 +125,7 @@
             "cwd": "${fileDirname}",
             "environment": [
                 { "name": "LOGGER_LEVEL", "value": "INFO" },
-                { "name": "LOGGER_LEVEL_squawkbus", "value": "TRACE" },
+                { "name": "LOGGER_LEVEL_squawkbus", "value": "DEBUG" },
                 { "name": "LOGGER_FORMAT", "value": "{time:%Y-%m-%d %X} {level:8} {message}" }
             ],
             "externalConsole": false,
