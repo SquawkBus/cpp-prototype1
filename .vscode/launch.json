@@ -64,7 +64,7 @@
             "name": "client",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/src/clients/client/client",
+            "program": "${workspaceFolder}/src/clients/client/bin/client",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
@@ -88,7 +88,7 @@
             "name": "client+tom",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/src/clients/client/client",
+            "program": "${workspaceFolder}/src/clients/client/bin/client",
             "args": [
                 "--authentication", "tom", "tom"
             ],
@@ -147,7 +147,7 @@
             "name": "client+tls",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/src/clients/client/client",
+            "program": "${workspaceFolder}/src/clients/client/bin/client",
             "args": [
                 "--ssl",
                 "--host", "beast.jetblack.net",
