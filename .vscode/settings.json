@@ -112,6 +112,7 @@
         "Interactor",
         "interactors",
         "jetblack",
+        "NODEPS",
         "roundtrip",
         "servaddr",
         "squawkbus",

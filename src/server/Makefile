@@ -21,8 +21,11 @@ OBJ = $(SRC:%.cpp=$(OBJDIR)/%.o)
 DEP = $(OBJ:$(OBJDIR)/%.o=$(OBJDIR)/%.d)
 APP = $(BINDIR)/$(APPNAME)
 
+SUFFIXES += .d
+NODEPS := clean
+
 $(OBJDIR)/%.d: %.cpp
-	$(CPP) $(CXXFLAGS) $< -MM -MT $(@:%.d=%.o) > $@
+	$(CPP) $(CXXFLAGS) $< -MM -MT $(@:%.d=%.o) -MF $@
 
 $(OBJDIR)/%.o: %.cpp
 	$(CXX) $(CXXFLAGS) -o $@ -c $<

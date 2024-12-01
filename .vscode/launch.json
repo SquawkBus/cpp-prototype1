@@ -8,7 +8,7 @@
             "name": "server",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/src/server/squawkbus",
+            "program": "${workspaceFolder}/src/server/bin/squawkbus",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
@@ -35,7 +35,7 @@
             "name": "server+passwd",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/src/server/squawkbus",
+            "program": "${workspaceFolder}/src/server/bin/squawkbus",
             "args": [
                 "--password-file", "${workspaceFolder}/etc/htpasswd.dat"
             ],
@@ -114,7 +114,7 @@
             "name": "server+tls+passwd+auth(simple)",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/src/server/squawkbus",
+            "program": "${workspaceFolder}/src/server/bin/squawkbus",
             "args": [
                 "--tls", "${env:HOME}/.keys/server.crt", "${env:HOME}/.keys/server.key",
                 "--endpoint", "0.0.0.0:8558",
