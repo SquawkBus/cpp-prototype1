@@ -60,7 +60,7 @@ namespace squawkbus::server
 
   void Distributor::on_error(Poller& poller, int fd, std::exception error)
   {
-    log.info(std::format("on_error: {}, {}", fd, error.what()));
+    log.info(std::format("Client error: {}, {}", fd, error.what()));
   }
 
 }

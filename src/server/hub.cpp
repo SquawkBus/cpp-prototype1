@@ -24,6 +24,8 @@ namespace squawkbus::server
   void Hub::on_startup()
   {
     publisher_manager_.reload_authorizations();
+
+    log.info("Started.");
   }
 
   void Hub::on_interrupt()
@@ -52,7 +54,7 @@ namespace squawkbus::server
   void Hub::on_message(Interactor* interactor, const Message* message)
   {
     log.debug(std::format(
-      "received {} message from {}.",
+      "Received {} message from {}.",
       to_string(message->message_type),
       interactor->id()));
 

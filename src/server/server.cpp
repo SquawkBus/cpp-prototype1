@@ -40,12 +40,12 @@ void signal_handler(int signal)
 
 std::shared_ptr<SslContext> make_ssl_context(const std::string& certfile, const std::string& keyfile)
 {
-  logging::info("making ssl server context");
+  logging::info("Configuring TLS.");
   auto ctx = std::make_shared<SslServerContext>();
   ctx->min_proto_version(TLS1_2_VERSION);
-  logging::info(std::format("Adding certificate file \"{}\"", certfile));
+  logging::debug(std::format("Adding certificate file \"{}\"", certfile));
   ctx->use_certificate_file(certfile);
-  logging::info(std::format("Adding key file \"{}\"", keyfile));
+  logging::debug(std::format("Adding key file \"{}\"", keyfile));
   ctx->use_private_key_file(keyfile);
   return ctx;
 }
@@ -106,10 +106,10 @@ int main(int argc, const char** argv)
   }
   catch (...)
   {
-    logging::error(std::format("unknown error"));
+    logging::error("Unknown error.");
   }
 
-  logging::info("server stopped");
+  logging::info("Stopped.");
 
 
   return 0;

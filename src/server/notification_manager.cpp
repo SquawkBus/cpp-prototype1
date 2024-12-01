@@ -109,7 +109,7 @@ namespace squawkbus::server
     const std::string& topic_pattern,
     const SubscriptionManager& subscription_manager)
   {
-    log.debug(std::format( "remove_notification: {}", topic_pattern));
+    log.debug(std::format("remove_notification: {}", topic_pattern));
 
     auto i_notifications = notifications_.find(topic_pattern);
     if (i_notifications == notifications_.end())

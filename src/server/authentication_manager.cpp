@@ -31,10 +31,18 @@ namespace squawkbus::server
 
   void AuthenticationManager::load()
   {
-    if (!password_file_)
-      return;
+    log.info("Configuring authentication.");
 
-    log.info(std::format("Loading password file {}", *password_file_));
+    if (!password_file_)
+    {
+      log.info("Not authenticated.");
+      return;
+    }
+
+    log.info(
+      std::format(
+        "Authenticating with password file \"{}\".",
+        *password_file_));
 
     auto file = std::fstream(*password_file_, std::ios::in);
     if (!file.is_open())
@@ -64,7 +72,7 @@ namespace squawkbus::server
 
   std::optional<std::string> AuthenticationManager::authenticate(AuthenticationRequest&& message) const
   {
-    log.debug(std::format("Authenticating \"{}\"", message.method));
+    log.debug(std::format("Authenticating \"{}\".", message.method));
 
     if (message.method == "none")
     {

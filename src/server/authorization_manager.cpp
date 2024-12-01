@@ -21,7 +21,8 @@ namespace squawkbus::server
 
   void AuthorizationManager::load()
   {
-    log.info("Loading authorizations");
+    log.info("Configuring authorizations.");
+
     repository_ = AuthorizationRepository::make(path_, cmd_line_specs_);
   }
 }

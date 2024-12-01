@@ -37,7 +37,11 @@ namespace squawkbus::server
     const std::string& topic,
     const NotificationManager& notification_manager)
   {
-    log.debug(std::format( "subscribing {} to \"{}\"", subscriber->str(), topic));
+    log.debug(
+      std::format(
+        "Subscribing {} to \"{}\".",
+        subscriber->str(),
+        topic));
 
     // Try to find the topic pattern.
     auto i_subscribers = subscriptions_.find(topic);
@@ -86,7 +90,10 @@ namespace squawkbus::server
     const std::string& topic,
     const NotificationManager& notification_manager)
   {
-    log.debug(std::format( "unsubscribing {} from \"{}\"", subscriber->str(), topic));
+    log.debug(
+      std::format("Unsubscribing {} from \"{}\".",
+      subscriber->str(),
+      topic));
 
     auto i_subscriptions = subscriptions_.find(topic);
     if (i_subscriptions == subscriptions_.end())

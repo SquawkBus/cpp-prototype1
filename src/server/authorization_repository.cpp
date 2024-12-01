@@ -47,7 +47,7 @@ namespace squawkbus::server
 
   AuthorizationRepository AuthorizationRepository::load(const std::filesystem::path& path)
   {
-    log.info(std::format("Loading authorizations from file \"{}\"", path.string()));
+    log.info(std::format("Loading authorizations from file \"{}\".", path.string()));
 
     YAML::Node yaml = YAML::LoadFile(path.string());
     auto config = yaml.as<std::map<std::string, std::map<std::string, squawkbus::server::Authorization>>>();
@@ -85,7 +85,7 @@ namespace squawkbus::server
     auto specs = cmd_line_specs; // copy the command line specs;
     if (specs.empty())
     {
-      log.debug("Using default authorizations");
+      log.info("Using default authorizations.");
       
       auto spec = AuthorizationSpec(
         std::regex(".*"),

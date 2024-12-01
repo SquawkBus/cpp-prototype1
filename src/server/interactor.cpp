@@ -74,7 +74,7 @@ namespace squawkbus::server
   {
     if (message->message_type != MessageType::AuthenticationRequest)
     {
-      log.error("expected authenticate message");
+      log.error("Expected authenticate message.");
       poller_.close(fd_);
     }
 
@@ -82,7 +82,7 @@ namespace squawkbus::server
     user_ = authentication_manager_.authenticate(std::move(authenticate_message));
     if (user_ == std::nullopt)
     {
-      log.error("authentication failed");
+      log.error("Authentication failed.");
       poller_.close(fd_);
     }
 

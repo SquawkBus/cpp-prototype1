@@ -57,7 +57,7 @@ namespace squawkbus::server
     auto i_subscriber = interactors.find(request.client_id);
     if (i_subscriber == interactors.end())
     {
-      log.info(std::format("no interactor for {}", request.client_id));
+      log.info(std::format("No interactor for {}.", request.client_id));
       return;
     }
 
