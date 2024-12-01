@@ -10,12 +10,10 @@ LIBS = -L/opt/homebrew/lib
 CXXFLAGS = -g -std=c++23 -Wall ${INCLUDES}
 LDLIBS = ${LIBS} -lyaml-cpp -lssl -lcrypto -luuid
 
-# Makefile settings - Can be customized.
 APPNAME = squawkbus
 OBJDIR = obj
 BINDIR = bin
 
-############## Do not change anything from here downwards! #############
 SRC = $(wildcard *.cpp)
 OBJ = $(SRC:%.cpp=$(OBJDIR)/%.o)
 DEP = $(OBJ:$(OBJDIR)/%.o=$(OBJDIR)/%.d)
