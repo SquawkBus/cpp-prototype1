@@ -27,9 +27,11 @@ namespace squawkbus::server
       remove_subscription(subscriber, request.topic, notification_manager);
   }
 
-  void SubscriptionManager::on_interactor_closed(Interactor* subscriber)
+  void SubscriptionManager::on_interactor_closed(
+    Interactor* subscriber,
+    const NotificationManager& notification_manager)
   {
-    remove_interactor(subscriber);
+    remove_interactor(subscriber, notification_manager);
   }
 
   void SubscriptionManager::add_subscription(
@@ -143,7 +145,9 @@ namespace squawkbus::server
     }
   }
 
-  void SubscriptionManager::remove_interactor(Interactor* subscriber)
+  void SubscriptionManager::remove_interactor(
+    Interactor* subscriber,
+    const NotificationManager& notification_manager)
   {
     auto i_subscriber_topics = subscriber_topics_.find(subscriber);
     if (i_subscriber_topics == subscriber_topics_.end())
@@ -170,6 +174,8 @@ namespace squawkbus::server
       }
 
       subscriptions_.erase(topic);
+
+      notification_manager.notify(subscriber, topic, false);
     }
 
     subscriber_topics_.erase(subscriber);
