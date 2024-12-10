@@ -66,7 +66,7 @@ namespace squawkbus::server
           entitlements,
           authorization.role);
 
-        specs.push_back(AuthorizationSpec());
+        specs.push_back(spec);
       }
     }
 
