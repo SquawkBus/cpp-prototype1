@@ -175,6 +175,7 @@ namespace squawkbus::server
 
       subscriptions_.erase(topic);
 
+      // Inform listeners that the subscriber is no longer subscribing.
       notification_manager.notify(subscriber, topic, false);
     }
 
