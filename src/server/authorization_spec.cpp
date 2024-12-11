@@ -28,8 +28,8 @@ namespace squawkbus::server
       throw std::runtime_error(std::format("expected 4 parts, found {}.", args.size()));
     }
 
-    auto topic_pattern = std::regex(args[0]);
-    auto user_pattern = std::regex(args[1]);
+    auto topic_pattern = args[0];
+    auto user_pattern = args[1];
     auto entitlements = args[2]
       | std::ranges::views::split(std::string_view(","sv))
       | std::ranges::views::transform([](auto &&i){

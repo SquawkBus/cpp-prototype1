@@ -7,18 +7,37 @@
 #include <regex>
 #include <set>
 #include <string>
+#include <string_view>
 #include <stdexcept>
 #include <vector>
 
 #include "logging/log.hpp"
+#include "utils/utils.hpp"
 
 #include "authorization_yaml.hpp"
+#include "role.hpp"
 
 namespace squawkbus::server
 {
+  using namespace std::string_view_literals;
+
   namespace
   {
     auto log = logging::logger("squawkbus");
+
+    inline std::string format_spec(const AuthorizationSpec& spec)
+    {
+      return std::format(
+        "Authorizing \"{}\" on \"{}\" for {} with [{}]",
+        spec.user_pattern(),
+        spec.topic_pattern(),
+        to_string(spec.roles()),
+        std::ranges::fold_left(
+          std::vector<int> {spec.entitlements().begin(), spec.entitlements().end()}
+            | std::views::transform([](auto&& x) { return std::to_string(x); })
+            | std::views::join_with(", "sv),
+          std::string{}, std::plus<>{}));
+    }
   }
 
   const std::set<std::int32_t>& AuthorizationRepository::entitlements(
@@ -30,9 +49,9 @@ namespace squawkbus::server
     {
       for (auto& spec : specs_)
       {
-        if (!std::regex_match(user, spec.user_pattern()))
+        if (!std::regex_match(user, spec.user_regex()))
           continue;
-        if (!std::regex_match(topic, spec.topic_pattern()))
+        if (!std::regex_match(topic, spec.topic_regex()))
           continue;
         if ((role & spec.roles()) != role)
           continue;
@@ -61,10 +80,12 @@ namespace squawkbus::server
           authorization.entitlements.begin(),
           authorization.entitlements.end());
         auto spec = AuthorizationSpec(
-          std::regex(user_pattern),
-          std::regex(topic_pattern),
+          user_pattern,
+          topic_pattern,
           entitlements,
           authorization.role);
+
+        log.debug(format_spec(spec));
 
         specs.push_back(spec);
       }
@@ -88,11 +109,13 @@ namespace squawkbus::server
       log.info("Using default authorizations.");
       
       auto spec = AuthorizationSpec(
-        std::regex(".*"),
-        std::regex(".*"),
+        ".*",
+        ".*",
         std::set<std::int32_t> { 0 },
-        Role::All
-      );
+        Role::All);
+
+      log.debug(format_spec(spec));
+
       specs.push_back(spec);
     }
 

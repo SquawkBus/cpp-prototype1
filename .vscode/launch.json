@@ -8,12 +8,12 @@
             "name": "server",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/src/server/bin/squawkbus",
+            "program": "${workspaceFolder}/bin/squawkbus",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [
-                { "name": "LOGGER_LEVEL", "value": "INFO" },
+                { "name": "LOGGER_LEVEL", "value": "DEBUG" },
                 { "name": "LOGGER_LEVEL_squawkbus", "value": "TRACE" }
             ],
             "externalConsole": false,
@@ -35,7 +35,7 @@
             "name": "server+passwd",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/src/server/bin/squawkbus",
+            "program": "${workspaceFolder}/bin/squawkbus",
             "args": [
                 "--password-file", "${workspaceFolder}/etc/htpasswd.dat"
             ],
@@ -111,10 +111,42 @@
             ]
         },
         {
+            "name": "server+passwd+auth(complex)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/squawkbus",
+            "args": [
+                "--endpoint", "0.0.0.0:8558",
+                "--authorizations-file", "${workspaceFolder}/etc/authorizations.yaml",
+                "--password-file", "${workspaceFolder}/etc/htpasswd.dat"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [
+                { "name": "LOGGER_LEVEL", "value": "INFO" },
+                { "name": "LOGGER_LEVEL_squawkbus", "value": "DEBUG" },
+                { "name": "LOGGER_FORMAT", "value": "{time:%Y-%m-%d %X} {level:8} {message}" }
+            ],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
             "name": "server+tls+passwd+auth(simple)",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/src/server/bin/squawkbus",
+            "program": "${workspaceFolder}/bin/squawkbus",
             "args": [
                 "--tls", "${env:HOME}/.keys/server.crt", "${env:HOME}/.keys/server.key",
                 "--endpoint", "0.0.0.0:8558",

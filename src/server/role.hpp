@@ -1,7 +1,11 @@
 #ifndef SQUAWKBUS_SERVER_ROLE_HPP
 #define SQUAWKBUS_SERVER_ROLE_HPP
 
+#include <algorithm>
+#include <ranges>
 #include <string>
+#include <string_view>
+#include <utility>
 #include <vector>
 
 namespace squawkbus::server {
@@ -60,6 +64,27 @@ namespace squawkbus::server {
   {
     x = x ^ y;
     return x;
+  }
+
+  inline std::string
+  to_string(Role role)
+  {
+    using namespace std::string_view_literals;
+
+    auto roles = std::vector<std::pair<Role, std::string_view>> {
+      { Role::Subscriber, "Subscriber"sv },
+      { Role::Publisher, "Publisher"sv },
+      { Role::Notifier, "Notifier"sv },
+    };
+    
+    auto s = std::ranges::fold_left(
+      roles
+        | std::views::filter([role](auto&& x) {return (x.first & role) == x.first; })
+        | std::views::transform([](auto&& x) { return x.second; })
+        | std::views::join_with(" | "sv),
+      std::string{}, std::plus<>{});
+
+    return s;
   }
 }
 

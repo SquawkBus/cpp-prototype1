@@ -98,7 +98,8 @@
         "locale": "cpp",
         "print": "cpp",
         "queue": "cpp",
-        "stack": "cpp"
+        "stack": "cpp",
+        "stacktrace": "cpp"
     },
     "C_Cpp.clang_format_fallbackStyle": "Mozilla",
     "C_Cpp.clang_format_style": "Mozilla",
