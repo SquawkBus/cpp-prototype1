@@ -4,6 +4,7 @@
 
 #include "logging/log.hpp"
 
+#include "constants.hpp"
 #include "hub.hpp"
 #include "interactor.hpp"
 
@@ -11,7 +12,7 @@ namespace squawkbus::server
 {
   namespace
   {
-    auto log = logging::logger("squawkbus");
+    auto log = logging::logger(LOGGER_NAME);
   }
 
   using squawkbus::messages::Message;

@@ -15,6 +15,7 @@
 #include "utils/utils.hpp"
 
 #include "authorization_yaml.hpp"
+#include "constants.hpp"
 #include "role.hpp"
 
 namespace squawkbus::server
@@ -23,7 +24,7 @@ namespace squawkbus::server
 
   namespace
   {
-    auto log = logging::logger("squawkbus");
+    auto log = logging::logger(LOGGER_NAME);
 
     inline std::string format_spec(const AuthorizationSpec& spec)
     {

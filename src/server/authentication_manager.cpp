@@ -1,5 +1,4 @@
 #include "authentication_manager.hpp"
-#include "authentication_repository.hpp"
 
 #include <format>
 #include <fstream>
@@ -17,11 +16,14 @@
 
 #include "messages/messages.hpp"
 
+#include "authentication_repository.hpp"
+#include "constants.hpp"
+
 namespace squawkbus::server
 {
   namespace
   {
-    auto log = logging::logger("squawkbus");
+    auto log = logging::logger(LOGGER_NAME);
   }
 
   using squawkbus::messages::AuthenticationRequest;
@@ -31,7 +33,7 @@ namespace squawkbus::server
 
   void AuthenticationManager::load()
   {
-    log.info("Configuring authentication.");
+    log.debug("Configuring authentication.");
 
     if (!password_file_)
     {

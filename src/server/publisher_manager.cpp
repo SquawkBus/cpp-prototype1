@@ -8,15 +8,16 @@
 
 #include "logging/log.hpp"
 
+#include "authorization_manager.hpp"
+#include "constants.hpp"
 #include "interactor.hpp"
 #include "subscription_manager.hpp"
-#include "authorization_manager.hpp"
 
 namespace squawkbus::server
 {
   namespace
   {
-    auto log = logging::logger("squawkbus");
+    auto log = logging::logger(LOGGER_NAME);
   }
 
   using squawkbus::messages::ForwardedMulticastData;

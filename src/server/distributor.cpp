@@ -4,11 +4,13 @@
 
 #include "logging/log.hpp"
 
+#include "constants.hpp"
+
 namespace squawkbus::server
 {
   namespace
   {
-    auto log = logging::logger("squawkbus");
+    auto log = logging::logger(LOGGER_NAME);
   }
 
   void Distributor::on_startup(Poller& poller)

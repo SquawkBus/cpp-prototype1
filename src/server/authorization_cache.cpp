@@ -6,11 +6,13 @@
 
 #include "logging/log.hpp"
 
+#include "constants.hpp"
+
 namespace squawkbus::server
 {
   namespace
   {
-    auto log = logging::logger("squawkbus");
+    auto log = logging::logger(LOGGER_NAME);
   }
 
   bool AuthorizationCache::contains(const std::string& user, const std::string& topic, Role role) const

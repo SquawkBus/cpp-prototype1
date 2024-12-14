@@ -10,12 +10,13 @@
 #include <vector>
 
 #include "logging/log.hpp"
+#include "constants.hpp"
 
 namespace squawkbus::server
 {
   namespace
   {
-    auto log = logging::logger("squawkbus");
+    auto log = logging::logger(LOGGER_NAME);
   }
 
   AuthorizationSpec AuthorizationSpec::from(const std::string& line)

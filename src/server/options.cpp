@@ -9,6 +9,8 @@
 #include <sstream>
 #include <vector>
 
+#include "constants.hpp"
+
 namespace squawkbus::server
 {
   using squawkbus::io::Endpoint;
@@ -92,7 +94,7 @@ namespace squawkbus::server
       }
 
       if (options.endpoint.empty())
-        options.endpoint = Endpoint("0.0.0.0", 8558);
+        options.endpoint = Endpoint("0.0.0.0", DEFAULT_PORT);
 
       return options;
     }

@@ -10,6 +10,7 @@
 #include "serialization/frame_buffer_io.hpp"
 
 #include "authentication_manager.hpp"
+#include "constants.hpp"
 #include "hub.hpp"
 #include "uuid.hpp"
 
@@ -17,7 +18,7 @@ namespace squawkbus::server
 {
   namespace
   {
-    auto log = logging::logger("squawkbus");
+    auto log = logging::logger(LOGGER_NAME);
   }
 
   using squawkbus::io::Poller;
