@@ -146,7 +146,8 @@ The authorizations file can be used as follows.
 
 ```bash
 squawkbus \
-    --password-file htpasswd.dat # authorization required authentication
+    --tls server.crt server.key \
+    --password-file htpasswd.dat \
     --authorization-file authorizations.yaml
 ```
 
@@ -159,6 +160,22 @@ a certificate a key file, as follows:
 
 ```bash
 squawkbus --tls server.crt server.key
+```
+
+## Logging
+
+The server logs to `stdout`. This can be controlled with the environment
+variable `LOGGER_LEVEL` and `LOGGER_LEVEL_SQUAWKBUS`. By default these
+are set to `ERROR`, but the supported levels of `TRACE`, `DEBUG`, `INFO`,
+`WARNING`, `ERROR`.
+
+This might be used as follows:
+
+```bash
+LOGGER_LEVEL_SQUAWKBUS=DEBUG squawkbus \
+    --tls server.crt server.key \
+    --password-file htpasswd.dat \
+    --authorization-file authorizations.yaml
 ```
 
 ## Things to do
