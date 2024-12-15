@@ -96,7 +96,7 @@ This may be more easily in yaml.
     - Notifier
     - Publisher
     - Subscriber
-# Harry is the publisher for LSE data.
+# Harry is the publisher for LSE data for entitlements 1 and 2.
 harry:
   "LSE\\..*":
     entitlements:
@@ -105,7 +105,7 @@ harry:
     roles:
     - Notifier
     - Publisher
-# Freddy is the publisher for LSE data.
+# Freddy is the publisher for NYSE data for entitlements 3 and 4.
 freddy:
   "NYSE\\..*":
     entitlements:
