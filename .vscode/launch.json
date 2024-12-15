@@ -32,6 +32,35 @@
             ]
         },
         {
+            "name": "server+tls",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/squawkbus",
+            "args": [
+                "--tls", "${env:HOME}/.keys/server.crt", "${env:HOME}/.keys/server.key",
+            ],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [
+                { "name": "LOGGER_LEVEL", "value": "DEBUG" },
+                { "name": "LOGGER_LEVEL_SQUAWKBUS", "value": "TRACE" }
+            ],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
             "name": "server+passwd",
             "type": "cppdbg",
             "request": "launch",

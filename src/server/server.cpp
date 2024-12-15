@@ -40,7 +40,7 @@ void signal_handler(int signal)
 
 std::shared_ptr<SslContext> make_ssl_context(const std::string& certfile, const std::string& keyfile)
 {
-  logging::info("Configuring TLS.");
+  logging::debug("Configuring TLS.");
   auto ctx = std::make_shared<SslServerContext>();
   ctx->min_proto_version(TLS1_2_VERSION);
   logging::debug(std::format("Adding certificate file \"{}\"", certfile));

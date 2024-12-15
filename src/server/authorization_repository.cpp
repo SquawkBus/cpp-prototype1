@@ -29,7 +29,7 @@ namespace squawkbus::server
     inline std::string format_spec(const AuthorizationSpec& spec)
     {
       return std::format(
-        "Authorizing \"{}\" on \"{}\" for {} with [{}]",
+        "Authorizing user \"{}\" on topic \"{}\" for role {} with entitlements [{}]",
         spec.user_pattern(),
         spec.topic_pattern(),
         to_string(spec.roles()),
