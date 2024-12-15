@@ -90,6 +90,38 @@
             ]
         },
         {
+            "name": "server+passwd+auth(cli)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/squawkbus",
+            "args": [
+                "--password-file", "${workspaceFolder}/etc/htpasswd.dat",
+                "--authorization", "tom:LSE\\..*:1,2:Subscriber",
+                "--authorization", "dick:LSE\\..*:1:Subscriber",
+                "--authorization", "harry:LSE\\..*:1,2:Publisher,Notifier"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [
+                { "name": "LOGGER_LEVEL", "value": "INFO" },
+                { "name": "LOGGER_LEVEL_SQUAWKBUS", "value": "TRACE" }
+            ],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
             "name": "client",
             "type": "cppdbg",
             "request": "launch",

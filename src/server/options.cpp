@@ -84,7 +84,7 @@ namespace squawkbus::server
         {
           if (argc - argi < 1)
             throw std::runtime_error(std::format("{} requires an argument", arg));
-          auto authorization_spec = AuthorizationSpec::from(arg);
+          auto authorization_spec = AuthorizationSpec::from(argv[argi++]);
           options.authorizations.push_back(authorization_spec);
         }
         else

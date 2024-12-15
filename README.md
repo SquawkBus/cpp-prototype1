@@ -65,8 +65,8 @@ Each data Packet sent to the server has an *entitlement*.
 The server will only forward entitlements that a user is configured to receive.
 
 Entitlements are applied to user's and topic's through a regular expression.
-The default pattern is for the user `.*` and topic `.*` for roles "`Subscribe`,
-`Publish` and `Notify`" with the entitlement `0`.
+The default pattern is for the user `.*` and topic `.*` for roles "`Subscriber`,
+`Publisher` and `Notifier`" with the entitlement `0`.
 The means that all users can receive all topics, where the entitlement is `0`.
 
 Authorizations can be specified on the command line:
@@ -74,9 +74,9 @@ Authorizations can be specified on the command line:
 ```bash
 squawkbus \
     --password-file htpasswd.dat # authorization required authentication
-    --authorization 'tom:LSE.*:1,2:Subscribe' \
-    --authorization 'dick:LSE.*:1:Subscribe' \
-    --authorization 'harry:LSE.*:1,2:Publish'
+    --authorization 'tom:LSE.*:1,2:Subscriber' \
+    --authorization 'dick:LSE.*:1:Subscriber' \
+    --authorization 'harry:LSE.*:1,2:Publisher,Notifier'
 ```
 
 In the above, `tom` and `dick` are authorized to subscribe to topics starting

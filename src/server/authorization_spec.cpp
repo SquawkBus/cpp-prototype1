@@ -51,7 +51,7 @@ namespace squawkbus::server
           else if (i == "Notifier")
               return Role::Notifier;
           else
-              throw std::runtime_error("unknown role");
+              throw std::runtime_error(std::format("unknown role \"{}\"", i));
       }),
       Role::None,
       [](auto lhs, auto rhs) { return lhs | rhs; });
