@@ -105,7 +105,7 @@ harry:
     roles:
     - Notifier
     - Publisher
-# Harry is the publisher for LSE data.
+# Freddy is the publisher for LSE data.
 freddy:
   "NYSE\\..*":
     entitlements:
@@ -128,6 +128,7 @@ tom:
     - *NYSE_LEVEL2
     roles:
     - Subscriber
+# Dick only gets level 1.
 dick:
   "LSE\\..*":
     entitlements:
