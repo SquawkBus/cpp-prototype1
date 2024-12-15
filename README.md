@@ -87,7 +87,7 @@ publish data with entitlements `1` and `2`.
 This may be more easily in yaml.
 
 ```yaml authorizations.yaml
-# All users can publish to PUB
+# All users can publish, subscribe and notify to topics starting with PUB for entitlement 0.
 .*:
   "PUB\\..*":
     entitlements:
